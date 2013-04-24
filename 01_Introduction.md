@@ -2,6 +2,8 @@ Slick 1.0.0 documentation - 01 導入
 <!-- Introduction -->
 [Permalink to Introduction — Slick 1.0.0 documentation](http://slick.typesafe.com/doc/1.0.0/introduction.html)
 
+#導入
+
 ##Slickとは
 <!-- What is Slick -->
 
