@@ -1,7 +1,8 @@
+Slick 1.0.0 documentation - 06 Slick TestKit
+<!--Slick TestKit — Slick 1.0.0 documentation-->
 
-[Permalink](http://slick.typesafe.com/doc/1.0.0/testkit.html "Permalink to Slick TestKit — Slick 1.0.0 documentation")
+["Permalink to Slick TestKit — Slick 1.0.0 documentation](http://slick.typesafe.com/doc/1.0.0/testkit.html)
 
-# Slick TestKit — Slick 1.0.0 documentation
 
 When you write your own database driver for Slick, you need a way to run all the standard unit tests on it (in addition to any custom tests you may want to add) to ensure that it works correctly and does not claim to support any capabilities which are not actually implemented. For this purpose the Slick unit tests have been factored out into a separate Slick TestKit project.
 
@@ -11,7 +12,8 @@ To get started, you can clone the [Slick TestKit Example][1] project which conta
 
 Its build.sbt file is straight-forward. Apart from the usual name and version settings, it adds the dependencies for Slick, the TestKit, junit-interface, Logback and the PostgreSQL JDBC driver, and it sets some options for the test runs:
 
-    libraryDependencies %2B%2B= Seq(
+```scala
+    libraryDependencies ++= Seq(
       "com.typesafe.slick" %% "slick" % "1.0.0",
       "com.typesafe.slick" %% "slick-testkit" % "1.0.0" % "test",
       "com.novocode" % "junit-interface" % "0.10-M1" % "test",
@@ -19,12 +21,12 @@ Its build.sbt file is straight-forward. Apart from the usual name and version se
       "postgresql" % "postgresql" % "9.1-901.jdbc4" % "test"
     )
     
-    testOptions %2B= Tests.Argument(TestFrameworks.JUnit, "-q", "-v", "-s", "-a")
+    testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v", "-s", "-a")
     
     parallelExecution in Test := false
     
     logBuffered := false
-    
+```
 
 There is a copy of Slick’s logback configuration in src/test/resources/logback-test.xml but you can swap out the logging framework if you prefer a different one.
 
@@ -36,8 +38,9 @@ The actual driver implementation can be found under src/main/scala.
 
 In order to run the TestKit tests, you need to add a class that extends DriverTest, plus an implementation of TestDB which tells the TestKit how to connect to a test database, get a list of tables, clean up between tests, etc.
 
-In the case of the PostgreSQL test harness (in src/test/scala/scala/slick/driver/test/MyPostgresTest.scala) most of the default implementations can be used out of the box:
+In the case of the PostgreSQL test harness (in **src/test/scala/scala/slick/driver/test/MyPostgresTest.scala**) most of the default implementations can be used out of the box:
 
+```scala
     @RunWith(classOf[Testkit])
     class MyPostgresTest extends DriverTest(MyPostgresTest.tdb)
     
@@ -51,15 +54,16 @@ In the case of the PostgreSQL test harness (in src/test/scala/scala/slick/driver
           val tables = ResultSetInvoker[(String,String,String, String)](_.conn.getMetaData().getTables("", "public", null, null))
           tables.list.filter(_._4.toUpperCase == "SEQUENCE").map(_._3).sorted
         }
-        override lazy val capabilities = driver.capabilities %2B TestDB.plainSql
+        override lazy val capabilities = driver.capabilities + TestDB.plainSql
       }
     }
-    
+```    
 
 ## Database Configuration
 
-Since the PostgreSQL test harness is based on ExternalTestDB, it needs to be configured in test-dbs/databases.properties:
+Since the PostgreSQL test harness is based on **ExternalTestDB**, it needs to be configured in **test-dbs/databases.properties**:
 
+```scala
     # PostgreSQL quick setup:
     # - Install PostgreSQL server with default options
     # - Change password in mypostgres.password
@@ -73,9 +77,10 @@ Since the PostgreSQL test harness is based on ExternalTestDB, it needs to be con
     mypostgres.create = CREATE TABLESPACE slick_test LOCATION '[DBPATH]'; CREATE DATABASE "[DB]" TEMPLATE = template0 TABLESPACE slick_test
     mypostgres.drop = DROP DATABASE IF EXISTS "[DB]"; DROP TABLESPACE IF EXISTS slick_test
     mypostgres.driver = org.postgresql.Driver
+```
 
 ## Testing
 
-Running sbt test discovers MyPostgresTest and runs it with TestKit’s JUnit runner. This in turn causes the database to be set up through the test harness and all tests which are applicable for the driver (as determined by the capabilities setting in the test harness) to be run.
+Running **sbt test** discovers **MyPostgresTest** and runs it with TestKit’s JUnit runner. This in turn causes the database to be set up through the test harness and all tests which are applicable for the driver (as determined by the **capabilities** setting in the test harness) to be run.
 
  [1]: https://github.com/slick/slick-testkit-example/tree/1.0.0  

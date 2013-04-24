@@ -1,7 +1,8 @@
-01 導入
+Slick 1.0.0 documentation - 01 導入
 <!-- Introduction -->
+[Permalink to Introduction — Slick 1.0.0 documentation](http://slick.typesafe.com/doc/1.0.0/introduction.html)
 
-#Slickとは
+##Slickとは
 <!-- What is Slick -->
 
 Slickは[Typesafe社](http://www.typesafe.com)によって開発が行われている，Scalaのためのモダンなデータベースラッパーである．データベースにアクセスしながらScalaのコレクションを扱うかのようにデータを操作する事が出来る．また，SQLを直接書く事も可能である．
@@ -20,42 +21,42 @@ sql"select name from coffees where price < $limit".as[String].list
 <!--
 When using Scala instead of SQL for your queries you profit from the compile-time safety and compositionality. Slick can generate queries for different backends including your own, using its extensible query compiler. -->
 
-#Slickの特徴
+##Slickの特徴
 <!-- Why Slick?/Feature -->
 Slick offers a unique combination of features:
 
-##Easy
+###Easy
 - Access stored data just like Scala collections
 - Unified session management based on JDBC Connections
 - Supports SQL if you need it
 - Simple setup
 
-##Concise
+###Concise
 - Scala syntax
 - Fetch results without pain (no ResultSet.getX)
 - Scales naturally
 - Stateless (like the web)
 - Explicit control of execution time and transferred data
 
-##Safe
+###Safe
 - No SQL-injections
 - Compile-time safety (types, names, no typos, etc.)
 - Type-safe support of stored procedures
 
-##Composable
+###Composable
 - It‘s Scala code: abstract and re-use with ease
 
-Slick requires Scala 2.10. (For Scala 2.9 please use ScalaQuery, the predecessor of Slick).
+Slick requires Scala 2.10. (For Scala 2.9 please use [ScalaQuery](http://scalaquery.org), the predecessor of Slick).
 
-##Supported database systems
-- DB2 (via slick-extensions)
+###Supported database systems
+- DB2 (via [slick-extensions](http://slick.typesafe.com/doc/1.0.0/extensions.html))
 - Derby/JavaDB
 - H2
 - HSQLDB/HyperSQL
 - Microsoft Access
 - Microsoft SQL Server
 - MySQL
-- Oracle (via slick-extensions)
+- Oracle (via [slick-extensions](http://slick.typesafe.com/doc/1.0.0/extensions.html))
 - PostgreSQL
 - SQLite
 Other SQL databases can be accessed right away with a reduced feature set. Writing a fully featured plugin for your own SQL-based backend can be achieved with a reasonable amount of work. Support for other backends (like NoSQL) is under development but not yet available.
@@ -91,7 +92,7 @@ Database.forURL("jdbc:h2:mem:test1", driver = "org.h2.Driver") withSession {
   Coffees.filter(_.price < 10.0).map(_.name).list
 }
 ```
-The next chapter explains these steps and further aspects in more detail.
+The [next chapter](http://slick.typesafe.com/doc/1.0.0/gettingstarted.html) explains these steps and further aspects in more detail.
 
 ##License
-Slick is released under a BSD-Style free and open source software license.
+Slick is released under a BSD-Style free and open source software [license](https://github.com/slick/slick/blob/1.0.0/LICENSE.txt).
