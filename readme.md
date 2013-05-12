@@ -1,4 +1,4 @@
-Slickドキュメント 日本語訳
+Slickドキュメント 日本語訳 (注:非公式)
 
 - Translation project for [Slick 1.0.0 documentation][1] in Japanese.
 
