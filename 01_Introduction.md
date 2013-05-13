@@ -65,6 +65,7 @@ Slickは以下のようなユニークな特徴を持っている:
 - Type-safe support of stored procedures-->
 
 ###Composable
+
 - Scalaによる抽象化され再利用が簡単に行える設計
 
 <!--- It‘s Scala code: abstract and re-use with ease-->

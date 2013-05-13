@@ -13,7 +13,7 @@ Slick 1.0.0 documentation - 02 始めよう
 ## 依存性
 <!--## Dependencies-->
 
-プロジェクトではどのようにしたらいいのかを確認してみよう．まず初めに，Slickと組み込みデータベースを追加する必要がある．もし[sbt][2]を使っているのなら，**build.sbt**に以下のように記述すると良い．
+プロジェクトではどのようにしたらいいのかを確認してみよう．まず初めに，Slickと組み込みデータベースを追加する必要がある．もし[sbt][2]を使っているのなら， **build.sbt** に以下のように記述すると良い．
 
 <!--Let’s take a closer look at what’s happening in that project. First of all, you need to add Slick and the embedded databases or drivers for external databases to your project. If you are using [sbt][2], you do this in your main build.sbt file:-->
 
@@ -26,7 +26,7 @@ libraryDependencies ++= List(
 )
 ```
 
-Slickはデバッグログに[SLF4J][3]を用いている．そのためSLF4Jについても追加する必要がある．ここではロギングを無効にするために**slf4j-nop**を用いている．もしログの出力を見たいのならば[Logback][4]のようなロギング用のフレームワークに替えなくてはならない．
+Slickはデバッグログに[SLF4J][3]を用いている．そのためSLF4Jについても追加する必要がある．ここではロギングを無効にするために **slf4j-nop** を用いている．もしログの出力を見たいのならば[Logback][4]のようなロギング用のフレームワークに替えなくてはならない．
 
 <!--Slick uses [SLF4J][3] for its own debug logging so you also need to add an SLF4J implementation. Here we are using slf4j-nop to disable logging. You have to replace this with a real logging framework like [Logback][4] if you want to see log output.-->
 
@@ -44,7 +44,7 @@ import scala.slick.driver.H2Driver.simple._
 import Database.threadLocalSession
 ``` 
 
-[H2][6]をデータベースとして用いているため，Slickの**H2Driver**をimportする必要がある．このdriverに含まれる**simple**オブジェクトには[session handling][7]といったSlickに必要な共通の機能が含まれている．それ以外にimportする必要があるのは**threadLocalSession**である．これは取り扱うスレッドにセッションを付随させる事でセッションの取り扱いを単純化させるものである．これにより不必要なimplicit変数を割り当てたりといった実装を行わなくて済むのである．
+[H2][6]をデータベースとして用いているため，Slickの **H2Driver** をimportする必要がある．このdriverに含まれる **simple** オブジェクトには[session handling][7]といったSlickに必要な共通の機能が含まれている．それ以外にimportする必要があるのは **threadLocalSession** である．これは取り扱うスレッドにセッションを付随させる事でセッションの取り扱いを単純化させるものである．これにより不必要なimplicit変数を割り当てたりといった実装を行わなくて済むのである．
 
 <!--Since we are using [H2][6] as our database system, we need to import features from Slick’s H2Driver. A driver’s simple object contains all commonly needed imports from the driver and other parts of Slick such as [*session handling*][7]. The only extra import we use is the threadLocalSession. This simplifies the session handling by attaching a session to the current thread so you do not have to pass it around on your own (or at least assign it to an implicit variable).-->
 
@@ -61,13 +61,13 @@ Database.forURL("jdbc:h2:mem:test1", driver = "org.h2.Driver") withSession {
 }
 ```
 
-Java SEの環境においては，データベースセッションはJDBCドライバークラスを用いてJDBC URLへ接続する事により作成される（正しいURLのシンタックスはJDBCドライバーのドキュメントを確認して欲しい）．もし[plain SQL queries][8]のみを用いるのおであれば，それ以上特に何もする必要はない．しかし，もし[direct embedding][9]や[lifted embedding][10]を用いるのであれば，SlickがSQL文を作成する事になるため，**H2Driver**のようなSlickのdriverを適宜importする事を確認して欲しい．
+Java SEの環境においては，データベースセッションはJDBCドライバークラスを用いてJDBC URLへ接続する事により作成される（正しいURLのシンタックスはJDBCドライバーのドキュメントを確認して欲しい）．もし[plain SQL queries][8]のみを用いるのおであれば，それ以上特に何もする必要はない．しかし，もし[direct embedding][9]や[lifted embedding][10]を用いるのであれば，SlickがSQL文を作成する事になるため， **H2Driver** のようなSlickのdriverを適宜importする事を確認して欲しい．
 
 <!--In a Java SE environment, database sessions are usually created by connecting to a JDBC URL using a JDBC driver class (see the JDBC driver’s documentation for the correct URL syntax). If you are only using [*plain SQL queries*][8], nothing more is required, but when Slick is generating SQL code for you (using the [*direct embedding*][9] or the [*lifted embedding*][10]), you need to make sure to use a matching Slick driver (in our case the H2Driver import above).-->
 
 ## スキーマ
 
-このアプリケーションでは[lifted embedding][10]を用いているため，データベースのテーブルに対応する**Table**オブジェクトを書かなくてはならない．
+このアプリケーションでは[lifted embedding][10]を用いているため，データベースのテーブルに対応する **Table** オブジェクトを書かなくてはならない．
 
 <!--We are using the [*lifted embedding*][10] in this application, so we have to write Table objects for our database tables:-->
 
@@ -97,17 +97,17 @@ object Coffees extends Table[(String, Int, Double, Int, Int)]("COFFEES") {
 }
 ```
 
-全ての列は名前（ScalaにおけるキャメルケースやSQLにおける大文字とアンダースコアの組み合わせ）とScalaの型（SQLの型はScalaの型から自動的に推測される）を持つ．これらは**val**ではなく**def**を用いて定義されていることを確認して欲しい．テーブルオブジェクトもScalaでの名前とSQLでの名前と型を持つ必要がある．テーブルの型引数は射影*と一致してなくてはならない．単純な例では，全ての列をタプルで表したり出来るが，より複雑なマッピングをおこなう事も可能だ．
+全ての列は名前（ScalaにおけるキャメルケースやSQLにおける大文字とアンダースコアの組み合わせ）とScalaの型（SQLの型はScalaの型から自動的に推測される）を持つ．これらは **val** ではなく **def** を用いて定義されていることを確認して欲しい．テーブルオブジェクトもScalaでの名前とSQLでの名前と型を持つ必要がある．テーブルの型引数は射影*と一致してなくてはならない．単純な例では，全ての列をタプルで表したり出来るが，より複雑なマッピングをおこなう事も可能だ．
 
 <!--All columns get a name (usually in camel case for Scala and upper case with underscores for SQL) and a Scala type (from which the SQL type can be derived automatically). Make sure to define them with def and not with val. The table object also needs a Scala name, SQL name and type. The type argument of the table must match the type of the special * projection. In simple cases this is a tuple of all columns but more complex mappings are possible.-->
 
-**Coffees**テーブルにおける**外部キー**の定義は，**supID**のフィールドが**Suppliers**テーブルで存在している**id**と同じ値を持っている事を保証している．要するに，ここではn:1の関係を作成しているのである．ある**Coffee**の列は特定の**Suppliers**の列を指すが，複数のcoffeeが同じSupplierを指していたりする．この構成はデータベースレベルで強制されている．
+**Coffees** テーブルにおける **外部キー** の定義は， **supID** のフィールドが **Suppliers** テーブルで存在している **id** と同じ値を持っている事を保証している．要するに，ここではn:1の関係を作成しているのである．ある **Coffee** の列は特定の **Suppliers** の列を指すが，複数のcoffeeが同じSupplierを指していたりする．この構成はデータベースレベルで強制されている．
 
 <!--The foreignKey definition in the Coffees table ensures that the supID field can only contain values for which a corresponding id exists in the Suppliers table, thus creating an *n to one* relationship: A Coffees row points to exactly one Suppliers row but any number of coffees can point to the same supplier. This constraint is enforced at the database level.-->
 
 ## Populating the Database
 
-組み込みのH2データベースエンジンへの接続する際は，空のデータベースを作成することになる．クエリを実行する前に，データベーススキーマ（**Coffees**テーブルと**Suppliers**テーブルから成るもの）を作成し，いくつかのテストデータを挿入してみよう．
+組み込みのH2データベースエンジンへの接続する際は，空のデータベースを作成することになる．クエリを実行する前に，データベーススキーマ（ **Coffees** テーブルと **Suppliers** テーブルから成るもの）を作成し，いくつかのテストデータを挿入してみよう．
 
 <!--The connection to the embedded H2 database engine provides us with an empty database. Before we can execute queries, we need to create the database schema (consisting of the Coffees and Suppliers tables) and insert some test data:-->
 
@@ -130,11 +130,11 @@ Coffees.insertAll(
 )
 ```
 
-テーブルの**ddl**関数は，テーブルやその他データベースのエンティティを作成したり削除したりするためのデータベース特有のコードを用いて**DDL**（data definition language）オブジェクトを作成する．複数の**DDL**は**++**を用いる事で，たとえお互いが依存し合っていたとしても，全てのエンティティに対し正しい順序で作成と削除を行う事ができる．
+テーブルの **ddl** 関数は，テーブルやその他データベースのエンティティを作成したり削除したりするためのデータベース特有のコードを用いて **DDL** （data definition language）オブジェクトを作成する．複数の **DDL** は **++** を用いる事で，たとえお互いが依存し合っていたとしても，全てのエンティティに対し正しい順序で作成と削除を行う事ができる．
 
 <!--The tables’ **ddl** methods create **DDL** (data definition language) objects with the database-specific code for creating and dropping tables and other database entities. Multiple **DDL** values can be combined with **++** to allow all entities to be created and dropped in the correct order, even when they have circular dependencies on each other.-->
 
-複数のデータを挿入する際は**insert**や**insertAll**といった関数を用いる．デフォルトではデータベースの**Session**は *auto-commit* モードになっている事に注意して欲しい．**insert**や**insertAll**のようなデータベースへの呼び出しはトランザクションにおいて，原子性が保たれるよう実行される（つまり，それらの処理は完全に実行するか全く実行しないかのいずれかが保証される）．このモードにおいては，**Coffee**が妥当なSupplierのIDのみを参照するため，**Supplier**テーブルに対し先にデータを挿入しなくてはならない．
+複数のデータを挿入する際は **insert** や **insertAll** といった関数を用いる．デフォルトではデータベースの **Session** は *auto-commit* モードになっている事に注意して欲しい．**insert** や **insertAll** のようなデータベースへの呼び出しはトランザクションにおいて，原子性が保たれるよう実行される（つまり，それらの処理は完全に実行するか全く実行しないかのいずれかが保証される）．このモードにおいては， **Coffee** が妥当なSupplierのIDのみを参照するため， **Supplier** テーブルに対し先にデータを挿入しなくてはならない．
 
 <!--Inserting the tuples of data is done with the **insert** and **insertAll** methods. Note that by default a database Session is in *auto-commit* mode. Each call to the database like insert or insertAll executes atomically in its own transaction (i.e. it succeeds or fails completely but can never leave the database in an inconsistent state somewhere in between). In this mode we we have to populate the Suppliers table first because the Coffees data can only refer to valid supplier IDs.-->
 
@@ -155,11 +155,11 @@ Query(Coffees) foreach { case (name, supID, price, sales, total) =>
 }
 ```    
 
-この処理はSQLに **SELECT * FROM COFFEES** を投げた結果と同じである（ただし射影*を異なる形式で作成した場合には，少し違う結果となる）．ループの中で得られる値の型は当然**Coffees**の型引数と一致する．
+この処理はSQLに **SELECT * FROM COFFEES** を投げた結果と同じである（ただし射影*を異なる形式で作成した場合には，少し違う結果となる）．ループの中で得られる値の型は当然 **Coffees** の型引数と一致する．
 
 <!--This corresponds to a SELECT * FROM COFFEES in SQL (except that the * is the table’s * projection we defined earlier and not whatever the database sees as *). The type of the values we get in the loop is, unsurprisingly, the type parameter of Coffees.-->
 
-上記の例に射影処理を追加してみよう．これにはScalaで**map**や *forの内包表記* を用いる事で記述することが出来る．
+上記の例に射影処理を追加してみよう．これにはScalaで **map** や *for式* を用いる事で記述することが出来る．
 
 <!--Let’s add a *projection* to this basic query. This is written in Scala with the map method or a *for comprehension*:-->
 
@@ -174,7 +174,7 @@ val q1 = for(c <- Coffees) // Coffeesは自動的にQueryへとなる
 q1 foreach println
 ```
 
-全ての行がタブにより区切られた文字列として連結した結果が得られるだろう．違いはデータベースの内側で処理が行われた事であり，結果得られた連結した文字列のみがクライアントへ届けられる．Scalaの**+**オペレータはしばしばオーバーライドされてしまうし，seqの結合で一般的に用いられている**++**のほうが好まれる．また，他の引数型から文字列への自動的な型変換は存在しない．この処理は型変換関数である**asColumnOf**により明示的に行われるのである．
+全ての行がタブにより区切られた文字列として連結した結果が得られるだろう．違いはデータベースの内側で処理が行われた事であり，結果得られた連結した文字列のみがクライアントへ届けられる．Scalaの **+** オペレータはしばしばオーバーライドされてしまうし，seqの結合で一般的に用いられている **++** のほうが好まれる．また，他の引数型から文字列への自動的な型変換は存在しない．この処理は型変換関数である **asColumnOf** により明示的に行われるのである．
 
 <!--The output will be the same: For each row of the table, all columns get converted to strings and concatenated into one tab-separated string. The difference is that all of this now happens inside the database engine, and only the resulting concatenated string is shipped to the client. Note that we avoid Scala’s + operator (which is already heavily overloaded) in favor of ++ (commonly used for sequence concatenation). Also, there is no automatic conversion of other argument types to strings. This has to be done explicitly with the type conversion method asColumnOf.-->
 
@@ -192,11 +192,11 @@ val q2 = for {
 } yield (c.name, s.name)
 ```
 
-2つの値が等しいかを比較する際に，**==**の代わりに**===**を用いている事に注意すべきだ．同様に，LiftedEmbeddingでは**!=**の代わりに**=!=**を用いている．それ以外の比較に関するオペレータ（**<**, **<=**, **>=**, **>**）はScalaで用いているものと同じである
+2つの値が等しいかを比較する際に， **==** の代わりに **===** を用いている事に注意すべきだ．同様に，LiftedEmbeddingでは **!=** の代わりに **=!=** を用いている．それ以外の比較に関するオペレータ（ **<** , **<=** , **>=** , **>** ）はScalaで用いているものと同じである
 
 <!--Note the use of === instead of == for comparing two values for equality. Similarly, the lifted embedding uses =!= instead of != for inequality. (The other comparison operators are the same as in Scala: **<**, **<=**, **>=**, **>**)-->
 
-**Suppliers if s.id === c.supID**という表現は**Coffees.supplier**という外部キーにより作成された関係に従っている．joinの条件を繰り返す代わりにこのような方法で直接的に外部キーを用いる事が出来る．
+**Suppliers if s.id === c.supID** という表現は **Coffees.supplier** という外部キーにより作成された関係に従っている．joinの条件を繰り返す代わりにこのような方法で直接的に外部キーを用いる事が出来る．
 
 <!--The generator expression Suppliers if s.id === c.supID follows the relationship established by the foreign key Coffees.supplier. Instead of repeating the join condition here we can use the foreign key directly:-->
 

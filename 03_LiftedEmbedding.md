@@ -9,7 +9,7 @@ Slick 1.0.0 documentation - 03 Lifted Embedding
 
 <!-- The *lifted embedding* is the standard API for type-safe queries and updates in Slick. Please see [*Getting Started*][1] for an introduction. This chapter describes the available features in more detail.-->
 
-*Lifted Embedding* という名前は[*direct embedding*][2]のようなScalaの基本的な型を用いているのではなく，scala.slick.lifted.Repの型コンストラクタへと変化された型を用いている事に基づいている．これはScalaのシンプルなコレクションと，*lifted embedding* を用いたコードを比べてみたら明らかである．
+*Lifted Embedding* という名前は[*direct embedding*][2]のようなScalaの基本的な型を用いているのではなく，scala.slick.lifted.Repの型コンストラクタへと変化された型を用いている事に基づいている．これはScalaのシンプルなコレクションと， *lifted embedding* を用いたコードを比べてみたら明らかである．
 
 <!-- The name *Lifted Embedding* refers to the fact that you are not working with standard Scala types (as in the [*direct embedding*][2]) but with types that are *lifted* into a the scala.slick.lifted.Rep type constructor. This becomes clear when you compare the types of a simple Scala collections example -->
 
@@ -23,7 +23,7 @@ val l2 = l.filter(_.price > 8.0).map(_.name)
 //                Double  Double     String
 ```
 
-そしてこちらが*Lifted Embedding* を用いた操作である．
+そしてこちらが *Lifted Embedding* を用いた操作である．
 
 <!-- ... with the types of similar code using the lifted embedding: -->
 
@@ -159,7 +159,7 @@ object Coffees extends Table[(String, Int, Double, Int, Int)]("COFFEES") {
 }
 ```    
 
-データベースにおける実際の制約とは独立に，*join* を用いてリンクされたデータへと導くために外部キーは利用される．この時，joinされたデータを探すための自分で定義した便利な関数のように動作させる事が出来る．
+データベースにおける実際の制約とは独立に， *join* を用いてリンクされたデータへと導くために外部キーは利用される．この時，joinされたデータを探すための自分で定義した便利な関数のように動作させる事が出来る．
 
 <!-- Independent of the actual constraint defined in the database, such a foreign key can be used to navigate to the linked data with a *join*. For this purpose, it behaves the same as a manually defined utility method for finding the joined data:-->
 
@@ -259,7 +259,7 @@ joinは1つのクエリで異なる2つの異なったテーブルやクエリ�
 
 <!--Joins are used to combine two different tables or queries into a single query.-->
 
-joinを記述するには2つの方法がある．*明示的な* joinは2つのクエリを，個々の結果であるタプルの単一クエリへと結合させる関数を呼び出すことによって行う．*暗黙的な* joinは特別な関数を呼び出すこと無く，クエリを特定の形へと変形させる．
+joinを記述するには2つの方法がある． *明示的な* joinは2つのクエリを，個々の結果であるタプルの単一クエリへと結合させる関数を呼び出すことによって行う． *暗黙的な* joinは特別な関数を呼び出すこと無く，クエリを特定の形へと変形させる．
 
 <!-- There are two different ways of writing joins: *Explicit* joins are performed by calling a method that joins two queries into a single query of a tuple of the individual results. *Implicit* joins arise from a specific shape of a query without calling a special method.-->
 
@@ -500,7 +500,7 @@ val userId =
 
 <!--Note that many database systems only allow a single column to be returned which must be the table’s auto-incrementing primary key. If you ask for other columns a SlickException is thrown at runtime (unless the database actually supports it).-->
 
-クライアント側からデータを挿入する代わりに，Queryか，またはデータベースサーバーにおいて実行されるスカラー表現により作成されたデータを挿入するこ事も出来る．
+クライアント側からデータを挿入する代わりに，Queryか，またはデータベースサーバーにおいて実行されるスカラー表現により作成されたデータを挿入すること事も出来る．
 
 <!--Instead of inserting data from the client side you can also insert data created by a Query or a scalar expression that is executed in the database server:-->
 
@@ -591,7 +591,7 @@ def dayOfWeek2(c: Column[Date]) =
 
 <!--[SimpleBinaryOperator][11] and [SimpleLiteral][12] work in a similar way. For even more flexibility (e.g. function-like expressions with unusual syntax), you can use [SimpleExpression][13].-->
 
-もしカスタムしたカラム型を必要とするのならば，[TypeMapper][14]と[TypeMapperDelegate][15]を実装すれば良い．大抵の一般的な場面においては，アプリケーション特有の型をデータベースに既にサポートされた型へとマッピングする事になる．これは全ての共通事項(boilerplate)を考慮した[MappedTypeMapper[16]を用いることによってより簡単に実装する事が出来る．
+もしカスタムしたカラム型を必要とするのならば，[TypeMapper][14]と[TypeMapperDelegate][15]を実装すれば良い．大抵の一般的な場面においては，アプリケーション特有の型をデータベースに既にサポートされた型へとマッピングする事になる．これは全ての共通事項(boilerplate)を考慮した[MappedTypeMapper][16]を用いることによってより簡単に実装する事が出来る．
 
 <!--If you need a custom column type you can implement [TypeMapper][14] and [TypeMapperDelegate][15]. The most common scenario is mapping an application-specific type to an already supported type in the database. This can be done much simpler by using a [MappedTypeMapper][16] which takes care of all the boilerplate:-->
 
