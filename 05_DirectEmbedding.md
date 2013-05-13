@@ -9,7 +9,7 @@ direct embeddingは新しい，しかしまだ不完全で実験的なクエリA
 
 <!--The direct embedding is a new, still incomplete, experimental Query API under development. It may change without deprecation period in any release during its experimental status. There is no plan to replace the stable lifted embedding Query API, which you can safely bet on for production use. The direct embedding co-exists. Unlike the lifted embedding, the direct embedding uses macros instead of operator overloading and implicit conversions for its implementation. For a user the difference in the code is small, but queries using the direct embedding work with ordinary Scala types, which can make error messages easier to understand.-->
 
-以下の説明はアナログな[*lifted embedding*][1]の説明である．
+以下の説明は[*lifted embedding*][1]の説明に類似した例である．
 
 <!--The following descriptions are anolog to the description of the [*lifted embedding*][1].-->
 

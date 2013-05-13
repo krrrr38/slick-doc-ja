@@ -76,8 +76,7 @@ object MyPostgresTest {
 
 ## Database Configuration
 
-PostgreSQLのテストハーネスは **ExternalTestDB** に基づいている一方，**test-dbs/databases.properties** におい
-て設定が行われてなくてはならない．
+PostgreSQLのテストハーネスは **ExternalTestDB** に基づいている一方， **test-dbs/databases.properties** において設定が行われてなくてはならない．
 
 <!--Since the PostgreSQL test harness is based on **ExternalTestDB**, it needs to be configured in **test-dbs/databases.properties**:-->
 

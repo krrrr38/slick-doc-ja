@@ -6,13 +6,13 @@ Slick 1.0.0 documentation - 04 Plain SQL Queries
 
 # Plain SQL Queries
 
-抽象的な高度のレベルの操作について上手くサポートされていない操作について，SQLコードを直接書きたくなる事があるかもしれない．[JDBC][1]の低レイアに触れる事無しに，よりScalaベースなAPIを用いてSlickの*Plain SQL* クエリを利用する事が出来る．
+抽象的な高度のレベルの操作について上手くサポートされていない操作について，SQLコードを直接書きたくなる事があるかもしれない．[JDBC][1]の低レイアに触れる事無しに，よりScalaベースなAPIを用いてSlickの *Plain SQL* クエリを利用する事が出来る．
 
 <!--Sometimes you may need to write your own SQL code for an operation which is not well supported at a higher level of abstraction. Instead of falling back to the low level of [JDBC][1], you can use Slick’s *Plain SQL* queries with a much nicer Scala-based API.-->
 
 ## Scaffolding
 
-[SLick example jdbc/PlainSQL][2]では*Plain SQL* の特徴についていくつか説明している．インポートすべきパッケージが[*lifted embedding*][3]や[*direct embedding*][4]とは異なっている．
+[SLick example jdbc/PlainSQL][2]では *Plain SQL* の特徴についていくつか説明している．インポートすべきパッケージが[*lifted embedding*][3]や[*direct embedding*][4]とは異なっている．
 
 <!--[Slick example jdbc/PlainSQL][2] demonstrates some features of the *Plain SQL* support. The imports are different from what you’re used to for the [*lifted embedding*][3] or [*direct embedding*][4]:-->
 
@@ -22,7 +22,7 @@ import Database.threadLocalSession
 import scala.slick.jdbc.{GetResult, StaticQuery => Q}
 ```
 
-まず初めに，*Slick driver* をインポートする必要がない．SlickのJDBCに基づくAPIはJDBC自身のみに依存しているし，データベース特有の抽象化を全く実装する必要がない．データベースに接続するために必要なものは，scala.slick.session.Databaseとセッション処理を単純化したthreeadLocalSessionのみである．
+まず初めに， *Slick driver* をインポートする必要がない．SlickのJDBCに基づくAPIはJDBC自身のみに依存しているし，データベース特有の抽象化を全く実装する必要がない．データベースに接続するために必要なものは，scala.slick.session.Databaseとセッション処理を単純化したthreeadLocalSessionのみである．
 
 <!--First of all, there is no *Slick driver* being imported. The JDBC-based APIs in Slick depend only on JDBC itself and do not implement any database-specific abstractions. All we need for the database connection is Database, plus the threadLocalSession to simplify session handling.-->
 
