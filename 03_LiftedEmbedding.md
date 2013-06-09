@@ -132,7 +132,7 @@ object Users extends Table[User]("users") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def first = column[String]("first")
   def last = column[String]("last")
-  def * = id.? ~ first ~ last  (User, User.unapply _)
+  def * = id.? ~ first ~ last <> (User, User.unapply _)
 }
 ```
 
