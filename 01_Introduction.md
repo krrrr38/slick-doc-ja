@@ -18,7 +18,7 @@ val limit = 10.0
 // SQLを直接書いた例
 sql"select name from coffees where price < $limit".as[String].list
 ```
-クエリをSQLを用いて書く代わりにScalaを用いる事で，コンパイル時に安全に合成することでより良い形で利用する事が出来る．Slickは独自の伸縮性のあるクエリコンパイラを用いる事で，バックエンドに対しクエリを生成する．
+クエリをSQLを用いて書く代わりにScalaを用いるとコンパイル時に合成が安全に行われ，より良い形で利用する事が出来る．Slickは独自のクエリコンパイラを用いてDBに対しクエリを発行する．
 
 <!--When using Scala instead of SQL for your queries you profit from the compile-time safety(何これ) and compositionality. Slick can generate queries for different backends including your own, using its extensible query compiler. -->
 
@@ -26,15 +26,15 @@ sql"select name from coffees where price < $limit".as[String].list
 <!-- Why Slick?/Feature -->
 
 
-Slickは以下のようなユニークな特徴を持っている:
+Slickは以下のような特徴を持っている:
 
 <!-- Slick offers a unique combination of features: -->
 
 ###Easy
 - Scalaコレクションを扱うかのようにデータを操作出来る
-- JDBCコネクションをベースにセッション管理を統合する
+- JDBCコネクションをもとに，統合されたセッション管理を行える
 - 必要な際にはSQLもサポートする
-- 簡単なセットアップ
+- セットアップが簡単
 
 <!--- Access stored data just like Scala collections
 - Unified session management based on JDBC Connections
@@ -44,10 +44,10 @@ Slickは以下のようなユニークな特徴を持っている:
 ###Concise
 
 - Scala構文
-- 単純な結果の取り出し (ResultSet.getXなどの処理は必要無い)
+- 簡単に結果を取り出せる (ResultSet.getXなどの処理は必要無い)
 - Scales naturally
-- ステートレス
-- 実行時間やデータの移動の明確な管理
+- 状態を持たない
+- 実行時間や移動されるデータの明示的な管理
 
 <!--- Scala syntax
 - Fetch results without pain (no ResultSet.getX)
@@ -66,7 +66,7 @@ Slickは以下のようなユニークな特徴を持っている:
 
 ###Composable
 
-- Scalaによる抽象化され再利用が簡単に行える設計
+- Scalaによる実装：抽象化された，再利用が簡単に行える設計
 
 <!--- It‘s Scala code: abstract and re-use with ease-->
 
@@ -87,7 +87,7 @@ SlickはScala2.10を必要とします．
 - PostgreSQL
 - SQLite
 
-他のSQLベースのバックエンドを持つデータベースなら，プラグインを作成する事で利用可能となります．そのようなプラグインの作成は非常に貢献となります．
+他のSQLデータベースもSlickなら簡単にアクセスする事が出来るでしょう．独自のSQLベースのバックエンドを持つデータベースも，プラグインを作成する事でSlickを利用することが出来ます．そのようなプラグインの作成は大きな貢献となるでしょう．
 NoSQLのような他のバックエンドを持つようなデータベースに関しては現在開発中であるため，まだ利用する事はできません．．
 
 <!--Other SQL databases can be accessed right away with a reduced feature set. Writing a fully featured plugin for your own SQL-based backend can be achieved with a reasonable amount of work. Support for other backends (like NoSQL) is under development but not yet available.-->
@@ -101,7 +101,7 @@ SlickのLiftedEmbeddingによるデータベースへのアクセスは以下の
 
 <!--Add the Slick jar and its dependencies to your project-->
 
-2．dbのdriverをimportし，セッションを作成するか単純にthreadLocalSessionをimportする．
+2．利用するDBに応じたDriverをimportし，セッションを作成する（もしくは単純にthreadLocalSessionをimportする）．
 
 <!--Pick a driver for a particular db and create a session (or simply pick threadLocalSession)-->
 
@@ -111,7 +111,7 @@ import scala.slick.driver.H2Driver.simple._
 import Database.threadLocalSession
 ```
 
-3．データベースのスキーマを記述する
+3．データベーススキーマを記述する
 
 <!--Describe your Database schema-->
 
