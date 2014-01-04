@@ -17,7 +17,6 @@ OracleのためのSlickドライバー（ **com.typesafe.slick.driver.oracle.Ora
 ```scala
 // Use the right Slick version here:
 libraryDependencies += "com.typesafe.slick" %% "slick-extensions" % "1.0.0"
-
 resolvers += "Typesafe Releases" at "http://repo.typesafe.com/typesafe/maven-releases/"
 ```
 

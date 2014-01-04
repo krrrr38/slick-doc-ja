@@ -127,7 +127,7 @@ DDLを作成する際に，カラムに対して自動インクリメントな�
 
 ```scala
 case class User(id: Option[Int], first: String, last: String)
-
+...
 object Users extends Table[User]("users") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def first = column[String]("first")
@@ -151,7 +151,7 @@ object Suppliers extends Table[(Int, String, String, String, String, String)]("S
   def id = column[Int]("SUP_ID", O.PrimaryKey)
   //...
 }
-
+...
 object Coffees extends Table[(String, Int, Double, Int, Int)]("COFFEES") {
   def supID = column[Int]("SUP_ID")
   //...
@@ -297,19 +297,19 @@ val implicitInnerJoin = for {
 val explicitCrossJoin = for {
   (c, s) <- Coffees innerJoin Suppliers
 } yield (c.name, s.name)
-
+...
 val explicitInnerJoin = for {
   (c, s) <- Coffees innerJoin Suppliers on (_.supID === _.id)
 } yield (c.name, s.name)
-
+...
 val explicitLeftOuterJoin = for {
   (c, s) <- Coffees leftJoin Suppliers on (_.supID === _.id)
 } yield (c.name, s.name.?)
-
+...
 val explicitRightOuterJoin = for {
   (c, s) <- Coffees rightJoin Suppliers on (_.supID === _.id)
 } yield (c.name.?, s.name)
-
+...
 val explicitFullOuterJoin = for {
   (c, s) <- Coffees outerJoin Suppliers on (_.supID === _.id)
 } yield (c.name.?, s.name.?)
@@ -327,7 +327,7 @@ val explicitFullOuterJoin = for {
 val zipJoinQuery = for {
   (c, s) <- Coffees zip Suppliers
 } yield (c.name, s.name)
-
+...
 val zipWithJoin = for {
   res <- Coffees.zipWith(Suppliers, (c: Coffees.type, s: Suppliers.type) => (c.name, s.name))
 } yield res
@@ -393,7 +393,7 @@ val q = (for {
   c <- Coffees
   s <- c.supplier
 } yield (c, s)).groupBy(_._1.supID)
-
+...
 val q2 = q.map { case (supID, css) =>
   (supID, css.length, css.map(_._1.price).avg)
 }
@@ -456,15 +456,15 @@ val statement = q.deleteStatement
 
 ```scala
 Coffees.insert("Colombian", 101, 7.99, 0, 0)
-
+...
 Coffees.insertAll(
   ("French_Roast", 49, 8.99, 0, 0),
   ("Espresso",    150, 9.99, 0, 0)
 )
-
+...
 // "sales"と"total"はデフォルト値である0を用いる
 (Coffees.name ~ Coffees.supID ~ Coffees.price).insert("Colombian_Decaf", 101, 8.99)
-
+...
 val statement = Coffees.insertStatement
 val invoker = Coffees.insertInvoker
 ```
@@ -475,7 +475,7 @@ val invoker = Coffees.insertInvoker
 
 ```scala
 case class User(id: Option[Int], first: String, last: String)
-
+...
 object Users extends Table[User]("users") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def first = column[String]("first")
@@ -483,7 +483,7 @@ object Users extends Table[User]("users") {
   def * = id.? ~ first ~ last <> (User, User.unapply _)
   def forInsert = first ~ last <> ({ t => User(None, t._1, t._2)}, { (u: User) => Some((u.first, u.last))})
 }
-
+...
 Users.forInsert insert User(None, "Christopher", "Vogt")
 ```
 
@@ -510,11 +510,9 @@ object Users2 extends Table[(Int, String)]("users2") {
   def name = column[String]("name")
   def * = id ~ name
 }
-
+...
 Users2.ddl.create
-
 Users2 insert (Users.map { u => (u.id, u.first ++ " " ++ u.last) })
-
 Users2 insertExpr (Query(Users).length + 1, "admin")
 ```
 
@@ -527,7 +525,7 @@ Users2 insertExpr (Query(Users).length + 1, "admin")
 ```scala
 val q = for { c <- Coffees if c.name === "Espresso" } yield c.price
 q.update(10.49)
-
+...
 val statement = q.updateStatement
 val invoker = q.updateInvoker
 ```
@@ -551,14 +549,14 @@ val userNameByID = for {
   id <- Parameters[Int]
   u <- Users if u.id is id
 } yield u.first
-
+...
 val name = userNameByID(2).first
-
+...
 val userNameByIDRange = for {
   (min, max) <- Parameters[(Int, Int)]
   u <- Users if u.id >= min && u.id < max
 } yield u.first
-
+...
 val names = userNameByIDRange(2, 5).list
 ```
 
@@ -571,7 +569,7 @@ val names = userNameByIDRange(2, 5).list
 ```scala
 // H2はタイムスタンプから曜日を抽出する関数であるday_of_week()を持っている
 val dayOfWeek = SimpleFunction.unary[Date, Int]("day_of_week")
-
+...
 // 曜日によってグループ化するクエリにおいて，拡張された関数を用いる事が出来る
 val q1 = for {
   (dow, q) <- SalesPerDay.map(s => (dayOfWeek(s.day), s.count)).groupBy(_._1)
@@ -600,7 +598,7 @@ def dayOfWeek2(c: Column[Date]) =
 sealed trait Bool
 case object True extends Bool
 case object False extends Bool
-
+...
 // 上記のbooleanを1と0のIntへと変換するTypeMapper
 implicit val boolTypeMapper = MappedTypeMapper.base[Bool, Int](
   { b => if(b == True) 1 else 0 },    // map Bool to Int

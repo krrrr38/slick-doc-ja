@@ -37,7 +37,7 @@ import scala.slick.jdbc.{GetResult, StaticQuery => Q}
 ```scala
 case class Supplier(id: Int, name: String, street: String, city: String, state: String, zip: String)
 case class Coffee(name: String, supID: Int, price: Double, sales: Int, total: Int)
-
+...
 Database.forURL("jdbc:h2:mem:test1", driver = "org.h2.Driver") withSession {
 }
 ```
@@ -84,7 +84,7 @@ SQLコード内にリテラルを埋め込む事は，一般的にセキュリ�
 ```scala
 def insert(c: Coffee) = (Q.u + "insert into coffees values (" +? c.name +
   "," +? c.supID + "," +? c.price + "," +? c.sales + "," +? c.total + ")").execute
-
+...
 // Insert some coffees
 Seq(
   Coffee("Colombian", 101, 7.99, , ),

@@ -39,7 +39,7 @@ Slickはデバッグログに[SLF4J][3]を用いている．そのためSLF4Jに
 ```scala
 // H2 databaseへ接続するためにH2Driverをimport
 import scala.slick.driver.H2Driver.simple._
-
+...
 // Use the implicit threadLocalSession
 import Database.threadLocalSession
 ```
@@ -83,7 +83,7 @@ object Suppliers extends Table[(Int, String, String, String, String, String)]("S
   // 全てのテーブルではテーブルの型パラメタと同じタイプの射影*を定義する必要がある．
   def * = id ~ name ~ street ~ city ~ state ~ zip
 }
-
+...
 // COFFEESテーブルの定義
 object Coffees extends Table[(String, Int, Double, Int, Int)]("COFFEES") {
   def name = column[String]("COF_NAME", O.PrimaryKey)
@@ -114,12 +114,12 @@ object Coffees extends Table[(String, Int, Double, Int, Int)]("COFFEES") {
 ```scala
 // 主キーと外部キーを含むテーブルを作成する
 (Suppliers.ddl ++ Coffees.ddl).create
-
+...
 // supplierをいくつか挿入する
 Suppliers.insert(101, "Acme, Inc.",      "99 Market Street", "Groundsville", "CA", "95199")
 Suppliers.insert( 49, "Superior Coffee", "1 Party Place",    "Mendocino",    "CA", "95460")
 Suppliers.insert(150, "The High Ground", "100 Coffee Lane",  "Meadows",      "CA", "93966")
-
+...
 // coffeeをいくつか挿入する（DBがサポートしている場合には，JDBCのバッチ処理を用いる）
 Coffees.insertAll(
   ("Colombian",         101, 7.99, , ),

@@ -27,11 +27,11 @@ libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "0.9.28" % "test",
   "postgresql" % "postgresql" % "9.1-901.jdbc4" % "test"
 )
-
+...
 testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v", "-s", "-a")
-
+...
 parallelExecution in Test := false
-
+...
 logBuffered := false
 ```
 
@@ -58,7 +58,7 @@ PostgreSQLのテーストハーネス（src/test/scala/scala/slick/driver/test/M
 ```scala
 @RunWith(classOf[Testkit])
 class MyPostgresTest extends DriverTest(MyPostgresTest.tdb)
-
+...
 object MyPostgresTest {
   def tdb(cname: String) = new ExternalTestDB("mypostgres", MyPostgresDriver) {
     override def getLocalTables(implicit session: Session) = {
@@ -80,11 +80,11 @@ PostgreSQLのテストハーネスは **ExternalTestDB** に基づいている�
 
 <!--Since the PostgreSQL test harness is based on **ExternalTestDB**, it needs to be configured in **test-dbs/databases.properties**:-->
 
+PostgreSQL quick setup:  
+- Install PostgreSQL server with default options  
+- Change password in mypostgres.password  
+- Set mypostgres.enabled = true  
 ```scala
-# PostgreSQL quick setup:
-# - Install PostgreSQL server with default options
-# - Change password in mypostgres.password
-# - Set mypostgres.enabled = true
 mypostgres.enabled = false
 mypostgres.url = jdbc:postgresql:[DB]
 mypostgres.user = postgres
