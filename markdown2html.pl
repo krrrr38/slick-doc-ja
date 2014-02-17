@@ -4,7 +4,6 @@ use warnings;
 use utf8;
 use Getopt::Long;
 use File::Path qw/rmtree/;
-use Data::Dumper;sub d{ warn Dumper @_ };
 
 my $help;
 GetOptions ("help" => \$help);
@@ -49,37 +48,52 @@ sub html_wrapper {
     my $content_list = join('', map {
         sprintf "<li><a href=\"%s\">%s</a></li>", $_ . ".html", $_
     } @$contents);
-    my $header = sprintf "
+    my $html = sprintf "
 <html>
   <head>
     <title>Slick Documentation in Japanese</title>
     <meta charset=\"UTF-8\">
-    <link rel=\"stylesheet\" href=\"http://yui.yahooapis.com/pure/0.3.0/pure-min.css\">
     <style>
-        li {
-          margin: 20px 0;
-        }
         pre {
           background-color: #f8f8f8;
           border: 1px solid #ddd;
           padding: 6px 10px;
           border-radius: 3px;
         }
+        .main-container {
+          padding-left: 250px;
+        }
+        .sidebar {
+          position: fixed;
+          top: 50px;
+          left: 0;
+          overflow-y: auto;
+          width: 230px;
+          padding: 20px;
+        }
+        .sidebar li {
+          margin: 5px 0;
+        }
+        .content {
+          padding: 50px;
+        }
     </style>
   </head>
   <body>
-    <div class=\"pure-g\" style=\"width:80%%; margin: auto\">
-      <div class=\"pure-u-1-4\">
-        <div style=\"position: fixed; margin: 100px 0\">
-          <a>Table of Contents</a>
-          <ul>%s</ul>
-        </div>
+    <div class=\"main-container\">
+      <div class=\"sidebar\">
+        <a>Table of Contents</a>
+        <ul>%s</ul>
       </div>
-      <div class=\"pure-u-3-4\">
-        <div style=\"padding: 20px\">", $content_list;
-    my $footer = "</div></div></div></body></html>";
+      <div class=\"content\">
+        %s
+      </div>
+    </div>
+  </body>
+</html>
+", $content_list, $body;
 
-    return $header . $body . $footer;
+    return $html;
 }
 
 sub usage {
