@@ -3,7 +3,8 @@ Slick 1.0.0 documentation - 07 Slick Extensions
 
 [Permalink to Slick Extensions — Slick 1.0.0 documentation](http://slick.typesafe.com/doc/1.0.0/extensions.html)
 
-# Slick Extensions
+Slick Extensions
+=================
 
 OracleのためのSlickドライバー（ **com.typesafe.slick.driver.oracle.OracleDriver** ）とDB2（ **com.typesafe.slick.driver.db2.DB2Driver** ）は， Typesafe社によって商用サポートされたパッケージである，*slick-extensions* において利用する事が出来る．[Typesafe Subscription Agreement][1] (PDF)の諸条件の元，利用可能である．
 

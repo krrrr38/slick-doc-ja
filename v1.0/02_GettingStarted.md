@@ -3,14 +3,16 @@ Slick 1.0.0 documentation - 02 始めよう
 
 [Permalink to Getting Started — Slick 1.0.0 documentation](http://slick.typesafe.com/doc/1.0.0/gettingstarted.html)
 
-# 始めよう
+始めよう
+==========
 <!--# Getting Started-->
 
 最も簡単なSlickアプリケーションの設定方法は[Slick Examples][1]のプロジェクトを用いる事です．このプロジェクトに含まれているREADMEに従ってビルドをして，実行してみてください．
 
 <!--The easiest way of setting up a Slick application is by starting with the [Slick Examples][1] project. You can build and run this project by following the instructions in its README file.-->
 
-## 依存性
+依存性
+-------
 <!--## Dependencies-->
 
 プロジェクトではどのようにしてSlickを用いれば良いのか確認してみよう．まず初めに，Slickと組み込みデータベースを追加する必要がある．もし[sbt][2]を使っているのなら， **build.sbt** に対して以下のような記述を追加すれば良い．
@@ -30,7 +32,8 @@ Slickはデバッグログに[SLF4J][3]を用いている．そのためSLF4Jに
 
 <!--Slick uses [SLF4J][3] for its own debug logging so you also need to add an SLF4J implementation. Here we are using slf4j-nop to disable logging. You have to replace this with a real logging framework like [Logback][4] if you want to see log output.-->
 
-## Imports
+Imports
+--------
 
 [Slick example lifted/FirstExample][5]は，独立した１つのアプリケーションとなっている．このアプリケーションでは以下のようなimport文を記述している．
 
@@ -48,7 +51,8 @@ import Database.threadLocalSession
 
 <!--Since we are using [H2][6] as our database system, we need to import features from Slick’s H2Driver. A driver’s simple object contains all commonly needed imports from the driver and other parts of Slick such as [*session handling*][7]. The only extra import we use is the threadLocalSession. This simplifies the session handling by attaching a session to the current thread so you do not have to pass it around on your own (or at least assign it to an implicit variable).-->
 
-## Databaseへの接続
+Databaseへの接続
+---------------
 
 アプリケーションの中では，どのようにデータベースに接続するのかを明示する **Database** オブジェクトを初めに作る．そしてセッションを開き，続くブロック内に処理を記述する．
 
@@ -65,7 +69,8 @@ Java SEの環境においては，データベースセッションはJDBCドラ
 
 <!--In a Java SE environment, database sessions are usually created by connecting to a JDBC URL using a JDBC driver class (see the JDBC driver’s documentation for the correct URL syntax). If you are only using [*plain SQL queries*][8], nothing more is required, but when Slick is generating SQL code for you (using the [*direct embedding*][9] or the [*lifted embedding*][10]), you need to make sure to use a matching Slick driver (in our case the H2Driver import above).-->
 
-## スキーマ
+スキーマ
+--------
 
 このアプリケーションでは[lifted embedding][10]を用いているため，データベースのテーブルに対応する **Table** オブジェクトを書かなくてはならない．
 
@@ -105,7 +110,8 @@ object Coffees extends Table[(String, Int, Double, Int, Int)]("COFFEES") {
 
 <!--The foreignKey definition in the Coffees table ensures that the supID field can only contain values for which a corresponding id exists in the Suppliers table, thus creating an *n to one* relationship: A Coffees row points to exactly one Suppliers row but any number of coffees can point to the same supplier. This constraint is enforced at the database level.-->
 
-## Populating the Database
+Populating the Database
+-----------------------
 
 組み込みのH2データベースエンジンへ接続すると，空のデータベースが作られる．クエリを実行する前に，データベーススキーマ（ **Coffees** テーブルと **Suppliers** テーブルから成るもの）を作成し，いくつかのテストデータを挿入してみる．
 
@@ -142,7 +148,8 @@ Coffees.insertAll(
 
 <!--We could also use an explicit transaction bracket encompassing all these statements. Then the order would not matter because the constraints are only enforced at the end when the transaction is committed.-->
 
-## Querying
+Querying
+------------
 
 最も簡単なクエリ例として，の一つにテーブルのデータを全て順々に取り出す処理を考える．
 

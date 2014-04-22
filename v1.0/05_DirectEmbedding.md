@@ -3,7 +3,8 @@ Slick 1.0.0 documentation - 05 Direct Embedding
 
 [Permalink to Direct Embedding — Slick 1.0.0 documentation](http://slick.typesafe.com/doc/1.0.0/direct-embedding.html)
 
-# Direct Embedding
+Direct Embedding
+=================
 
 direct embeddingは新しい，しかしまだ不完全で実験的なクエリAPIである．現在実験中．開発中の段階であるため，リリースに応じて非推奨な期間など無しに変更される事がある．安全に利用する事の出来る，安定したlifted embeddingクエリAPIに取って代わるような予定は無く，direct embeddingは共存させていく．lifted embeddingと違って，direct enbeddingは実装のための暗黙的な変換やオーバーロードするオペレータの代わりにマクロを用いて操作を行う．ユーザのために，コード内における違いは少なくしているが，direct enbeddingを用いるクエリは普遍的なScalaの型を用いて機能している．これは表示されるエラーメッセージの理解性を上げるためでもある．
 
@@ -13,7 +14,8 @@ direct embeddingは新しい，しかしまだ不完全で実験的なクエリA
 
 <!--The following descriptions are anolog to the description of the [*lifted embedding*][1].-->
 
-## Dependencies
+Dependencies
+-------------
 
 direct embeddingは型検査のために実行時にScalaコンパイラにアクセスする必要がある．Slickは必要性に駆られない限り，アプリケーションに対し，依存性を避けるためにScalaコンパイラへの依存性を任意としている．そのため，direct embeddingを用いる際にはプロジェクトの **build.sbt** に対し明示的にその依存性を記述しなくてはならない．
 
@@ -23,7 +25,8 @@ direct embeddingは型検査のために実行時にScalaコンパイラにア�
 libraryDependencies <+= (scalaVersion)("org.scala-lang" % "scala-compiler" % _)
 ```
 
-## Imports
+Imports
+------------
 
 ```scala
 import scala.slick.driver.H2Driver
@@ -33,7 +36,8 @@ import scala.slick.direct._
 import scala.slick.direct.AnnotationMapper._
 ```
 
-## Row class and schema
+Row class and schema
+--------------------
 
 スキーマは現在でえは行を保持しているケースクラスに対してアノテーションを付与する事で記述する事が出来る．今後，より柔軟にスキーマの情報を拡張出来るような機能を提供する予定だ．
 
@@ -50,7 +54,8 @@ case class Coffee(
 )
 ```
 
-## Query
+Query
+--------------
 
 Queryableはテーブルデータに対しクエリの演算を行うためのものであり，注釈付けられた型引数を取る．
 
@@ -66,7 +71,8 @@ val q1 = Queryable[Coffee]
 val q2 = q1.filter( _.price > 3.0 ).map( _ .name )
 ```
 
-## Execution
+Execution
+----------
 
 クエリを実行するためには，選択したデータベースのドライバーを用いるSlickBackendインスタンスを作成する必要がある．
 
@@ -82,7 +88,8 @@ db withSession {
 }
 ```
 
-## Alternative direct embedding bound to a driver and session
+Alternative direct embedding bound to a driver and session
+----------------------------------------------------------
 
 ImplicitQueryableを用いると，queryableはバックエンドとセッションに束縛される．クエリはその上で以下のような方法で簡単に実行する事が出来る．
 
@@ -96,7 +103,8 @@ println( iq2.toSeq ) //  <- triggers execution
 println( iq2.length ) // <- triggers execution
 ```
 
-## Features
+Features
+----------
 
 direct embeddingは現在， **String**, **Int**, **Double** といった値にたいしマッピングされるデータベースカラムのみサポートしている．
 
