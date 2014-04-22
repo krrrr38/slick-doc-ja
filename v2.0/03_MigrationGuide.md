@@ -2,7 +2,7 @@ Slick 2.0.0 documentation - 03 v2.0 移行ガイド
 
 [Permalink to Migration Guide from Slick 1.0 to 2.0 — Slick 2.0.0 documentation](http://slick.typesafe.com/doc/2.0.0/migration.html)
 
-Slick v2.0 移行ガイド
+Slick v2.0 Migration Guide
 =====================================
 <!-- Migration Guide from Slick 1.0 to 2.0 -->
 <!-- ===================================== -->
@@ -164,7 +164,7 @@ Suppliers.forInsert.insert(mySupplier)
 <!-- If you really want to insert into an `AutoInc` field, you can use the -->
 <!-- new methods `forceInsert` and `forceInsertAll`. -->
 
-1.0において双方向マッピングを行っていた`<>`関数は必要無くなり、今やケースクラスの`apply`関数を直接渡す事が出来る。
+1.0において双方向マッピングを行っていた`<>`関数はオーバーロードされ、今やケースクラスの`apply`関数を直接渡す事が出来る。
 
 <!-- In 1.0 the `<>` method for bidirectional mappings was overloaded for -->
 <!-- different arities so you could directly pass a case class's `apply` -->
