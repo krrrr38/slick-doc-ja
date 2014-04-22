@@ -4,13 +4,15 @@ Slick 1.0.0 documentation - 04 Plain SQL Queries
 
 [Permalink to Plain SQL Queries — Slick 1.0.0 documentation](http://slick.typesafe.com/doc/1.0.0/sql.html)
 
-# Plain SQL Queries
+Plain SQL Queries
+==================
 
 抽象的で高度な操作について，SQLコードを直接書きたくなる事があるかもしれない．Slickの *Plain SQL* クエリでは，[JDBC][1]の低レイアに触れる事無しに，よりScalaベースな記述を行う事が出来る．
 
 <!--Sometimes you may need to write your own SQL code for an operation which is not well supported at a higher level of abstraction. Instead of falling back to the low level of [JDBC][1], you can use Slick’s *Plain SQL* queries with a much nicer Scala-based API.-->
 
-## Scaffolding
+Scaffolding
+-------------
 
 [SLick example jdbc/PlainSQL][2]では *Plain SQL* の特徴についていくつか説明している．インポートすべきパッケージが[*lifted embedding*][3]や[*direct embedding*][4]とは異なっている事に注意して欲しい．
 
@@ -42,7 +44,8 @@ Database.forURL("jdbc:h2:mem:test1", driver = "org.h2.Driver") withSession {
 }
 ```
 
-## DDL/DML Statements
+DDL/DML Statements
+------------------
 
 最もシンプルなStaticQueryのメソッドは，updateNAである（NA = no args）．updateNAは，結果の代わりにDDLステートメントから行数を返すStaticQuery[Unit, Int]を作成する，これは[*lifted embedding*][3]を用いるクエリと同じように実行する事が出来る．ここでは結果を得ずに，クエリを.executeを用いて実行させている．
 
@@ -99,7 +102,8 @@ SQL文は全ての呼び出しで同じもの（insert into coffees values (?,?,
 
 <!--The SQL statement is the same for all calls: insert into coffees values (?,?,?,?,?)-->
 
-## Query Statements
+Query Statements
+-----------------
 
 updateNAと似た，返り値となる行の型パラメータを取るqueryNAというメソッドがある．このメソッドは *select文* を実行し，結果をiteratorで回す事が出来る．
 
@@ -151,7 +155,8 @@ val supplierById = Q[Int, Supplier] + "select * from suppliers where id = ?"
 println("Supplier #49: " + supplierById(49).first)
 ```
 
-## String Interpolation
+String Interpolation
+---------------------
 
 文字列補完接頭辞（string interpolation prefix）であるsqlやsqluを用いるためには，以下のインポート文を追加する必要がある．
 

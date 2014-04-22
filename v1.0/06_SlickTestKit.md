@@ -3,7 +3,8 @@ Slick 1.0.0 documentation - 06 Slick TestKit
 
 ["Permalink to Slick TestKit — Slick 1.0.0 documentation](http://slick.typesafe.com/doc/1.0.0/testkit.html)
 
-# Slick TestKit
+Slick TestKit
+===============
 
 Slickに対し，独自のデータベースドライバーを記述する際には，きちんと動作するのか，何が現時点で実装されていないのかなどを確認するために基本となるユニットテスト（もしくは加えて他の独自のカスタマイズしたテスト）を実行して欲しい．このためにSlickユニットテストとしてのSlick Test Kitプロジェクトを別に用意している．
 
@@ -13,7 +14,8 @@ Slickに対し，独自のデータベースドライバーを記述する際に
 
 <!--To get started, you can clone the [Slick TestKit Example][1] project which contains a (slightly outdated) version of Slick’s standard PostgreSQL driver and all the infrastructure required to build and test it.-->
 
-## Scaffolding
+Scaffolding
+--------------
 
 build.sbtは以下のように記述する．一般的な名前とバージョン設定と区別して，SlickとTestKit，junit-interface，Logback，PostgreSQL JDBC Driverへの依存性を追加する．そしてテストを行うためのオプションをいくつか記述する必要がある．
 
@@ -39,13 +41,15 @@ src/test/resources/logback-test.xmlに，Slickのlogbackについての設定の
 
 <!--There is a copy of Slick’s logback configuration in src/test/resources/logback-test.xml but you can swap out the logging framework if you prefer a different one.-->
 
-## Driver
+Driver
+-------
 
 実際のドライバーの実装はsrc/main/scalaの中にある．
 
 <!--The actual driver implementation can be found under src/main/scala.-->
 
-## Test Harness
+Test Harness
+------------
 
 TestKitテストを実行するためには，DriberTestを継承したクラスを作成する必要がある．加えて，TestKitに対してどのようにtestデータベースへ接続するのか，テーブルのリストをどのように取得するのか，テスト間におけるクリーンをどのようにして行うのかなどといった事を伝えるTestDBの実装が必要になる．
 
@@ -74,7 +78,8 @@ object MyPostgresTest {
 }
 ```    
 
-## Database Configuration
+Database Configuration
+-----------------------
 
 PostgreSQLのテストハーネスは **ExternalTestDB** に基づいている一方， **test-dbs/databases.properties** において設定が行われてなくてはならない．
 

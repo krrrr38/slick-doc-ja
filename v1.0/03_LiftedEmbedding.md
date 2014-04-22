@@ -3,7 +3,8 @@ Slick 1.0.0 documentation - 03 Lifted Embedding
 
 [Permalink to Lifted Embedding — Slick 1.0.0 documentation](http://slick.typesafe.com/doc/1.0.0/lifted-embedding.html)
 
-# Lifted Embedding
+Lifted Embedding
+================
 
 *lifted embedding* はSlickにおいて型安全なクエリ操作が行える基本的なAPIである．導入には[*始めよう*][1]を読んで欲しい．この章ではSlick及び *lifted embedding* の特徴と詳細について説明する．
 
@@ -43,7 +44,8 @@ val q2 = q.filter(_.price > 8.0).map(_.name)
 
 <!-- All plain types are lifted into Rep. The same is true for the record type Coffees which is a subtype of Rep[(String, Int, Double, Int, Int)]. Even the literal 8.0 is automatically lifted to a Rep[Double] by an implicit conversion because that is what the > operator on Rep[Double] expects for the right-hand side.-->
 
-## テーブル
+テーブル
+-----------
 
 lifted embeddingを用いるためには，データベースのテーブル毎に，テーブルオブジェクトを定義する必要がある．
 
@@ -140,7 +142,8 @@ Optionで結果をラップしたシンプルなapplyメソッドとunapplyメ�
 
 <!-- It is optimized for case classes (with a simple apply method and an unapply method that wraps its result in an Option) but there is also an overload that operates directly on the mapped types. -->
 
-## 制約
+制約
+-------------
 
 外部キー制約はテーブルのforeignKeyメソッドによって定義される．制約，カラム（または行），リンクされるテーブル，そしてテーブルから一致する行への関数として，特定の名前を与える必要がある．DDLを作成する際に，外部キーはその名前を用いて追加される．
 
@@ -198,7 +201,8 @@ object A extends Table[(Int, Int)]("a") {
 
 <!-- All constraints are discovered reflectively by searching for methods with the appropriate return types which are defined in the table. This behavior can be customized by overriding the tableConstraints method.-->
 
-## Data Definition Language
+Data Definition Language
+------------------------
 
 DDLステートメントはddl関数を用いて作成される．複数のDDLオブジェクトは++を用いて正しい順番にcreateとdropが行われるように連結される．これはテーブルの依存関係が循環している場合にも上手く機能する．ステートメントはcreate関数やdrop関数を用いて実行される．
 
@@ -222,7 +226,8 @@ ddl.createStatements.foreach(println)
 ddl.dropStatements.foreach(println)
 ``` 
 
-## Expressions
+Expressions
+-------------
 
 プリミティブ値（not 複合型，not コレクション）は，TypeMapper[T]が存在していれば，Rep[T]のサブタイプであるColumn[T]という型によって表される．内部的に用いられるいくつかの特別な関数と，nullを許可するかnullを許可しないカラム間の変換を行う関数のみ，Columnクラスで定義がなされている．
 
@@ -240,7 +245,8 @@ lifted embeddingにおいて一般的に用いられているオペレータや�
 
 <!--Additional methods for queries of non-compound values are added via an implicit conversion to SingleColumnQueryExtensionMethods.-->
 
-## ソートとフィルタリング（Sorting, Filtering）
+ソートとフィルタリング（Sorting, Filtering）
+--------------------------------------------
 
 様々な種類のソートやフィルタリングが存在している．例えばQueryを引数に，同じ型である新しいQueryを返すものなどがある．
 
@@ -253,7 +259,8 @@ val q2 = q.drop(10).take(5)
 val q3 = q.sortBy(_.name.desc.nullsFirst)
 ``` 
 
-## 結合（Join, Zipping）
+結合（Join, Zipping）
+--------------------
 
 joinは1つのクエリで異なる2つの異なったテーブルやクエリを結合させるために用いられる．
 
@@ -343,7 +350,8 @@ val zipWithIndexJoin = for {
 } yield (c.name, idx)
 ```
 
-## 連結（Unions）
+連結（Unions）
+------------
 
 適応可能な型については，unionやunionAllというオペレータを用いて2つのクエリを連結させる事が出来る．
 
@@ -360,7 +368,8 @@ val unionAllQuery = q1 unionAll q2
 
 <!--Unlike union which filters out duplicate values, unionAll simply concatenates the queries, which is usually more efficient.-->
 
-## 集約（Aggregation）
+集約（Aggregation）
+------------------
 
 集約の簡単な例として，単一のカラムを返すクエリからプリミティブ値を計算する事を考える．単一のカラムというのは基本的に数値型となる．
 
@@ -403,7 +412,8 @@ val q2 = q.map { case (supID, css) =>
 
 Note that the intermediate query q contains nested values of type Query. These would turn into nested collections when executing the query, which is not supported at the moment. Therefore it is necessary to flatten the nested queries by aggregating their values (or individual columns) as done in q2.
 
-## クエリの実行（Querying）
+クエリの実行（Querying）
+-----------------------
 
 Queryは[Invoker][3]トレイト（パラメータが無い場合には[UnitInvoker][4] ）において定義されたメソッドを用いて実行される．Queryからの暗黙的な変換が存在しているため，全てのQueryを直接的に実行する事が出来る．もっとも一般的な使用方法は，listといった特定の関数や，様々な種類のコレクションを生成する関数（to[Vector]など）を用いてコレクションへと結果を変換させる事である．
 
@@ -432,7 +442,8 @@ val l = q.list(session)
 
 <!-- If you only want a single result value, you can use first or firstOption. The methods foreach, foldLeft and elements can be used to iterate over the result set without first copying all data into a Scala collection.-->
 
-## 削除（Deleting）
+削除（Deleting）
+-----------------
 
 データの削除は先のQueryingと同じように機能する．何かデータを削除する時には，適当な行をselectした後にdeleteを呼び出すだろう．Queryからdelete関数や自己参照するdeleteInvokerを持った[DeleteInvoker][5]への暗黙的な変換が存在している．
 
@@ -448,7 +459,8 @@ val statement = q.deleteStatement
 
 <!--A query for deleting must only select from a single table. Any projection is ignored (it always deletes full rows).-->
 
-## 挿入（Inserting）
+挿入（Inserting）
+----------------
 
 データの挿入は単一のテーブルに対し，カラムの射影を用いて行われる．テーブルを直接的に利用する場合，挿入は\*射影を用いずに実行される．挿入時にテーブルのカラムを一部省くと，データベース作成時に定義されたデフォルト値か，もしくは適当に用意した，型に応じた非明示的なデフォルト値をデータベースに挿入する．データ挿入のための全てのメソッドは[InsertInvoker][6]と[FullInsertInvoker][7]において定義されている．
 
@@ -516,7 +528,8 @@ Users2 insert (Users.map { u => (u.id, u.first ++ " " ++ u.last) })
 Users2 insertExpr (Query(Users).length + 1, "admin")
 ```
 
-## 更新（Updating）
+更新（Updating）
+-----------------
 
 データの更新は該当するデータをselectしてから，新たなデータへ更新することになるだろう．そのようなクエリは単一テーブルからselectされた生のカラム（計算された値ではない）のみを返すべきである．更新に関係する関数は[UpdateInvoker][8]において定義されている．
 
@@ -534,7 +547,8 @@ val invoker = q.updateInvoker
 
 <!--There is currently no way to use scalar expressions or transformations of the existing data in the database for updates.-->
 
-## クエリテンプレート
+クエリテンプレート
+------------------
 
 クエリテンプレートは任意のパラメータが決められたクエリのことである．複数のパラメータを取る関数のようにテンプレートは機能し，より効率的にQueryを返す．通常，クエリを作成するために関数を評価する際，新しいクエリとなるASTをその関数は構築し，そのクエリを実行する際に，たとえ同じSQL文が結果を返したとしても，常にクエリコンパイラによって毎度クエリはコンパイルされる．一方で，クエリテンプレートは単一のSQL文（全てのパラメータが変数へバインドされるが）に制限され，たった一度しかクエリはビルド，コンパイルされない．
 
@@ -560,7 +574,8 @@ val userNameByIDRange = for {
 val names = userNameByIDRange(2, 5).list
 ```
 
-## ユーザ定義関数とユーザ定義型
+ユーザ定義関数とユーザ定義型
+----------------------------
 
 もしデータベースシステムがSlickにおける関数として利用出来るスカラー関数を用意していたとしたら，それを[SimpleFunction][10]として定義することが出来る．パラメータと返り値を固定した1つ，2つ，もしくは3つの関数を作成するための関数が既に定義されている．
 
