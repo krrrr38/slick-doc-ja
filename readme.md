@@ -1,16 +1,10 @@
 Slickドキュメント 日本語訳 (非公式)
-====================
+====================================
 
-- Translation project for [Slick 1.0.0 documentation](http://slick.typesafe.com/doc/1.0.0/gettingstarted.html) in Japanese.
+[Pamflet](http://pamflet.databinder.net/Pamflet.html)で生成したhtmlを公開しています
 
-Easy to See
----------
+- [Slick 1.0.0 documentation 原文](http://slick.typesafe.com/doc/1.0.0/)
+	- [Slick-doc-ja 1.0 翻訳文](http://krrrr38.github.io/slick-doc-ja/v1.0.out/slick-doc-ja+1.0.html)
 
-- Create html docs using `markdown2html.pl` which depend on `markdown`
-  - For Mac User, `brew install markdown` to use `markdown`
-
-```
-$ ./markdown2html.pl v1.0
-```
-
-![images](http://cdn-ak.f.st-hatena.com/images/fotolife/k/krrrr/20140104/20140104184802.png)
+- [Slick 2.0.0 documentation 原文](http://slick.typesafe.com/doc/2.0.0/)
+	- [Slick-doc-ja 2.0 翻訳文](http://krrrr38.github.io/slick-doc-ja/v2.0.out/slick-doc-ja+2.0.html)
