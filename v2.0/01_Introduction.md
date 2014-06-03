@@ -21,7 +21,7 @@ val limit = 10.0
 sql"select name from coffees where price < $limit".as[String].list
 ```
 
-クエリをSQLを用いて書く代わりにScalaを用いるとコンパイル時に合成が安全に行われ、より良い形で利用する事が出来る。Slickは独自のクエリコンパイラを用いてDBに対しクエリを発行する。
+SQLを直接書くのに比べ、Scalaを通してSQLを発行すると、コンパイル時により良いクエリを型安全に提供する事が出来る。Slickは独自のクエリコンパイラを用いてDBに対するクエリを発行する。
 
 <!--When using Scala instead of SQL for your queries you profit from the compile-time safety(何これ) and compositionality. Slick can generate queries for different backends including your own, using its extensible query compiler. -->
 
@@ -35,7 +35,7 @@ Slickの特徴
 
 ### Scala
 
-- クエリ、テーブル、カラムの操作は全て生のScalaに依るものだ
+- クエリ、テーブル、カラムの定義は全てScalaで記述する
 <!-- -   Queries, Table & Column Mappings, and types are plain Scala-->
 
 ```scala
@@ -47,7 +47,7 @@ class Coffees(tag: Tag) extends Table[(String, Double)](tag, "COFFEES") {
 val coffees = TableQuery[Coffees]
 ```
 
-- Scalaのコレクションかのようにデータリソースを扱う事が出来る
+- Scalaのコレクションを扱うかのようにデータリソースを扱う事が出来る
 <!-- -   Data access APIs similar to Scala collections-->
 
 ```scala
@@ -59,7 +59,7 @@ coffees.filter(_.price < 10.0)
 
 ### Type Safe
 
-- IDEがコードを書く手助けをしてくれるだろう
+- IDEがコードを書く手助けをしてくれる
 <!-- -   Let your IDE help you write your code-->
 
 - 実行時でなくコンパイル時に問題を発見出来る
@@ -107,7 +107,7 @@ SlickはScalaのバージョン2.10が必要になる。（もし2.9以下で使
 - PostgreSQL
 - SQLite
 
-他のSQLデータベースもSlickなら簡単にアクセスする事が出来るでしょう。独自のSQLベースのバックエンドを持つデータベースも、プラグインを作成する事でSlickを利用することが出来ます。そのようなプラグインの作成は大きな貢献となるでしょう。
+他のSQLデータベースもSlickなら簡単にアクセスする事が出来る。独自のSQLベースのバックエンドを持つデータベースも、プラグインを作成する事でSlickを利用することが出来ます。そのようなプラグインの作成は大きな貢献となる。
 NoSQLのような他のバックエンドを持つようなデータベースに関しては現在開発中であるため、まだ利用する事はできません。
 
 <!--Other SQL databases can be accessed right away with a reduced feature set. Writing a fully featured plugin for your own SQL-based backend can be achieved with a reasonable amount of work. Support for other backends (like NoSQL) is under development but not yet available.-->
@@ -168,7 +168,7 @@ val q = coffees.filter(_.price > 8.0).map(_.name)
 //               Rep[Double]  Rep[Double]  Rep[String]
 ```
 
-全ての型は**Rep**へと昇華される。カラムの型である**Coffees**も同様に`Rep[(String, Double)]`へと昇華されている。数値リテラルである`8.0`も自動的に`Rep[Double]`へと昇華する。これは条件式`>`の左辺が`Rep[Double]`であることから、右辺には暗黙的な変換が行われるためである。生のScalaの型や値を用いることは、SQLへの変換を行う上で充分な情報を提供しない。これらの変換はそのために行なわれるのである。
+全ての型は**Rep**へと持ち上げられる。カラムの型である**Coffees**も同様に`Rep[(String, Double)]`へと持ち上げられる。数値リテラルである`8.0`も自動的に`Rep[Double]`へと持ち上げられる。これは条件式`>`の左辺が`Rep[Double]`であることから、右辺には暗黙的な変換が行われるためである。生のScalaの型や値を用いることは、SQLへの変換を行う上で充分な情報を提供しない。これらの変換はそのために行なわれるのである。
 
 <!-- All plain types are lifted into **Rep**. The same is true for the table -->
 <!-- row type **Coffees** which is a subtype of `Rep[(String, Double)]`. Even -->

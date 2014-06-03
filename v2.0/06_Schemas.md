@@ -57,7 +57,7 @@ val coffees = TableQuery[Coffees]
 <!-- -   Unit -->
 <!-- -   java.util.UUID -->
 
-nullを許容するカラムは`T`がサポートされたプリミティブ型である際に、`Option[T]`を用いて表せば良い。ただし、このOptionに対する全ての操作は、ScalaのOption操作と異なり、データベースのnullプロパゲーションセマンティクスを用いてしまう事に注意して欲しい。特に、`None === None`という式は`None`になる。これはSLickのメジャーリリースで将来的に変更される挙動となっている。
+nullを許容するカラムは`T`がサポートされたプリミティブ型である際に、`Option[T]`を用いて表せば良い。ただし、このOptionに対する全ての操作は、ScalaのOption操作と異なり、データベースのnullプロパゲーションセマンティクスを用いてしまう事に注意して欲しい。特に、`None === None`という式は`None`になる。これはSlickのメジャーリリースで将来的に変更されるかもしれない。
 
 <!-- Nullable columns are represented by `Option[T]` where `T` is one of the -->
 <!-- supported primitive types. Note that all operations on Option values are -->

@@ -43,7 +43,7 @@ object Suppliers extends Table[(Int, String, String)]("SUPPLIERS") {
 }
 ```
 
-Slick2.0では`Tag`を引数にテーブルクラスの定義を行い、実際のデータベーステーブルを表す`TableQuery`のインスタンスを定義します。射影`*`では基本的なタプルを用いて定義を行うことが出来る。
+Slick2.0では`Tag`を引数にテーブルクラスの定義を行い、実際のデータベーステーブルを表す`TableQuery`のインスタンスを定義する。射影`*`に対し、基本的なタプルを用いて定義を行うことも出来る。
 
 <!-- In Slick 2.0 you need to define your table as a class that takes an -->
 <!-- extra `Tag` argument (the *table row class*) plus an instance of a -->
@@ -153,13 +153,13 @@ object Suppliers extends Table[Supplier]("SUPPLIERS") {
 Suppliers.forInsert.insert(mySupplier)
 ```
 
-2.0においてこのような冗長な技術は必要無くなる。デフォルトの射影関数を挿入時に用いる事で、自動インクリメントのついた`id`というカラムをSlickが除外してくれる。
+2.0においてこのような冗長な記述は必要無くなる。デフォルトの射影関数を挿入時に用いる事で、自動インクリメントのついた`id`というカラムをSlickが除外してくれる。
 
 <!-- This is no longer necessary in 2.0. You can simply insert using the -->
 <!-- default projection and Slick will skip the auto-incrementing `id` -->
 <!-- column: -->
 
-逆に`AutoInc`のついたカラムに対し値を挿入したいのならば、新しく出来た`forceInsert`や`forceInsertAll`といった関数を用いる事が出来る。
+逆に`AutoInc`のついたカラムに対し値を挿入したいのならば、新しく出来た`forceInsert`や`forceInsertAll`といった関数を用いれば良い。
 
 <!-- If you really want to insert into an `AutoInc` field, you can use the -->
 <!-- new methods `forceInsert` and `forceInsertAll`. -->

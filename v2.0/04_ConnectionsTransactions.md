@@ -5,7 +5,7 @@ Slick 2.0.0 documentation - 04 Connection/Transactions
 Connections / Transactions
 ==========================
 
-クエリはプログラム中のどこにでも書くことが出来る。クエリを実行する際には、データベースコネクションが必要になる。
+クエリはプログラムのどこにでも書くことが出来る。クエリを実行する際には、データベースコネクションが必要になる。
 
 <!-- You can write queries anywhere in your program. When you want to execute -->
 <!-- them you need a database connection. -->
@@ -35,7 +35,7 @@ JDBC URLを用いて接続を行う際には、[`forURL`][1]を用いる事が�
 val db = Database.forURL("jdbc:h2:mem:test1;DB_CLOSE_DELAY=-1", driver="org.h2.Driver")
 ```
 
-ここでは例として、新しく空のデータベースへと接続をしてみる。これはインメモリ型のH2データベースであり、データベース名が`test1`、そしてJVMが終了するまで残り続ける(`DB_CLOSE_DELAY=-1`はH2データベース特有のオプション)データベースとなっている。
+ここでは例として、新しく空のデータベースへと接続をしてみる。用いるのはインメモリ型のH2データベースであり、データベース名が`test1`、そしてJVMが終了するまで残り続けるような(`DB_CLOSE_DELAY=-1`はH2データベース特有のオプション)データベースとなっている。
 
 <!-- Here we are connecting to a new, empty, in-memory H2 database called -->
 <!-- `test1` and keep it resident until the JVM ends (`DB_CLOSE_DELAY=-1`, -->

@@ -4,12 +4,10 @@ Slick 2.0.0 documentation - 09 Plain SQL Queries
 
 <!--Plain SQL Queries — Slick 2.0.0 documentation-->
 
-[Permalink to Plain SQL Queries — Slick 2.0.0 documentation](http://slick.typesafe.com/doc/2.0.0/sql.html)
-
 Plain SQL Queries
 =================
 
-抽象的で高度な操作について、SQLコードを直接書きたくなる事があるかもしれない。Slickの *Plain SQL* クエリでは、[JDBC][1]の低レイアに触れる事無しに、よりScalaベースな記述を行う事が出来る。
+高度な操作について、SQL文を直接書きたくなる事があるかもしれない。Slickの *Plain SQL* クエリでは、[JDBC][1]の低レイアに触れる事無しに、よりScalaベースな記述を行う事が出来る。
 
 <!--Sometimes you may need to write your own SQL code for an operation which is not well supported at a higher level of abstraction. Instead of falling back to the low level of [JDBC][1], you can use Slick’s *Plain SQL* queries with a much nicer Scala-based API.-->
 

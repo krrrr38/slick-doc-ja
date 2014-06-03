@@ -16,7 +16,7 @@ Slickコードジェネレータは既存のデータベーススキーマをそ
 Overview
 --------
 
-デフォルトでコードジェネレータは、TableQueryの値に適合するTableクラスを生成する。これらの値は、行の値を包括するためのケースクラスと同じよう、にコレクション操作と似た操作が行えるものとなっている。もしScalaのタプルの限界数である22個より多いカラムが存在していたのなら、自動的にSlickの実験的な実装であるHListを用いた実装を出力する。(ちなみに、25カラムより多い場合には非常にコンパイルに時間がかかる事が分かっており、可能な限り早く修正する予定だ)
+デフォルトでコードジェネレータは、TableQueryの値に対応するTableクラスを生成する。これらの値は、個々は行の値を包括するケースクラスとなり、全体としてコレクション操作関数が呼び出せるようなものになっている。もしScalaのタプルの限界数である22個より多いカラムが存在していたのなら、自動的にSlickの実験的な実装であるHListを用いた実装を出力する。(ちなみに、25カラムより多い場合には非常にコンパイルに時間がかかる事が分かっており、可能な限り早く修正する予定だ)
 
 <!-- By default the code generator generates Table classes, corresponding -->
 <!-- TableQuery values, which can be used in a collection-like manner as well -->
@@ -26,7 +26,7 @@ Overview
 <!-- limit. (Note that compilation times currently get extremely long for -->
 <!-- more than 25 columns. We are hoping to fix this as soon as possible). -->
 
-実装は実用的なものになってはいるが、コードジェネレータはSlick 2.0における新しい機能となっており、依然として実験的なものも含んでいる。必要なものを摘出し、必要のない機能を取り除いていく予定だ。将来的なバージョンにおけるコードジェネレータに対する修正は小さいものになるだろう。もし必要ならば、Slickの他の部分から独立した実装にする。我々はこの機能を用いた人々の挑戦に対する声に非常に関心がある。
+実装は実用的なものになってはいるが、コードジェネレータはSlick 2.0における新しい機能となっており、依然として実験的なものも含んでいる。必要なものを摘出し、必要のない機能を取り除いていく予定だ。将来的なバージョンにおけるコードジェネレータに対する修正は小さくする予定だ。もし必要ならば、Slickの他の部分から独立した実装にしても良い。我々はこの機能を用いた人々の挑戦に対する声に非常に関心がある。
 
 <!-- The implementation is ready for practical use, but since it is new in -->
 <!-- Slick 2.0 we consider it experimental and reserve the right to remove -->
@@ -36,8 +36,7 @@ Overview
 <!-- isolated from the rest of Slick. We are interested in hearing about -->
 <!-- people's experiences with using it in practice. -->
 
-ジェネレータのいち部分については、[talk at Scala eXchange
-2013](http://slick.typesafe.com/docs/#20131203_patterns_for_slick_database_applications_at_scala_exchange_2013)で説明も行っている。
+ジェネレータについて、[talk at Scala eXchange2013](http://slick.typesafe.com/docs/#20131203_patterns_for_slick_database_applications_at_scala_exchange_2013)で軽く説明も行っている。
 
 <!-- Parts of the generator are also explained in our [talk at Scala eXchange -->
 <!-- 2013](http://slick.typesafe.com/docs/#20131203_patterns_for_slick_database_applications_at_scala_exchange_2013). -->
@@ -45,7 +44,7 @@ Overview
 Run from the command line or Java/Scala
 ---------------------------------------
 
-Slickのコードジェネレータは以下のように簡単に動かすことが出来る。
+Slickのコードジェネレータは以下のようにして手軽に動かすことが出来る。
 
 <!-- Slick's code generator comes with a default runner. You can simply -->
 <!-- execute -->
@@ -56,7 +55,7 @@ scala.slick.model.codegen.SourceCodeGenerator.main(
 )
 ```
 
-適用させる引数は以下の通りである
+必要な引数は以下の通りである
 
 <!-- and provide the following values -->
 
@@ -64,7 +63,6 @@ scala.slick.model.codegen.SourceCodeGenerator.main(
 -   **jdbcDriver** *"org.h2.Driver"* のようなjdbcドライバークラス名
 -   **url** *"jdbc:postgresql://localhost/test"* のようなjdbcのURL
 -   **outputFolder** 出力先フォルダ
-    put
 -   **pkg** 生成されるコードが属するScalaパッケージ
 
 <!-- -   **slickDriver** Fully qualified name of Slick driver class, e.g. -->
@@ -76,7 +74,7 @@ scala.slick.model.codegen.SourceCodeGenerator.main(
 <!--     put -->
 <!-- -   **pkg** Scala package the generated code should be places in -->
 
-コードジェネレータは指定されたパッケージ名に一致するサブフォルダを、指定された出力先フォルダの中に作成し、そこの"Tables.scala"というファイルへ結果を出力する。そのファイルには"Tables"オブジェクトが生成される。引数に与えたSlickドライバーと同じものが用いられているかを確認シて欲しい。このファイルには同様に"Tables"トレイトがふくまれ、これはCakeパターンに用いられている。
+コードジェネレータは指定されたパッケージ名に一致するサブフォルダを、指定された出力先フォルダの中に作成し、そこの"Tables.scala"というファイルへ結果を出力する。そのファイルには"Tables"オブジェクトが生成される。引数に与えたSlickドライバーと同じものが用いられているかを確認して欲しい。このファイルには同様に"Tables"トレイトがふくまれ、これはCakeパターンに用いられたものになっている。
 
 <!-- The code generator places a file "Tables.scala" in the given folder in a -->
 <!-- subfolder corresponding to the package. The file contains an object -->
@@ -96,7 +94,7 @@ Integrated into sbt
 Customization
 -------------
 
-コードジェネレータはモデルデータに基づきコードを自動生成する関数をオーバーライドする事で、柔軟にカスタマイズ出来る。小さなカスタマイズであっても大きなカスタマイズであっても、このようなモデルドリブンなコードジェネレーションが同じように扱われる。例として、フレームワークのバインディングや、その他のデータに関連するアプリケーションの繰り返しセクションにおいて用いられる。
+コードジェネレータはモデルデータに基づきコードを自動生成する関数をオーバーライドする事で、柔軟にカスタマイズ出来る。小さなカスタマイズであっても大きなカスタマイズであっても、このようなモデルドリブンなコードジェネレーションが同じように扱われる。例えば、とあるフレームワークにおけるバインディングや、その他のデータに関連するアプリケーションの繰り返しセクションにおいて用いられる。
 
 <!-- The generator can be flexibly customized by overriding methods to -->
 <!-- programmatically generate any code based on the data model. This can be -->

@@ -117,7 +117,7 @@ class MyTable(tag: Tag) extends Table[(MyID, String)](tag, "MY_TABLE") {
 Record Types
 ------------
 
-レコード型は個別に宣言された型を持つ複数の混合物を含んだデータ構造となっている。 Slickは(引数限度が22の)ScalaタプルとSLick独自の実験的な実装である[HList](引数制限が無いが、25個の引数を超えると異様にコンパイルが遅くなるもの)をサポートしている。レコード型はSlickにおいて恣意的にネストされ、混合されたものとして扱われている。
+レコード型は個別に宣言された型を持つ複数の混合物を含んだデータ構造となっている。 Slickは(引数限度が22の)ScalaタプルとSLick独自の実験的な実装である*HList*(引数制限が無いが、25個の引数を超えると異様にコンパイルが遅くなるもの)をサポートしている。レコード型はSlickにおいて恣意的にネストされ、混合されたものとして扱われている。
 
 <!-- Record types are data structures containing a statically known number of -->
 <!-- components with individually declared types. Out of the box, Slick -->

@@ -7,7 +7,7 @@ Slick 2.0.0 documentation - 02 始めよう(Getting Started)
 ===============
 <!-- Getting Started-->
 
-[Typesafe Activator](http://typesafe.com/activator)を使うのが、最も簡単なSlickを用いたアプリケーションを試すのに良い。Slickの基本を学びたいのなら、[Hello Slick](http://typesafe.com/activator/template/hello-slick)テンプレートを使うと良い。Slickを使ったPlay Frameworkアプリケーションを使いたいのなら、[Play Slick with Typesafe IDs](http://typesafe.com/activator/template/play-slick-advanced)テンプレートを試すと良いだろう。
+軽くSlickを試すのなら、[Typesafe Activator](http://typesafe.com/activator)を使うのが良い。Slickの基本を学びたいのなら、[Hello Slick](http://typesafe.com/activator/template/hello-slick)テンプレートを使うと良い。Slickを使ったPlay Frameworkアプリケーションを使いたいのなら、[Play Slick with Typesafe IDs](http://typesafe.com/activator/template/play-slick-advanced)テンプレートを試すと良いだろう。
 
 <!-- The easiest way to get started is with a working application in -->
 <!-- [Typesafe Activator](http://typesafe.com/activator). To learn the basics -->
@@ -18,7 +18,7 @@ Slick 2.0.0 documentation - 02 始めよう(Getting Started)
 <!-- IDs](http://typesafe.com/activator/template/play-slick-advanced) -->
 <!-- template. -->
 
-Slickを既存のプロジェクトに導入するには以下の様な依存関係を記述する。
+Slickを既存のプロジェクトに導入するには各プロジェクトに応じた依存関係を記述する。
 sbtプロジェクトには`libraryDependencies`に次のように書き加える。
 
 <!-- To include Slick into an existing project use the library published on -->
@@ -54,14 +54,14 @@ Slickはデバッグログに[SLF4J](http://www.slf4j.org/)を用いている。
 Slick Examples
 --------------
 
-[Slick Examples](https://github.com/slick/slick-examples/tree/2.0.0)を見ると、複数のデータベースを使ったり、生のクエリを発行したりといった例をチェックする事が出来る。
+[Slick Examples](https://github.com/slick/slick-examples/tree/2.0.0)では、複数のデータベースを使ったり、生のクエリを発行したりといったサンプルを公開している。
 
 <!-- Check out the Slick Examples\_ project for more examples like using multiple databases, using native queries, and advanced invoker usage. -->
 
 Quick Introduction
 ------------------
 
-Slickを使う際、初めに使うデータベースに応じたAPIを以下のようにインポートする必要がある。
+Slickを使う際、まず初めに、利用するデータベースに応じたAPIを以下のようにインポートする必要がある。
 
 <!-- To use Slick you first need to import the API for the database you will be using, like: -->
 
@@ -88,14 +88,14 @@ Database.forURL("jdbc:h2:mem:test1", driver = "org.h2.Driver") withSession {
 }
 ```
 
-Java SEの環境においては、データベースセッションはJDBCドライバークラスを用いてJDBC URLへ接続する事で作られる（正しいURLの記述法はJDBCドライバーのドキュメントを見て欲しい）。もし[plain SQL queries](http://slick.typesafe.com/doc/2.0.0/sql.html)のみを用いるのであれば、それ以上何もする必要はない。しかし、もし[direct embedding](http://slick.typesafe.com/doc/2.0.0/direct-embedding.html)や[lifted embedding](http://slick.typesafe.com/doc/2.0.0/introduction.html#lifted-embedding)を用いるのであれば、SlickがSQL文を作成する事になるため、 `H2Driver` のようなSlickのdriverを適宜importして欲しい。
+Java SEの環境においては、データベースセッションはJDBCドライバークラスを用いてJDBC URLへ接続する事で作られる（正しいURLの記述法はJDBCドライバーのドキュメントを見て欲しい）。もし[plain SQL queries](http://slick.typesafe.com/doc/2.0.0/sql.html)のみを用いるのであれば、それ以上何もする必要はない。一方で、もし[direct embedding](http://slick.typesafe.com/doc/2.0.0/direct-embedding.html)や[lifted embedding](http://slick.typesafe.com/doc/2.0.0/introduction.html#lifted-embedding)を用いるのであれば、SlickがSQL文を作成する事になるため、 `H2Driver` のようなSlickのdriverを適宜importして欲しい。
 
 <!--In a Java SE environment, database sessions are usually created by connecting to a JDBC URL using a JDBC driver class (see the JDBC driver’s documentation for the correct URL syntax). If you are only using [*plain SQL queries*][8], nothing more is required, but when Slick is generating SQL code for you (using the [*direct embedding*][9] or the [*lifted embedding*][10]), you need to make sure to use a matching Slick driver (in our case the H2Driver import above).-->
 
 スキーマ
 --------
 
-ここでは [lifted embedding](http://slick.typesafe.com/doc/2.0.0/introduction.html#lifted-embedding)を用いたアプリケーションを書いてみる。初めに、データベースのテーブル毎に`Table`型を継承させたクラスと、`TableQuery`型の値を定義する。これらは、[code generator](http://slick.typesafe.com/doc/2.0.0/code-generation.html)を使うとデータベーススキーマから自動的に作成することができるし、直接手で書いても良い
+ここでは [lifted embedding](http://slick.typesafe.com/doc/2.0.0/introduction.html#lifted-embedding)を用いたアプリケーションを書いてみる。初めに、データベースのテーブル毎に`Table`型を継承させたクラスと、`TableQuery`型の値を定義する。これらは、[code generator](http://slick.typesafe.com/doc/2.0.0/code-generation.html)を使うとデータベーススキーマから自動的に作成することができるし、直接手で書いても良い。
 
 <!-- We are using the lifted embedding \<lifted-embedding\> in this -->
 <!-- application, so we need `Table` row classes and `TableQuery` values for -->
@@ -131,7 +131,7 @@ class Coffees(tag: Tag) extends Table[(String, Int, Double, Int, Int)](tag, "COF
 val coffees = TableQuery[Coffees]
 ```
 
-全ての列は名前（ScalaにおけるキャメルケースやSQLにおける大文字とアンダースコアの組み合わせ）とScalaの型（SQLの型はScalaの型から自動的に推測される）を持つ。これらは `val` ではなく `def` を用いて定義しなくてはならない。テーブルオブジェクトもScalaでの名前とSQLでの名前と型を持つ必要がある。テーブルの型引数は射影*と一致してなくてはならない。全ての列をタプルで取り出すといった簡単な処理以外にも、より複雑なオブジェクトへのマッピングを行う事も出来る。
+全ての列は名前（ScalaにおけるキャメルケースやSQLにおける大文字とアンダースコアの組み合わせ）とScalaの型（SQLの型はScalaの型から自動的に推測される）を持つ。これらは `val` ではなく `def` を用いて定義しなくてはならない。テーブルオブジェクトもScalaでの名前とSQLでの名前と型を持つ必要がある。テーブルの型引数は射影*と一致してなくてはならない。全ての列をタプルで取り出すといった簡単な処理だけでなく、射影にはより複雑なオブジェクトへのマッピングを行う事も出来る。
 
 <!--All columns get a name (usually in camel case for Scala and upper case with underscores for SQL) and a Scala type (from which the SQL type can be derived automatically). Make sure to define them with def and not with val. The table object also needs a Scala name, SQL name and type. The type argument of the table must match the type of the special * projection. In simple cases this is a tuple of all columns but more complex mappings are possible.-->
 
@@ -180,7 +180,7 @@ Coffees.insertAll(
 Querying
 --------
 
-最も簡単なクエリ例として、テーブルのデータ全てを順々に取り出す処理を考える。
+最も簡単なクエリ例として、テーブルのデータを全て順々に取り出す処理を考える。
 
 <!--The simplest kind of query iterates over all the data in a table:-->
 
