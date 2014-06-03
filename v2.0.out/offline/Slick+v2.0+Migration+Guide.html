@@ -1,0 +1,253 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html manifest="pamflet.manifest">
+      <head>
+        <title>slick-doc-ja 2.0 — Slick v2.0 Migration Guide</title>
+        
+        <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/blueprint/grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/> 
+        <!--[if lt IE 8]>
+          <link rel="stylesheet" href={ relativeBase + "css/blueprint/ie.css" } type="text/css" media="screen, projection"/>
+        <![endif]-->
+        <link rel="stylesheet" href="css/pamflet.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamflet-print.css" type="text/css" media="print"/>
+        <link rel="stylesheet" href="css/pamflet-grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.collapse.js"></script>
+        <script type="text/javascript" src="js/pamflet.js"></script>
+        <script type="text/javascript">
+          Pamflet.page.language = 'en';
+        </script>
+        <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+        
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"></meta>
+        
+        
+      </head>
+      <body class="color_scheme-redmond">
+        <a class="page prev nav" href="%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86.html">
+            <span class="space">&nbsp;</span>
+            <span class="flip">❧</span>
+          </a><a class="page next nav" href="Connections+%2F+Transactions.html">
+            <span class="space">&nbsp;</span>
+            <span>❧</span>
+          </a>
+        <div class="container">
+          <div class="span-16 prepend-1 append-1">
+            <div class="span-16 top nav">
+              <div class="span-16 title">
+                <span>slick-doc-ja 2.0</span> — Slick v2.0 Migration Guide
+              </div>
+            </div>
+          </div>
+          <div class="span-16 prepend-1 append-1 contents">
+            <p>Slick 2.0.0 documentation - 03 v2.0 移行ガイド
+</p><p><a href="http://slick.typesafe.com/doc/2.0.0/migration.html">Permalink to Migration Guide from Slick 1.0 to 2.0 — Slick 2.0.0 documentation</a>
+</p><h1 id="Slick+v2.0+Migration+Guide">Slick v2.0 Migration Guide<a href="#Slick+v2.0+Migration+Guide" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><!-- Migration Guide from Slick 1.0 to 2.0 -->
+<!-- ===================================== -->
+<p>Slick2.0はSlick1.0に互換性のない拡張が含まれている。アプリケーションを1.0から2.0へ移行する際には、以下のような変更が必要になるだろう。
+</p><!-- Slick 2.0 contains some improvements which are not source compatible -->
+<!-- with Slick 1.0. When migrating your application from 1.0 to 2.0, you -->
+<!-- will likely need to perform changes in the following areas. -->
+<h2 id="Code+generation">Code generation<a href="#Code+generation" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>以前は手で書いていたテーブルへのマッピングを、2.0ではデータベーススキーマを用いて自動的に生成出来るようになった。code-generaterは柔軟にカスタマイズすることも出来るため、より最適化されたものに変更する事も出来る。詳細については、<a href="http://slick.typesafe.com/doc/2.0.0/code-generation.html">code-generation</a>を参考にして欲しい。
+</p><!-- Instead of writing your table descriptions or plain SQL mappers by hand, -->
+<!-- in 2.0 you can now automatically generate them from your database -->
+<!-- schema. The code-generator is flexible enough to customize it's output -->
+<!-- to fit exactly what you need. -->
+<!-- More info on code generation \<code-generation\>. -->
+<h2 id="Table+descriptions">Table descriptions<a href="#Table+descriptions" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>Slick1.0では、テーブルは<code>val</code>や<em>table object</em>と呼ばれる<code>object</code>によって定義がなされ、射影<code>*</code>では<code>~</code>オペレータを用いてタプルを表していた。
+</p><!-- In Slick 1.0 tables were defined by a single `val` or `object` (called -->
+<!-- the *table object*) and the `*` projection was limited to a flat tuple -->
+<!-- of columns that had to be constructed with the special `~` operator: -->
+<pre><code class="prettyprint lang-scala">// --------------------- Slick 1.0 code -- v2.0では動かない ---------------------
+object Suppliers extends Table[(Int, String, String)](&quot;SUPPLIERS&quot;) {
+  def id = column[Int](&quot;SUP_ID&quot;, O.PrimaryKey)
+  def name = column[String](&quot;SUP_NAME&quot;)
+  def street = column[String](&quot;STREET&quot;)
+  def * = id ~ name ~ street
+}
+</code></pre><p>Slick2.0では<code>Tag</code>を引数にテーブルクラスの定義を行い、実際のデータベーステーブルを表す<code>TableQuery</code>のインスタンスを定義します。射影<code>*</code>では基本的なタプルを用いて定義を行うことが出来る。
+</p><!-- In Slick 2.0 you need to define your table as a class that takes an -->
+<!-- extra `Tag` argument (the *table row class*) plus an instance of a -->
+<!-- `TableQuery` of that class (representing the actual database table). -->
+<!-- Tuples for the `*` projection can use the standard tuple syntax: -->
+<pre><code class="prettyprint lang-scala">class Suppliers(tag: Tag) extends Table[(Int, String, String)](tag, &quot;SUPPLIERS&quot;) {
+  def id = column[Int](&quot;SUP_ID&quot;, O.PrimaryKey)
+  def name = column[String](&quot;SUP_NAME&quot;)
+  def street = column[String](&quot;STREET&quot;)
+  def * = (id, name, street)
+}
+val suppliers = TableQuery[Suppliers]
+</code></pre><p>以前に用いていた<code>~</code>シンタックスをそのまま使いたい場合には、<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.util.TupleMethods$">TupleMethod._</a>をインポートすれば良い。<code>TableQuery[T]</code>を用いると、内部的には<code>new TableQuery(new T(_))</code>のような処理が行われ、適切なTableQueryインスタンスが作成される。Slick1.0では共通処理に関して、静的メソッドでテーブルオブジェクトに定義がなされていた。2.0においても以下のようにカスタムされた<code>TableQuery</code>オブジェクトを用いて、同様の事が出来る。
+</p><!-- You can import TupleMethods \<scala.slick.util.TupleMethods\$\>.\_ to -->
+<!-- get support for the old \~ syntax. The simple `TableQuery[T]` syntax is -->
+<!-- a macro which expands to a proper TableQuery instance that calls the -->
+<!-- table's constructor (`new TableQuery(new T(_))`). In Slick 1.0 it was -->
+<!-- common practice to place extra static methods associated with a table -->
+<!-- into that table's object. You can do the same in 2.0 with a custon -->
+<!-- `TableQuery` object: -->
+<pre><code class="prettyprint lang-scala">object suppliers extends TableQuery(new Suppliers(_)) {
+  // put extra methods here
+  val findByID = this.findBy(_.id)
+}
+</code></pre><p><code>TableQuery</code>はデータベーステーブルのための<code>Query</code>オブジェクトのことである。予期せぬ場所で適用される<code>Query</code>への暗黙的な変換はもはや必要無い。Slick 1.0において生身の <em>table object</em> を扱っていた場所は、全て <em>table query</em> が代わりに用いられることになる。例として、以下に挙げられる挿入(inserting)や、外部キー関連などがある。
+</p><!-- Note that a `TableQuery` is a `Query` for the table. The implicit -->
+<!-- conversion from a table row object to a `Query` that could be applied in -->
+<!-- unexpected places is no longer needed or available. All the places where -->
+<!-- you had to use the raw *table object* in Slick 1.0 have been changed to -->
+<!-- use the *table query* instead, e.g. inserting (see below) or foreign key -->
+<!-- references. -->
+<h2 id="Profile+Hierarchy">Profile Hierarchy<a href="#Profile+Hierarchy" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>Slick 1.0では<code>BasicProfile</code>と<code>ExtendedProfile</code>の2つのプロファイルを提供していた。Slick 2.0ではこれら2つのプロファイルを<code>JdbcProfile</code>として統合している。今では<code>RelationalProfile</code>に挙げられるようなより抽象的なプロファイルを提供している。<code>RelationalProfile</code>は<code>JdbcProfile</code>の全ての特徴を持っているわけではないが、新しく出来た<code>HeapDriver</code>や<code>DistributedDriber</code>といった機能を支えている。Slick 1.0からコードを移植する際、<code>JdbcProfile</code>へとプロファイルを変更して欲しい。特にSlick 2.0における<code>BasicProfile</code>は1.0における<code>BasicProfil</code>と非常に異なったものになっているので注意して欲しい。
+</p><!-- Slick 1.0 provided two *profiles*, `BasicProfile` and `ExtendedProfile`. -->
+<!-- These two have been unified in 2.0 as `JdbcProfile`. Slick now provides -->
+<!-- more abstract profiles, in particular `RelationalProfile` which does not -->
+<!-- have all the features of `JdbcProfile` but is supported by the new -->
+<!-- `HeapDriver` and `DistributedDriver`. When porting code from Slick 1.0, -->
+<!-- you generally want to switch to `JdbcProfile` when abstracting over -->
+<!-- drivers. In particular, pay attention to the fact that `BasicProfile` in -->
+<!-- 2.0 is very different from `BasicProfile` in 1.0. -->
+<h2 id="Inserting">Inserting<a href="#Inserting" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>Slick1.0では挿入時に<em>table object</em>の一部を射影していた。
+</p><!-- In Slick 1.0 you used to construct a projection for inserting from the -->
+<!-- *table object*: -->
+<pre><code class="prettyprint lang-scala">// --------------------- Slick 1.0 code -- does not compile in 2.0 ---------------------
+(Suppliers.name ~ Suppliers.street) insert (&quot;foo&quot;, &quot;bar&quot;)
+</code></pre><ol><li>0において生身の<em>table object</em>は存在していないため、<em>table query</em>から射影しなくてはならない。
+</li></ol><!-- Since there is no raw table object any more in 2.0 you have to use a -->
+<!-- projection from the table query: -->
+<pre><code class="prettyprint lang-scala">suppliers.map(s =&gt; (s.name, s.street)) += (&quot;foo&quot;, &quot;bar&quot;)
+</code></pre><p><code>+=</code>オペレータはScalaコレクションとの互換性のために用いられており、<code>insert</code>という古い名前の関数はエイリアスとして依然用いる事が出来る。
+</p><!-- Note the use of the new `+=` operator for API compatibility with Scala -->
+<!-- collections. The old name `insert` is still available as an alias. -->
+<p>Slick 2.0ではデータを挿入する際自動的にデフォルトで<code>AutoInc</code>のついたカラムを除外する。1.0では、そのようなカラムについて手動で除外した射影関数を別に用意しなくてはならなかった。
+</p><!-- Slick 2.0 will now automatically exclude `AutoInc` fields by default -->
+<!-- when inserting data. In 1.0 it was common to have a separate projection -->
+<!-- for inserts in order to exclude these fields manually: -->
+<pre><code class="prettyprint lang-scala">// --------------------- Slick 1.0 code -- does not compile in 2.0 ---------------------
+case class Supplier(id: Int, name: String, street: String)
+...
+object Suppliers extends Table[Supplier](&quot;SUPPLIERS&quot;) {
+  def id = column[Int](&quot;SUP_ID&quot;, O.PrimaryKey, O.AutoInc)
+  def name = column[String](&quot;SUP_NAME&quot;)
+  def street = column[String](&quot;STREET&quot;)
+  // Map a Supplier case class:
+  def * = id ~ name ~ street &lt;&gt; (Supplier.tupled, Supplier.unapply)
+  // Special mapping without the 'id' field:
+  def forInsert = name ~ street &lt;&gt; (
+    { case (name, street) =&gt; Supplier(-1, name, street) },
+    { sup =&gt; (sup.name, sup.street) }
+  )
+}
+...
+Suppliers.forInsert.insert(mySupplier)
+</code></pre><ol><li>0においてこのような冗長な技術は必要無くなる。デフォルトの射影関数を挿入時に用いる事で、自動インクリメントのついた<code>id</code>というカラムをSlickが除外してくれる。
+</li></ol><!-- This is no longer necessary in 2.0. You can simply insert using the -->
+<!-- default projection and Slick will skip the auto-incrementing `id` -->
+<!-- column: -->
+<p>逆に<code>AutoInc</code>のついたカラムに対し値を挿入したいのならば、新しく出来た<code>forceInsert</code>や<code>forceInsertAll</code>といった関数を用いる事が出来る。
+</p><!-- If you really want to insert into an `AutoInc` field, you can use the -->
+<!-- new methods `forceInsert` and `forceInsertAll`. -->
+<ol><li>0において双方向マッピングを行っていた<code>&lt;&gt;</code>関数はオーバーロードされ、今やケースクラスの<code>apply</code>関数を直接渡す事が出来る。
+</li></ol><!-- In 1.0 the `<>` method for bidirectional mappings was overloaded for -->
+<!-- different arities so you could directly pass a case class's `apply` -->
+<!-- method to it: -->
+<pre><code class="prettyprint lang-scala">// --------------------- Slick 1.0 code -- does not compile in 2.0 ---------------------
+def * = id ~ name ~ street &lt;&gt; (Supplier _, Supplier.unapply)
+</code></pre><p>上記のような記述はもはや2.0ではサポートされていない。その理由の1つとして、このようなオーバーロードはエラーメッセージを複雑にしすぎるためである。現在では適切なタプル型を用いて関数を定義する事が出来る。もしケースクラスをマッピングしたいのならば、コンパニオンオブジェクトの<code>.tupled</code>を単純に用いれば良いのである。
+</p><!-- This is no longer supported in 2.0. One of the reasons is that the -->
+<!-- overloading lead to complicated error messages. You now have to use a -->
+<!-- function with an appropriate tuple type. If you map to a case class you -->
+<!-- can simply use `.tupled` on its companion object: -->
+<pre><code class="prettyprint lang-scala">def * = (id, name, street) &lt;&gt; (Supplier.tupled, Supplier.unapply)
+</code></pre><h2 id="Pre-compiled+updates">Pre-compiled updates<a href="#Pre-compiled+updates" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>Slickはselect文において用いられるのと同じ方法で、update文における事前コンパイルもサポートしている。これについては、<a href="http://slick.typesafe.com/doc/2.0.0/queries.html#compiled-queries">Compliled-Queries</a>のセクションを見て欲しい。
+</p><!-- Slick now supports pre-compilation of updates in the same manner like -->
+<!-- selects, see compiled-queries. -->
+<h2 id="Database+and+Session+Handling">Database and Session Handling<a href="#Database+and+Session+Handling" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>Slick 1.0では<code>Database</code>のファクトリオブジェクトとして標準的なJDBCベースな<code>Database</code>と<code>Session</code>といった型が<code>scala.slick.session</code>パッケージにある。Slick 2.0からはJDBCベースなデータベースに制限せず、このパッケージは(<em>backend</em>としても知られる)<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.backend.DatabaseComponent"><code>DatabaseComponent</code></a>階層
+によって置き換えられている。もし<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.driver.JdbcProfile"><code>JdbcProfile</code></a>抽象レベルで動かしたいのならば、以前に<code>scala.slick.session</code>にあったものをインポートし、常に<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend"><code>JdbcBackend</code></a>を用いれば良い。ただし、<code>simple._</code>といったインポートを行うと自動的にスコープ内にこれらの型が持ち込まれてしまうので注意して欲しい。
+</p><!-- In Slick 1.0, the common JDBC-based `Database` and `Session` types, as -->
+<!-- well as the `Database` factory object, could be found in the package -->
+<!-- `scala.slick.session`. Since Slick 2.0 is no longer restricted to -->
+<!-- JDBC-based databases, this package has been replaced by the new -->
+<!-- scala.slick.backend.DatabaseComponent (a.k.a. *backend*) hierarchy. If -->
+<!-- you work at the scala.slick.driver.JdbcProfile abstraction level, you -->
+<!-- will always use a scala.slick.jdbc.JdbcBackend from which you can import -->
+<!-- the types that were previously found in `scala.slick.session`. Note that -->
+<!-- importing `simple._` from a driver will automatically bring these types -->
+<!-- into scope. -->
+<h2 id="Dynamically+and+Statically+Scoped+Sessions">Dynamically and Statically Scoped Sessions<a href="#Dynamically+and+Statically+Scoped+Sessions" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>Slick 2.0では依然としてスレッドローカルな動的セッションと静的スコープセッションを提供している。しかしシンタックスが変わっており、静的スコープセッションを用いる際にはより簡潔な記述が推奨される。以前の<code>threadLocalSession</code>は<code>dynamicSession</code>という名前に変わっており、関連する<code>withSession</code>や<code>withTransaction</code>といった関数も<code>withDynSession</code>と<code>withDynTransaction</code>という名前にそれぞれ変わっている。Slick 1.0で記述されていた以下のようなシンタックスは、
+</p><!-- Slick 2.0 still supports both, thread-local dynamic sessions and -->
+<!-- statically scoped sessions, but the syntax has changed to make the -->
+<!-- recommended way of using statically scoped sessions more concise. The -->
+<!-- old `threadLocalSession` is now called `dynamicSession` and the -->
+<!-- overloads of the associated session handling methods `withSession` and -->
+<!-- `withTransaction` have been renamed to `withDynSession` and -->
+<!-- `withDynTransaction` respectively. If you used this pattern in Slick -->
+<!-- 1.0: -->
+<pre><code class="prettyprint lang-scala">// --------------------- Slick 1.0 code -- does not compile in 2.0 ---------------------
+import scala.slick.session.Database.threadLocalSession
+...
+myDB withSession {
+  // use the implicit threadLocalSession here
+}
+</code></pre><p>Slick 2.0で以下のようなシンタックスへ変わる。
+</p><pre><code class="prettyprint lang-scala">import scala.slick.jdbc.JdbcBackend.Database.dynamicSession
+...
+myDB withDynSession {
+  // use the implicit dynamicSession here
+}
+</code></pre><p>一方で、Slick 1.0で必要になっていた静的スコープセッションにおける明示的な型宣言は
+</p><!-- On the other hand, due to the overloaded methods, Slick 1.0 required an -->
+<!-- explicit type annotation when using the statically scoped session: -->
+<pre><code class="prettyprint lang-scala">myDB withSession { implicit session: Session =&gt;
+  // use the implicit session here
+}
+</code></pre><ol><li>0においてもはや必要なくなる。
+</li></ol><!-- This is no longer necessary in 2.0: -->
+<pre><code class="prettyprint lang-scala">myDB withSession { implicit session =&gt;
+  // use the implicit session here
+}
+</code></pre><p>また、動的セッションを使うことは確かな情報を取得できるか分からない事から推奨されていない。静的セッションを用いる方がより安全である。
+</p><!-- Again, the recommended practice is NOT to use dynamic sessions. If you -->
+<!-- are uncertain if you need them the answer is most probably no. Static -->
+<!-- sessions are safer. -->
+<h2 id="Mapped+Column+Types">Mapped Column Types<a href="#Mapped+Column+Types" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>Slick 1.0の<code>MappedTypeMapper</code>は<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.driver.JdbcTypesComponent@MappedColumnType:JdbcDriver.MappedColumnTypeFactory"><code>MappedColumnType</code></a>へと名前が変わった。<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.profile.RelationalTypesComponent$MappedColumnTypeFactory@base[T,U](T)=&gt;U,(U)=&gt;T)(ClassTag[T],(RelationalTypesComponent.this)#BaseColumnType[U]):(RelationalTypesComponent.this)#BaseColumnType[T])">`MappedColumnType.base`</a>を用いるような基本的な操作は<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.profile.RelationalProfile"><code>RelationalProfile</code></a>レベル(高度な利用法をするのならば依然として<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.driver.JdbcProfile"><code>JdbcProfile</code></a>が必要)において現在も利用できる。
+</p><!-- Slick 1.0’s `MappedTypeMapper` has been renamed to MappedColumnType. Its basic form (using MappedColumnType.base) is now available at the RelationalProfile level (with more advanced uses still requiring JdbcProfile). The idiomatic use in Slick 1.0 was: -->
+<pre><code class="prettyprint lang-scala">// --------------------- Slick 1.0 code -- does not compile in 2.0 ---------------------
+case class MyID(value: Int)
+...
+implicit val myIDTypeMapper =
+  MappedTypeMapper.base[MyID, Int](_.value, new MyID(_))
+</code></pre><p>この記述は、次のように変わる。
+</p><!-- This has changed to: -->
+<pre><code class="prettyprint lang-scala">case class MyID(value: Int)
+...
+implicit val myIDColumnType =
+  MappedColumnType.base[MyID, Int](_.value, new MyID(_))
+</code></pre><p>もしこの例のように単純なラッパー型へマッピングするのなら、<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.lifted.MappedTo"><code>MappedTo</code></a>を用いてもっと簡単に書くことが出来る。
+</p><!-- If you need to map a simple wrapper type (as shown in this example), you -->
+<!-- can now do that in an easier way by extending -->
+<!-- scala.slick.lifted.MappedTo: -->
+<pre><code class="prettyprint lang-scala">case class MyID(value: Int) extends MappedTo[Int]
+// No extra implicit required any more
+</code></pre><div class="bottom nav span-16">
+                        <em>Next Page</em>
+                        <span class="arrow">❧</span>
+                        <a href="Connections+%2F+Transactions.html"> Connections / Transactions </a>                        
+                        
+                      </div><div class="tocwrapper show">
+      <a class="tochead nav" style="display: none" href="#toc">❦</a>
+      <a name="toc"></a>
+      <h4 class="toctitle">Contents</h4>
+      <div class="tocbody">
+      <div><a href="slick-doc-ja+2.0.html">slick-doc-ja 2.0</a></div><ol class="toc"> <li><div><a href="%E5%B0%8E%E5%85%A5.html">導入</a></div></li><li><div><a href="%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86.html">始めよう</a></div></li><li><div class="current">Slick v2.0 Migration Guide</div></li><li><div><a href="Connections+%2F+Transactions.html">Connections / Transactions</a></div></li><li><div><a href="Schema+code+generation.html">Schema code generation</a></div></li><li><div><a href="Schemas.html">Schemas</a></div></li><li><div><a href="Queries.html">Queries</a></div></li><li><div><a href="User-Defined+Features.html">User-Defined Features</a></div></li><li><div><a href="Plain+SQL+Queries.html">Plain SQL Queries</a></div></li><li><div><a href="Slick+Extensions.html">Slick Extensions</a></div></li><li><div><a href="Direct+Embedding+%28Experimental+Feature%29.html">Direct Embedding (Experimental Feature)</a></div></li><li><div><a href="Slick+TestKit.html">Slick TestKit</a></div></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
+          </div>
+        </div>
+        
+        
+      </body>
+    </html>

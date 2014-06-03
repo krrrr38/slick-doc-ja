@@ -1,0 +1,149 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html>
+      <head>
+        <title>slick-doc-ja 1.0 — 導入</title>
+        
+        <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/blueprint/grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/> 
+        <!--[if lt IE 8]>
+          <link rel="stylesheet" href={ relativeBase + "css/blueprint/ie.css" } type="text/css" media="screen, projection"/>
+        <![endif]-->
+        <link rel="stylesheet" href="css/pamflet.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamflet-print.css" type="text/css" media="print"/>
+        <link rel="stylesheet" href="css/pamflet-grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.collapse.js"></script>
+        <script type="text/javascript" src="js/pamflet.js"></script>
+        <script type="text/javascript">
+          Pamflet.page.language = 'en';
+        </script>
+        <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+        
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"></meta>
+        
+        
+      </head>
+      <body class="color_scheme-redmond">
+        <a class="page prev nav" href="slick-doc-ja+1.0.html">
+            <span class="space">&nbsp;</span>
+            <span class="flip">❧</span>
+          </a><a class="page next nav" href="%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86.html">
+            <span class="space">&nbsp;</span>
+            <span>❧</span>
+          </a>
+        <div class="container">
+          <div class="span-16 prepend-1 append-1">
+            <div class="span-16 top nav">
+              <div class="span-16 title">
+                <span>slick-doc-ja 1.0</span> — 導入
+              </div>
+            </div>
+          </div>
+          <div class="span-16 prepend-1 append-1 contents">
+            <p>Slick 1.0.0 documentation - 01 導入
+<!-- Introduction -->
+<a href="http://slick.typesafe.com/doc/1.0.0/introduction.html">Permalink to Introduction — Slick 1.0.0 documentation</a>
+</p><h1 id="%E5%B0%8E%E5%85%A5">導入<a href="#%E5%B0%8E%E5%85%A5" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><h2 id="Slick%E3%81%A8%E3%81%AF">Slickとは<a href="#Slick%E3%81%A8%E3%81%AF" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><!-- What is Slick -->
+<p>Slickは<a href="http://www.typesafe.com">Typesafe社</a>によって開発が行われている，Scalaのためのモダンなデータベースラッパーである．データベースにアクセスしながらScalaのコレクションを扱うかのようにデータを操作する事が出来る．また，SQLを直接書く事も可能である．
+</p><!--Slick is Typesafe‘s modern database query and access library for Scala. It allows you to work with stored data almost as if you were using Scala collections while at the same time giving you full control over when a database access happens and which data is transferred. You can also use SQL directly.-->
+<pre><code class="prettyprint lang-scala">val limit = 10.0
+// クエリはこのように書く事が出来る
+( for( c &lt;- Coffees; if c.price &lt; limit ) yield c.name ).list
+// SQLを直接書いた例
+sql&quot;select name from coffees where price &lt; $limit&quot;.as[String].list
+</code></pre><p>クエリをSQLを用いて書く代わりにScalaを用いるとコンパイル時に合成が安全に行われ，より良い形で利用する事が出来る．Slickは独自のクエリコンパイラを用いてDBに対しクエリを発行する．
+</p><!--When using Scala instead of SQL for your queries you profit from the compile-time safety(何これ) and compositionality. Slick can generate queries for different backends including your own, using its extensible query compiler. -->
+<h2 id="Slick%E3%81%AE%E7%89%B9%E5%BE%B4">Slickの特徴<a href="#Slick%E3%81%AE%E7%89%B9%E5%BE%B4" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><!-- Why Slick?/Feature -->
+<p>Slickは以下のような特徴を持っている:
+</p><!-- Slick offers a unique combination of features: -->
+<h3 id="Easy">Easy<a href="#Easy" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><ul><li>Scalaコレクションを扱うかのようにデータを操作出来る
+</li><li>JDBCコネクションをもとに，統合されたセッション管理を行える
+</li><li>必要な際にはSQLもサポートする
+</li><li>セットアップが簡単
+</li></ul><!--- Access stored data just like Scala collections
+- Unified session management based on JDBC Connections
+- Supports SQL if you need it
+- Simple setup-->
+<h3 id="Concise">Concise<a href="#Concise" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><ul><li>Scala構文
+</li><li>簡単に結果を取り出せる (ResultSet.getXなどの処理は必要無い)
+</li><li>Scales naturally
+</li><li>状態を持たない
+</li><li>実行時間や移動されるデータの明示的な管理
+</li></ul><!--- Scala syntax
+- Fetch results without pain (no ResultSet.getX)
+- Scales naturally
+- Stateless (like the web)
+- Explicit control of execution time and transferred data-->
+<h3 id="Safe">Safe<a href="#Safe" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><ul><li>SQLインジェクションを防止する
+</li><li>Compile-time safety (types, names, no typos, etc.)
+</li><li>型安全なストアドプロシージャのサポート
+</li></ul><!--- No SQL-injections
+- Compile-time safety (types, names, no typos, etc.)
+- Type-safe support of stored procedures-->
+<h3 id="Composable">Composable<a href="#Composable" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><ul><li>Scalaによる実装：抽象化された，再利用が簡単に行える設計
+</li></ul><!--- It‘s Scala code: abstract and re-use with ease-->
+<p>SlickはScala2.10を必要とします．
+（Scala2.9を利用する際にはSlickの前身である，<a href="http://scalaquery.org">ScalaQuery</a>を利用してください．）
+</p><!--Slick requires Scala 2.10. (For Scala 2.9 please use [ScalaQuery](http://scalaquery.org), the predecessor of Slick).-->
+<h2 id="%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E3%81%99%E3%82%8B%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9">サポートするデータベース<a href="#%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E3%81%99%E3%82%8B%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><ul><li>DB2 (via <a href="http://slick.typesafe.com/doc/1.0.0/extensions.html">slick-extensions</a>)
+</li><li>Derby/JavaDB
+</li><li>H2
+</li><li>HSQLDB/HyperSQL
+</li><li>Microsoft Access
+</li><li>Microsoft SQL Server
+</li><li>MySQL
+</li><li>Oracle (via <a href="http://slick.typesafe.com/doc/1.0.0/extensions.html">slick-extensions</a>)
+</li><li>PostgreSQL
+</li><li>SQLite
+</li></ul><p>他のSQLデータベースもSlickなら簡単にアクセスする事が出来るでしょう．独自のSQLベースのバックエンドを持つデータベースも，プラグインを作成する事でSlickを利用することが出来ます．そのようなプラグインの作成は大きな貢献となるでしょう．
+NoSQLのような他のバックエンドを持つようなデータベースに関しては現在開発中であるため，まだ利用する事はできません．．
+</p><!--Other SQL databases can be accessed right away with a reduced feature set. Writing a fully featured plugin for your own SQL-based backend can be achieved with a reasonable amount of work. Support for other backends (like NoSQL) is under development but not yet available.-->
+<h2 id="%E7%B0%A1%E5%8D%98%E3%81%AA%E6%A6%82%E8%AA%AC">簡単な概説<a href="#%E7%B0%A1%E5%8D%98%E3%81%AA%E6%A6%82%E8%AA%AC" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>SlickのLiftedEmbeddingによるデータベースへのアクセスは以下のステップで行う事ができます．
+</p><!--Accessing databases using Slick’s lifted embedding requires the following steps.-->
+<p>1．Slickのjarファイルをプロジェクトのdependenciesへ追加する
+</p><!--Add the Slick jar and its dependencies to your project-->
+<p>2．利用するDBに応じたDriverをimportし，セッションを作成する（もしくは単純にthreadLocalSessionをimportする）．
+</p><!--Pick a driver for a particular db and create a session (or simply pick threadLocalSession)-->
+<pre><code class="prettyprint lang-scala">import scala.slick.driver.H2Driver.simple._
+import Database.threadLocalSession
+</code></pre><p>3．データベーススキーマを記述する
+</p><!--Describe your Database schema-->
+<pre><code class="prettyprint lang-scala">object Coffees extends Table[(String, Double)](&quot;COFFEES&quot;) {
+  def name = column[String](&quot;COF_NAME&quot;, O.PrimaryKey)
+  def price = column[Double](&quot;PRICE&quot;)
+  def * = name ~ price
+}
+</code></pre><p>4．セッションスコープ内にて，for式かmap/flatMapを用いてクエリを記述する
+</p><!--Write queries using for-comprehensions or map/flatMap wrapped in a session scope-->
+<pre><code class="prettyprint lang-scala">Database.forURL(&quot;jdbc:h2:mem:test1&quot;, driver = &quot;org.h2.Driver&quot;) withSession {
+  ( for( c &lt;- Coffees; if c.price &lt; 10.0 ) yield c.name ).list
+  // or
+  Coffees.filter(_.price &lt; 10.0).map(_.name).list
+}
+</code></pre><p><a href="http://slick.typesafe.com/doc/1.0.0/gettingstarted.html">次の章</a>では，より詳細な扱い方や機能について説明します．
+</p><!--The [next chapter](http://slick.typesafe.com/doc/1.0.0/gettingstarted.html) explains these steps and further aspects in more detail.-->
+<h2 id="License">License<a href="#License" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>Slick is released under a BSD-Style free and open source software <a href="https://github.com/slick/slick/blob/1.0.0/LICENSE.txt">license</a>.
+</p><div class="bottom nav span-16">
+                        <em>Next Page</em>
+                        <span class="arrow">❧</span>
+                        <a href="%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86.html"> 始めよう </a>                        
+                        
+                      </div><div class="tocwrapper show">
+      <a class="tochead nav" style="display: none" href="#toc">❦</a>
+      <a name="toc"></a>
+      <h4 class="toctitle">Contents</h4>
+      <div class="tocbody">
+      <div><a href="slick-doc-ja+1.0.html">slick-doc-ja 1.0</a></div><ol class="toc"> <li><div class="current">導入</div></li><li><div><a href="%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86.html">始めよう</a></div></li><li><div><a href="Lifted+Embedding.html">Lifted Embedding</a></div></li><li><div><a href="Plain+SQL+Queries.html">Plain SQL Queries</a></div></li><li><div><a href="Direct+Embedding.html">Direct Embedding</a></div></li><li><div><a href="Slick+TestKit.html">Slick TestKit</a></div></li><li><div><a href="Slick+Extensions.html">Slick Extensions</a></div></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
+          </div>
+        </div>
+        
+        
+      </body>
+    </html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html>
+      <head>
+        <title>slick-doc-ja 2.0 — Direct Embedding (Experimental Feature)</title>
+        
+        <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/blueprint/grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/> 
+        <!--[if lt IE 8]>
+          <link rel="stylesheet" href={ relativeBase + "css/blueprint/ie.css" } type="text/css" media="screen, projection"/>
+        <![endif]-->
+        <link rel="stylesheet" href="css/pamflet.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamflet-print.css" type="text/css" media="print"/>
+        <link rel="stylesheet" href="css/pamflet-grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.collapse.js"></script>
+        <script type="text/javascript" src="js/pamflet.js"></script>
+        <script type="text/javascript">
+          Pamflet.page.language = 'en';
+        </script>
+        <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+        
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"></meta>
+        
+        
+      </head>
+      <body class="color_scheme-redmond">
+        <a class="page prev nav" href="Slick+Extensions.html">
+            <span class="space">&nbsp;</span>
+            <span class="flip">❧</span>
+          </a><a class="page next nav" href="Slick+TestKit.html">
+            <span class="space">&nbsp;</span>
+            <span>❧</span>
+          </a>
+        <div class="container">
+          <div class="span-16 prepend-1 append-1">
+            <div class="span-16 top nav">
+              <div class="span-16 title">
+                <span>slick-doc-ja 2.0</span> — Direct Embedding (Experimental Feature)
+              </div>
+            </div>
+          </div>
+          <div class="span-16 prepend-1 append-1 contents">
+            <p>Slick 2.0.0 documentation - 11 Direct Embedding (Experimental Feature)
+<!--Direct Embedding — Slick 2.0.0 documentation-->
+</p><p><a href="http://slick.typesafe.com/doc/2.0.0/direct-embedding.html">Permalink to Direct Embedding — Slick 2.0.0 documentation</a>
+</p><h1 id="Direct+Embedding+%28Experimental+Feature%29">Direct Embedding (Experimental Feature)<a href="#Direct+Embedding+%28Experimental+Feature%29" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><p>direct embeddingは新しい、しかしまだ不完全で実験的なクエリAPIである。現在実験中。開発中の段階であるため、リリースに応じて非推奨な期間など無しに変更される事がある。安全に利用する事の出来る、安定したlifted embeddingクエリAPIに取って代わるような予定は無く、direct embeddingは共存させていく。lifted embeddingと違って、direct enbeddingは実装のための暗黙的な変換やオーバーロードするオペレータの代わりにマクロを用いて操作を行う。ユーザのために、コード内における違いは少なくしているが、direct enbeddingを用いるクエリは普遍的なScalaの型を用いて機能している。これは表示されるエラーメッセージの理解性を上げるためでもある。
+</p><!--The direct embedding is a new, still incomplete, experimental Query API under development. It may change without deprecation period in any release during its experimental status. There is no plan to replace the stable lifted embedding Query API, which you can safely bet on for production use. The direct embedding co-exists. Unlike the lifted embedding, the direct embedding uses macros instead of operator overloading and implicit conversions for its implementation. For a user the difference in the code is small, but queries using the direct embedding work with ordinary Scala types, which can make error messages easier to understand.-->
+<p>以下の説明は<a href="http://slick.typesafe.com/gettingstarted.html">*lifted embedding*</a>の説明に類似した例である。
+</p><!--The following descriptions are anolog to the description of the [*lifted embedding*][1].-->
+<h2 id="Dependencies">Dependencies<a href="#Dependencies" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>direct embeddingは型検査のために実行時にScalaコンパイラにアクセスする必要がある。Slickは必要性に駆られない限り、アプリケーションに対し、依存性を避けるためにScalaコンパイラへの依存性を任意としている。そのため、direct embeddingを用いる際にはプロジェクトの <code>build.sbt</code> に対し明示的にその依存性を記述しなくてはならない。
+</p><!--The direct embedding requires access to the Scala compiler at runtime for typechecking. Slick only declares an *optional* dependency on scala-compiler in order to avoid bringing it (along with all transitive dependencies) into your application if you don’t need it. You must add it explicitly to your own project’s build.sbt file if you want to use the direct embedding:-->
+<pre><code class="prettyprint lang-scala">libraryDependencies &lt;+= (scalaVersion)(&quot;org.scala-lang&quot; % &quot;scala-compiler&quot; % _)
+</code></pre><h2 id="Imports">Imports<a href="#Imports" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><pre><code class="prettyprint lang-scala">import scala.slick.driver.H2Driver
+import H2Driver.simple.Database
+import Database.{threadLocalSession =&gt; session}
+import scala.slick.direct._
+import scala.slick.direct.AnnotationMapper._
+</code></pre><h2 id="Row+class+and+schema">Row class and schema<a href="#Row+class+and+schema" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>スキーマは現在でえは行を保持しているケースクラスに対してアノテーションを付与する事で記述する事が出来る。今後、より柔軟にスキーマの情報を拡張出来るような機能を提供する予定だ。
+</p><!--The schema description is currently provided as annotations on a case class which is used for holding rows. We will later provide more flexible and customizable means of providing the schema information.-->
+<pre><code class="prettyprint lang-scala">// describe schema for direct embedding
+@table(name=&quot;COFFEES&quot;)
+case class Coffee(
+  @column(name=&quot;NAME&quot;)
+  name : String,
+  @column(name=&quot;PRICE&quot;)
+  price : Double
+)
+</code></pre><h2 id="Query">Query<a href="#Query" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>Queryableはテーブルデータに対しクエリの演算を行うためのものであり、注釈付けられた型引数を取る。
+</p><!--Queryable takes an annotated case class as its type argument to formulate queries agains the corresponding table.-->
+<p><code>_.price</code> はここではInt型である。潜在的な、マクロベースの実装においてはmapやfilterに与えられた引数はJVM上で実行されないが、その代わりにデータベースクエリへと変換される事を覚えておいて欲しい。
+</p><!--_.price is of type Int here. The underlying, macro-based implementation takes care of that the shown arguments to map and filter are not executed on the JVM but translated to database queries instead.-->
+<pre><code class="prettyprint lang-scala">// query database using direct embedding
+val q1 = Queryable[Coffee]
+val q2 = q1.filter( _.price &gt; 3.0 ).map( _ .name )
+</code></pre><h2 id="Execution">Execution<a href="#Execution" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>クエリを実行するためには、選択したデータベースのドライバーを用いるSlickBackendインスタンスを作成する必要がある。
+</p><!--To execute the queries we need to create a SlickBackend instance passing in the chosen database backend driver.-->
+<pre><code class="prettyprint lang-scala">val db = Database.forURL(&quot;jdbc:h2:mem:test1&quot;, driver = &quot;org.h2.Driver&quot;)
+db withSession {
+    // execute query using a chosen db backend
+    val backend = new SlickBackend( H2Driver, AnnotationMapper )
+    println( backend.result( q2, session ) )
+    println( backend.result( q2.length, session ) )
+}
+</code></pre><h2 id="Alternative+direct+embedding+bound+to+a+driver+and+session">Alternative direct embedding bound to a driver and session<a href="#Alternative+direct+embedding+bound+to+a+driver+and+session" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>ImplicitQueryableを用いると、queryableはバックエンドとセッションに束縛される。クエリはその上で以下のような方法で簡単に実行する事が出来る。
+</p><!--Using ImplicitQueryable, a queryable can be bound to a backend and session. The query can be further adapted and easily executed this way.-->
+<pre><code class="prettyprint lang-scala">//
+val iq1 = ImplicitQueryable( q1, backend, session )
+val iq2 = iq1.filter( c =&gt; c.price &gt; 3.0 )
+println( iq2.toSeq ) //  &lt;- triggers execution 
+println( iq2.length ) // &lt;- triggers execution
+</code></pre><h2 id="Features">Features<a href="#Features" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>direct embeddingは現在、 <code>String</code>, <code>Int</code>, <code>Double</code> といった値にたいしマッピングされるデータベースカラムのみサポートしている。
+</p><!--The direct embedding currently only supports database columns, which can be mapped to either `String` , `Int` , `Double` .-->
+<p>QueryableとImplicitQueryableは現在、次のようなメソッドを用意している。
+</p><!--Queryable and ImplicitQueryable currently support the following methods:-->
+<p><code>map, flatMap, filter, length</code>
+</p><p>これらのメソッドはimmutableな演算を行うが、関数呼び出しによる変化を包含した新しいQuaryableを返す。
+</p><!--The methods are all immutable meaning they leave the left-hand-side Queryable unmodified, but return a new Queryable incorporating the changes by the method call.-->
+<p>上記の関数におけるシンタックスとして、以下の様なオペレータを利用する事が出来る。
+</p><!--Within the expressions passed to the above methods, the following operators may be used:-->
+<p><code>Any: ==</code>
+</p><p><code>Int, Double: + &lt; &gt;</code>
+</p><p><code>String: +</code>
+</p><p><code>Boolean: || &amp;&amp;</code>
+</p><p>他に定義された独自のオペレータについても、型検査がマッチしていれば利用する事が出来る。しかし現時点では、それらのオペレータは実行時に失敗するクエリを生成するようなSQLへ変換する事が出来ない。（例: <code>( coffees.map( c =&gt; c.name.repr ) )</code>）将来的には、コンパイル中にそのようなものもキャッチするような方法を検討している。
+</p><!--Other operators may type check and compile ok, if they are defined for the corresponding types. They can however currently not be translated to SQL, which makes the query fail at runtime, for example: `(coffees.map( c => c.name.repr ))` . We are evaluating ways to catch those cases at compile time in the future-->
+<p>クエリは行を補完するようなオブジェクトを保持する、任意にネストされたタプルのシーケンスを結果として返す。
+</p><!--Queries may result in sequences of arbitrarily nested tuples, which may also contain objects representing complete rows. E.g.-->
+<pre><code class="prettyprint lang-scala">q1.map( c =&gt; (c.name, (c, c.price)) )
+</code></pre><p>direct embeddingは現在データの挿入といった機能を持っていない。その代わりに<a href="http://slick.typesafe.com/lifted-embedding.html">*lifted embedding*</a>や<a href="http://slick.typesafe.com/sql.html">*plain SQL queries*</a>などを用いる事ができる。
+</p><!--The direct embedding currently does not feature insertion of data. Instead you can use the [*lifted embedding*][2] or [*plain SQL queries*][3].-->
+<div class="bottom nav span-16">
+                        <em>Next Page</em>
+                        <span class="arrow">❧</span>
+                        <a href="Slick+TestKit.html"> Slick TestKit </a>                        
+                        
+                      </div><div class="tocwrapper show">
+      <a class="tochead nav" style="display: none" href="#toc">❦</a>
+      <a name="toc"></a>
+      <h4 class="toctitle">Contents</h4>
+      <div class="tocbody">
+      <div><a href="slick-doc-ja+2.0.html">slick-doc-ja 2.0</a></div><ol class="toc"> <li><div><a href="%E5%B0%8E%E5%85%A5.html">導入</a></div></li><li><div><a href="%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86.html">始めよう</a></div></li><li><div><a href="Slick+v2.0+Migration+Guide.html">Slick v2.0 Migration Guide</a></div></li><li><div><a href="Connections+%2F+Transactions.html">Connections / Transactions</a></div></li><li><div><a href="Schema+code+generation.html">Schema code generation</a></div></li><li><div><a href="Schemas.html">Schemas</a></div></li><li><div><a href="Queries.html">Queries</a></div></li><li><div><a href="User-Defined+Features.html">User-Defined Features</a></div></li><li><div><a href="Plain+SQL+Queries.html">Plain SQL Queries</a></div></li><li><div><a href="Slick+Extensions.html">Slick Extensions</a></div></li><li><div class="current">Direct Embedding (Experimental Feature)</div></li><li><div><a href="Slick+TestKit.html">Slick TestKit</a></div></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
+          </div>
+        </div>
+        
+        
+      </body>
+    </html>

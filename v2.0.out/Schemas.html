@@ -1,0 +1,249 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html>
+      <head>
+        <title>slick-doc-ja 2.0 — Schemas</title>
+        
+        <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/blueprint/grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/> 
+        <!--[if lt IE 8]>
+          <link rel="stylesheet" href={ relativeBase + "css/blueprint/ie.css" } type="text/css" media="screen, projection"/>
+        <![endif]-->
+        <link rel="stylesheet" href="css/pamflet.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamflet-print.css" type="text/css" media="print"/>
+        <link rel="stylesheet" href="css/pamflet-grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.collapse.js"></script>
+        <script type="text/javascript" src="js/pamflet.js"></script>
+        <script type="text/javascript">
+          Pamflet.page.language = 'en';
+        </script>
+        <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+        
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"></meta>
+        
+        
+      </head>
+      <body class="color_scheme-redmond">
+        <a class="page prev nav" href="Schema+code+generation.html">
+            <span class="space">&nbsp;</span>
+            <span class="flip">❧</span>
+          </a><a class="page next nav" href="Queries.html">
+            <span class="space">&nbsp;</span>
+            <span>❧</span>
+          </a>
+        <div class="container">
+          <div class="span-16 prepend-1 append-1">
+            <div class="span-16 top nav">
+              <div class="span-16 title">
+                <span>slick-doc-ja 2.0</span> — Schemas
+              </div>
+            </div>
+          </div>
+          <div class="span-16 prepend-1 append-1 contents">
+            <p>Slick 2.0.0 documentation - 06 Schemas
+</p><p><a href="http://slick.typesafe.com/doc/2.0.0/schemas.html">Permalink to Schemas — Slick 2.0.0 documentation</a>
+</p><h1 id="Schemas">Schemas<a href="#Schemas" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><p>ここでは、<a href="http://slick.typesafe.com/doc/2.0.0/introduction.html#lifted-embedding">Lifted Emebedding API</a>において、データベーススキーマをどのようにして取り扱うのかということについて説明する。初めに、手でスキーマを記述する方法についての説明を行う。手で書く以外にも<a href="http://slick.typesafe.com/doc/2.0.0/code-generation.html">コードジェネレータ</a>を使うこともできる。
+</p><!-- This chapter describes how to work with database schemas in the -->
+<!-- Lifted Embedding \<lifted-embedding\> API. This explains how you can -->
+<!-- write schema descriptions by hand. Instead you can also use the -->
+<!-- code generator \<code-generation\> to take this work off your hands. -->
+<h2 id="Tables">Tables<a href="#Tables" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>型安全なクエリを扱う<em>Lifted Embedding</em> APIを用いるには、データベーススキーマに対応する<code>Table</code>クラスと、<code>TableQuery</code>値を定義する必要がある。
+</p><!-- In order to use the *Lifted Embedding* API for type-safe queries, you -->
+<!-- need to define `Table` row classes and corresponding `TableQuery` values -->
+<!-- for your database schema: -->
+<pre><code class="prettyprint lang-scala">class Coffees(tag: Tag) extends Table[(String, Int, Double, Int, Int)](tag, &quot;COFFEES&quot;) {
+  def name = column[String](&quot;COF_NAME&quot;, O.PrimaryKey)
+  def supID = column[Int](&quot;SUP_ID&quot;)
+  def price = column[Double](&quot;PRICE&quot;)
+  def sales = column[Int](&quot;SALES&quot;, O.Default(0))
+  def total = column[Int](&quot;TOTAL&quot;, O.Default(0))
+  def * = (name, supID, price, sales, total)
+}
+val coffees = TableQuery[Coffees]
+</code></pre><p>全てのカラムは<code>column</code>関数を通して定義される。各カラムはScalaの型を持っており、アッパーケースで通常記述されるデータベース用のカラム名を持つ。以下に挙げるようなプリミティブ型は<code>JdbcProfile</code>において、JDBCベースなデータベースのためにボクシングされた型が適応される。(各種データベースドライバーによって恣意的に割り当てられているものもある)
+</p><!-- All columns are defined through the `column` method. Each column has a -->
+<!-- Scala type and a column name for the database (usually in upper-case). -->
+<!-- The following primitive types are supported out of the box for -->
+<!-- JDBC-based databases in `JdbcProfile` (with certain limitations imposed -->
+<!-- by the individual database drivers): -->
+<ul><li><em>Numeric types</em>: Byte, Short, Int, Long, BigDecimal, Float, Double
+</li><li><em>LOB types</em>: java.sql.Blob, java.sql.Clob, Array[Byte]
+</li><li><em>Date types</em>: java.sql.Date, java.sql.Time, java.sql.Timestamp
+</li><li>Boolean
+</li><li>String
+</li><li>Unit
+</li><li>java.util.UUID
+</li></ul><!-- -   *Numeric types*: Byte, Short, Int, Long, BigDecimal, Float, Double -->
+<!-- -   *LOB types*: java.sql.Blob, java.sql.Clob, Array[Byte] -->
+<!-- -   *Date types*: java.sql.Date, java.sql.Time, java.sql.Timestamp -->
+<!-- -   Boolean -->
+<!-- -   String -->
+<!-- -   Unit -->
+<!-- -   java.util.UUID -->
+<p>nullを許容するカラムは<code>T</code>がサポートされたプリミティブ型である際に、<code>Option[T]</code>を用いて表せば良い。ただし、このOptionに対する全ての操作は、ScalaのOption操作と異なり、データベースのnullプロパゲーションセマンティクスを用いてしまう事に注意して欲しい。特に、<code>None === None</code>という式は<code>None</code>になる。これはSlickのメジャーリリースで将来的に変更されるかもしれない。
+</p><!-- Nullable columns are represented by `Option[T]` where `T` is one of the -->
+<!-- supported primitive types. Note that all operations on Option values are -->
+<!-- currently using the database's null propagation semantics which may -->
+<!-- differ from Scala's Option semantics. In particular, `None === None` -->
+<!-- evaluates to `None`. This behaviour may change in a future major release -->
+<!-- of Slick. -->
+<p>column関数には、カラム名の後にカラムのオプションを追加する事が出来る。適用出来るオブションはテーブルの<code>O</code>オブジェクトを通して利用出来る。以下のようなオプションが<code>JdbcProfile</code>において定義されている。
+</p><!-- After the column name, you can add optional column options to a `column` -->
+<!-- definition. The applicable options are available through the table's `O` -->
+<!-- object. The following ones are defined for `JdbcProfile`: -->
+<ul><li><p><code>PrimaryKey</code>
+</p><ul><li>DDLステートメントを作成する際に、このカラムが主キーである(ただし複合主キーでは無い)ことをマークする
+</li></ul></li></ul><!-- :   Mark the column as a (non-compound) primary key when creating the -->
+<!--     DDL statements. -->
+<ul><li><p><code>Default[T](defaultValue: T)</code>
+</p><ul><li>このカラムに対する値無しにデータを挿入する際のデフォルト値を指定する。この情報はDDLステートメントが作られる際にのみ用いられる。
+</li></ul></li></ul><!-- :   Specify a default value for inserting data into the table without -->
+<!--     this column. This information is only used for creating DDL -->
+<!--     statements so that the database can fill in the missing information. -->
+<ul><li><p><code>DBType(dbType: String)</code>
+</p><ul><li>基本的なデータ型以外の型をDDLステートメントに与える(例として<code>String</code>型のカラムに対して<code>DBType(&quot;VARCHAR(20&quot;)</code>を用いるなど)。
+</li></ul></li></ul><!-- :   Use a non-standard database-specific type for the DDL statements -->
+<!--     (e.g. `DBType("VARCHAR(20)")` for a `String` column). -->
+<ul><li><p><code>AutoInc</code>
+</p><ul><li>DDLステートメントを作成する際に、自動インクリメントなキーとしてカラムをマークする。他のカラムのオプションと違い、このオプションはDDLの作成時以外にも意味を持つ。多くのデータベースでは自動インクリメントでないカラムがデータ挿入時に返却されるのを許可しない(しばしば暗黙的に他のカラムは無視される)。そのため、Slickでは返却されるカラムが<code>AutoInc</code>として適切にマークされているのかどうかをチェックする。
+</li></ul></li></ul><!-- :   Mark the column as an auto-incrementing key when creating the DDL -->
+<!--     statements. Unlike the other column options, this one also has a -->
+<!--     meaning outside of DDL creation: Many databases do not allow -->
+<!--     non-AutoInc columns to be returned when inserting data (often -->
+<!--     silently ignoring other columns), so Slick will check if the return -->
+<!--     column is properly marked as AutoInc where needed. -->
+<ul><li><p><code>NotNull</code>, <code>Nullable</code>
+</p><ul><li>DDLステートメントを作成する際に、カラムに明示的にnullを許容するか許容しないかをマークする。nullに出来るかは<code>Option</code>型が<code>Option</code>型でないかといった違いからも決定される。一般的にこれらのオプションを使う理由は無い。
+</li></ul></li></ul><!-- :   Explicitly mark the column as nullable or non-nullable when creating -->
+<!--     the DDL statements for the table. Nullability is otherwise -->
+<!--     determined from the type (Option or non-Option). There is usually no -->
+<!--     reason to specify these options. -->
+<p>全てのテーブルではデフォルトの射影を表す<code>*</code>関数が必要になる。これはクエリを通して行を取り出す際に戻ってくるものが何になるべきかを示すものである。Slickの<code>*</code>射影はデータベースの<code>*</code>とは一致したものになる必要は無い。何かしらの計算を行った新たなカラムを足してもいいし、特定のカラムを省いても良いし好きにして良い。<code>*</code>射影と一致するような持ち上げられていない(non-lifted)型は<code>Table</code>へと型パラメータとして与えられる。例えば、マッピングのないテーブルにおいて、これは単一のカラム型もしくはカラムのタプル型になるだろう。
+</p><!-- Every table requires a `*` method contatining a default projection. This -->
+<!-- describes what you get back when you return rows (in the form of a table -->
+<!-- row object) from a query. Slick's `*` projection does not have to match -->
+<!-- the one in the database. You can add new columns (e.g. with computed -->
+<!-- values) or omit some columns as you like. The non-lifted type -->
+<!-- corresponding to the `*` projection is given as a type parameter to -->
+<!-- `Table`. For simple, non-mapped tables, this will be a single column -->
+<!-- type or a tuple of column types. -->
+<h2 id="Mapped+Tables">Mapped Tables<a href="#Mapped+Tables" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>両方向マッピングを行う<code>&lt;&gt;</code>オペレータを用いる事で、<code>*</code>射影に対し、自由な型をテーブルへマッピングする事が出来る。
+</p><!-- It is possible to define a mapped table that uses a custom type for its -->
+<!-- `*` projection by adding a bi-directional mapping with the `<>` -->
+<!-- operator: -->
+<pre><code class="prettyprint lang-scala">case class User(id: Option[Int], first: String, last: String)
+...
+class Users(tag: Tag) extends Table[User](tag, &quot;users&quot;) {
+  def id = column[Int](&quot;id&quot;, O.PrimaryKey, O.AutoInc)
+  def first = column[String](&quot;first&quot;)
+  def last = column[String](&quot;last&quot;)
+  def * = (id.?, first, last) &lt;&gt; (User.tupled, User.unapply)
+}
+val users = TableQuery[Users]
+</code></pre><p>(<code>Option</code>型を返すシンプルな<code>apply</code>や<code>unapply</code>関数のある)ケースクラスを用いる事で最適化されるが、自由なマッピング関数を用いても良い。この場合、適切な型を推測するのにタプルの<code>.shaped</code>を呼ぶのが役に立つ。一方で、マッピング関数に充分な型アノテーションを付与しても良いだろう。
+</p><!-- It is optimized for case classes (with a simple `apply` method and an -->
+<!-- `unapply` method that wraps its result in an `Option`) but it can also -->
+<!-- be used with arbitrary mapping functions. In these cases it can be -->
+<!-- useful to call `.shaped` on a tuple on the left-hand side in order to -->
+<!-- get its type inferred properly. Otherwise you may have to add full type -->
+<!-- annotations to the mapping functions. -->
+<h2 id="Constraints">Constraints<a href="#Constraints" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>外部キー制約はテーブルの<code>foreignKey</code>関数を用いて定義出来る。この関数は制約のための名前、ローカルカラム(もしくは射影、つまりここでは複合外部キーを定義出来る)、関連するテーブル、そしてテーブルから一致するカラムに対する関数を引数に取る。テーブルのためのDDLステートメントが作成される際、外部キー定義が追加される。
+</p><!-- A foreign key constraint can be defined with a table's `foreignKey` -->
+<!-- method. It takes a name for the constraint, the local column (or -->
+<!-- projection, so you can define compound foreign keys), the linked table, -->
+<!-- and a function from that table to the corresponding column(s). When -->
+<!-- creating the DDL statements for the table, the foreign key definition is -->
+<!-- added to it. -->
+<pre><code class="prettyprint lang-scala">class Suppliers(tag: Tag) extends Table[(Int, String, String, String, String, String)](tag, &quot;SUPPLIERS&quot;) {
+  def id = column[Int](&quot;SUP_ID&quot;, O.PrimaryKey)
+  //...
+}
+val suppliers = TableQuery[Suppliers]
+...
+class Coffees(tag: Tag) extends Table[(String, Int, Double, Int, Int)](tag, &quot;COFFEES&quot;) {
+  def supID = column[Int](&quot;SUP_ID&quot;)
+  //...
+  def supplier = foreignKey(&quot;SUP_FK&quot;, supID, suppliers)(_.id)
+  // compiles to SQL:
+  //   alter table &quot;COFFEES&quot; add constraint &quot;SUP_FK&quot; foreign key(&quot;SUP_ID&quot;)
+  //     references &quot;SUPPLIERS&quot;(&quot;SUP_ID&quot;)
+  //     on update NO ACTION on delete NO ACTION
+}
+val coffees = TableQuery[Coffees]
+</code></pre><p>データベースに定義された実際の制約とは独立して、<em>join</em>などで用いられるような関連データについてのナビゲーションとしても外部キーは用いる事が出来る。この目的において、結合されるデータを探すための便利関数を手動で定義させる。
+</p><!-- Independent of the actual constraint defined in the database, such a -->
+<!-- foreign key can be used to navigate to the linked data with a *join*. -->
+<!-- For this purpose, it behaves the same as a manually defined utility -->
+<!-- method for finding the joined data: -->
+<pre><code class="prettyprint lang-scala">def supplier = foreignKey(&quot;SUP_FK&quot;, supID, suppliers)(_.id)
+def supplier2 = suppliers.filter(_.id === supID)
+</code></pre><p>主キー制約は外部キーと同じように、<code>primaryKey</code>関数を用いる事で定義出来る。これは複合主キーを定義するのに便利なものとなっている。(<code>column</code>関数のオプションである<code>O.PrimaryKey</code>では複合主キーは定義出来ない)
+</p><!-- A primary key constraint can be defined in a similar fashion by adding a -->
+<!-- method that calls `primaryKey`. This is useful for defining compound -->
+<!-- primary keys (which cannot be done with the `O.PrimaryKey` column -->
+<!-- option): -->
+<pre><code class="prettyprint lang-scala">class A(tag: Tag) extends Table[(Int, Int)](tag, &quot;a&quot;) {
+  def k1 = column[Int](&quot;k1&quot;)
+  def k2 = column[Int](&quot;k2&quot;)
+  def * = (k1, k2)
+  def pk = primaryKey(&quot;pk_a&quot;, (k1, k2))
+  // compiles to SQL:
+  //   alter table &quot;a&quot; add constraint &quot;pk_a&quot; primary key(&quot;k1&quot;,&quot;k2&quot;)
+}
+</code></pre><p>またインデックスについても同様に<code>index</code>関数を用いて定義出来る。<code>unique</code>パラメータが内場合にはユニークなものではない、として定義される。
+</p><!-- Other indexes are defined in a similar way with the `index` method. They -->
+<!-- are non-unique by default unless you set the `unique` parameter: -->
+<pre><code class="prettyprint lang-Scala">class A(tag: Tag) extends Table[(Int, Int)](tag, &quot;a&quot;) {
+  def k1 = column[Int](&quot;k1&quot;)
+  def k2 = column[Int](&quot;k2&quot;)
+  def * = (k1, k2)
+  def idx = index(&quot;idx_a&quot;, (k1, k2), unique = true)
+  // compiles to SQL:
+  //   create unique index &quot;idx_a&quot; on &quot;a&quot; (&quot;k1&quot;,&quot;k2&quot;)
+}
+</code></pre><p>全ての制約は、テーブルにおいて定義された適切な返却型を用いて、反射的に探索が行なわれる。このような挙動に対して、<code>tableConstraints</code>関数をオーバーライドする事でカスタマイズ出来る。
+</p><!-- All constraints are discovered reflectively by searching for methods -->
+<!-- with the appropriate return types which are defined in the table. This -->
+<!-- behavior can be customized by overriding the `tableConstraints` method. -->
+<h2 id="Data+Definition+Language">Data Definition Language<a href="#Data+Definition+Language" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>テーブルのDDLステートメントは、<code>TableQuery</code>の<code>ddl</code>関数を用いて作成される。複数の<code>DDL</code>オブジェクトは<code>++</code>関数を用いて連結する事ができ、テーブル間にサイクルした依存関係が存在していたとしても、適切な順序で全てのテーブルを作成、削除する事が出来る。ステートメントは<code>create</code>と<code>drop</code>関数を用いて実行される。
+</p><!-- DDL statements for a table can be created with its `TableQuery`"s `ddl` -->
+<!-- method. Multiple `DDL` objects can be concatenated with `++` to get a -->
+<!-- compound `DDL` object which can create and drop all entities in the -->
+<!-- correct order, even in the presence of cyclic dependencies between -->
+<!-- tables. The statements are executed with the `create` and `drop` -->
+<!-- methods: -->
+<pre><code class="prettyprint lang-scala">val ddl = coffees.ddl ++ suppliers.ddl
+db withDynSession {
+  ddl.create
+  //...
+  ddl.drop
+}
+</code></pre><p><code>createStatements</code>や<code>dropStatements</code>関数を用いると、実際に吐かれるSQLについて確認する事が出来る。
+</p><!-- You can use the `createStatements` and `dropStatements` methods to get -->
+<!-- the SQL code: -->
+<pre><code class="prettyprint lang-scala">ddl.createStatements.foreach(println)
+ddl.dropStatements.foreach(println)
+</code></pre><div class="bottom nav span-16">
+                        <em>Next Page</em>
+                        <span class="arrow">❧</span>
+                        <a href="Queries.html"> Queries </a>                        
+                        
+                      </div><div class="tocwrapper show">
+      <a class="tochead nav" style="display: none" href="#toc">❦</a>
+      <a name="toc"></a>
+      <h4 class="toctitle">Contents</h4>
+      <div class="tocbody">
+      <div><a href="slick-doc-ja+2.0.html">slick-doc-ja 2.0</a></div><ol class="toc"> <li><div><a href="%E5%B0%8E%E5%85%A5.html">導入</a></div></li><li><div><a href="%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86.html">始めよう</a></div></li><li><div><a href="Slick+v2.0+Migration+Guide.html">Slick v2.0 Migration Guide</a></div></li><li><div><a href="Connections+%2F+Transactions.html">Connections / Transactions</a></div></li><li><div><a href="Schema+code+generation.html">Schema code generation</a></div></li><li><div class="current">Schemas</div></li><li><div><a href="Queries.html">Queries</a></div></li><li><div><a href="User-Defined+Features.html">User-Defined Features</a></div></li><li><div><a href="Plain+SQL+Queries.html">Plain SQL Queries</a></div></li><li><div><a href="Slick+Extensions.html">Slick Extensions</a></div></li><li><div><a href="Direct+Embedding+%28Experimental+Feature%29.html">Direct Embedding (Experimental Feature)</a></div></li><li><div><a href="Slick+TestKit.html">Slick TestKit</a></div></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
+          </div>
+        </div>
+        
+        
+      </body>
+    </html>

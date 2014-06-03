@@ -1,0 +1,128 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html>
+      <head>
+        <title>slick-doc-ja 2.0 — Slick TestKit</title>
+        
+        <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/blueprint/grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/> 
+        <!--[if lt IE 8]>
+          <link rel="stylesheet" href={ relativeBase + "css/blueprint/ie.css" } type="text/css" media="screen, projection"/>
+        <![endif]-->
+        <link rel="stylesheet" href="css/pamflet.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamflet-print.css" type="text/css" media="print"/>
+        <link rel="stylesheet" href="css/pamflet-grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.collapse.js"></script>
+        <script type="text/javascript" src="js/pamflet.js"></script>
+        <script type="text/javascript">
+          Pamflet.page.language = 'en';
+        </script>
+        <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+        
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"></meta>
+        
+        
+      </head>
+      <body class="color_scheme-redmond">
+        <a class="page prev nav" href="Direct+Embedding+%28Experimental+Feature%29.html">
+            <span class="space">&nbsp;</span>
+            <span class="flip">❧</span>
+          </a><a class="page next nav" href="Contents+in+Depth.html">
+            <span class="space">&nbsp;</span>
+            <span>❧</span>
+          </a>
+        <div class="container">
+          <div class="span-16 prepend-1 append-1">
+            <div class="span-16 top nav">
+              <div class="span-16 title">
+                <span>slick-doc-ja 2.0</span> — Slick TestKit
+              </div>
+            </div>
+          </div>
+          <div class="span-16 prepend-1 append-1 contents">
+            <p>Slick 2.0.0 documentation - 12 Slick TestKit
+<!--Slick TestKit — Slick 2.0.0 documentation-->
+</p><p><a href="http://slick.typesafe.com/doc/2.0.0/testkit.html">Permalink to Slick TestKit — Slick 2.0.0 documentation</a>
+</p><h1 id="Slick+TestKit">Slick TestKit<a href="#Slick+TestKit" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><p>Slickに対し、独自のデータベースドライバーを記述する際には、きちんと動作するのか、何が現時点で実装されていないのかなどを確認するために、ユニットテスト（もしくは加えて他の独自のカスタマイズしたテスト）をきちんと記述して欲しい。簡単にテストを記述するためのサポートとして、Slickユニットテスト用のSlick Test Kitプロジェクトを別に用意している。
+</p><!--When you write your own database driver for Slick, you need a way to run all the standard unit tests on it (in addition to any custom tests you may want to add) to ensure that it works correctly and does not claim to support any capabilities which are not actually implemented. For this purpose the Slick unit tests have been factored out into a separate Slick TestKit project.-->
+<p>これを用いるためには、Slickの基本的なPostgreSQLドライバーと、ビルドするために必要なものを全て含んだ<a href="https://github.com/slick/slick-testkit-example/tree/2.0.0">Slick TestKit Example</a>をクローンして使って欲しい。
+</p><!--To get started, you can clone the [Slick TestKit Example][1] project which contains a (slightly outdated) version of Slick’s standard PostgreSQL driver and all the infrastructure required to build and test it.-->
+<h2 id="Scaffolding">Scaffolding<a href="#Scaffolding" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>build.sbtは以下のように記述する。一般的な名前とバージョン設定と区別して、SlickとTestKit、junit-interface、Logback、PostgreSQL JDBC Driverへの依存性を追加する。そしてテストを行うためのオプションをいくつか記述する必要がある。
+</p><!--Its build.sbt file is straight-forward. Apart from the usual name and version settings, it adds the dependencies for Slick, the TestKit, junit-interface, Logback and the PostgreSQL JDBC driver, and it sets some options for the test runs:-->
+<pre><code class="prettyprint lang-scala">libraryDependencies ++= Seq(
+  &quot;com.typesafe.slick&quot; %% &quot;slick&quot; % &quot;2.0.0-RC1&quot;,
+  &quot;com.typesafe.slick&quot; %% &quot;slick-testkit&quot; % &quot;2.0.0-RC1&quot; % &quot;test&quot;,
+  &quot;com.novocode&quot; % &quot;junit-interface&quot; % &quot;0.10&quot; % &quot;test&quot;,
+  &quot;ch.qos.logback&quot; % &quot;logback-classic&quot; % &quot;0.9.28&quot; % &quot;test&quot;,
+  &quot;postgresql&quot; % &quot;postgresql&quot; % &quot;9.1-901.jdbc4&quot; % &quot;test&quot;
+)
+...
+testOptions += Tests.Argument(TestFrameworks.JUnit, &quot;-q&quot;, &quot;-v&quot;, &quot;-s&quot;, &quot;-a&quot;)
+...
+parallelExecution in Test := false
+...
+logBuffered := false
+</code></pre><p>src/test/resources/logback-test.xmlに、Slickのlogbackについての設定のコピーがある。もちろん、loggingフレームワーク以外のものを使う事も出来る。
+</p><!--There is a copy of Slick’s logback configuration in src/test/resources/logback-test.xml but you can swap out the logging framework if you prefer a different one.-->
+<h2 id="Driver">Driver<a href="#Driver" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>ドライバーの実装はsrc/main/scalaの中にある。
+</p><!--The actual driver implementation can be found under src/main/scala.-->
+<h2 id="Test+Harness">Test Harness<a href="#Test+Harness" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>TestKitテストを実行するためには、DriberTestを継承したクラスを作成する必要がある。加えて、TestKitに対してどのようにtestデータベースへ接続するのか、テーブルのリストをどのように取得するのか、テスト間におけるクリーンをどのようにして行うのかなどといった事を表すTestDBの実装が必要になる。
+</p><!--In order to run the TestKit tests, you need to add a class that extends DriverTest, plus an implementation of TestDB which tells the TestKit how to connect to a test database, get a list of tables, clean up between tests, etc.-->
+<p>PostgreSQLのテーストハーネス（src/test/scala/scala/slick/driver/test/MyPostgreTestの中にある）の場合は、大抵のデフォルトとなる実装はボックスの外で利用される。
+</p><!--In the case of the PostgreSQL test harness (in **src/test/scala/scala/slick/driver/test/MyPostgresTest.scala**) most of the default implementations can be used out of the box:-->
+<pre><code class="prettyprint lang-scala">@RunWith(classOf[Testkit])
+class MyPostgresTest extends DriverTest(MyPostgresTest.tdb)
+...
+object MyPostgresTest {
+  def tdb(cname: String) = new ExternalTestDB(&quot;mypostgres&quot;, MyPostgresDriver) {
+    override def getLocalTables(implicit session: Session) = {
+      val tables = ResultSetInvoker[(String,String,String, String)](_.conn.getMetaData()
+                    .getTables(&quot;&quot;, &quot;public&quot;, null, null))
+      tables.list.filter(_._4.toUpperCase == &quot;TABLE&quot;).map(_._3).sorted
+    }
+    override def getLocalSequences(implicit session: Session) = {
+      val tables = ResultSetInvoker[(String,String,String, String)](_.conn.getMetaData()
+                    .getTables(&quot;&quot;, &quot;public&quot;, null, null))
+      tables.list.filter(_._4.toUpperCase == &quot;SEQUENCE&quot;).map(_._3).sorted
+    }
+    override lazy val capabilities = driver.capabilities + TestDB.plainSql
+  }
+}
+</code></pre><h2 id="Database+Configuration">Database Configuration<a href="#Database+Configuration" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>PostgreSQLのテストハーネスは <strong>ExternalTestDB</strong> に基づいている一方、 <strong>test-dbs/databases.properties</strong> において設定が行われてなくてはならない。
+</p><!--Since the PostgreSQL test harness is based on **ExternalTestDB**, it needs to be configured in **test-dbs/databases.properties**:-->
+<pre><code class="prettyprint lang-scala"># PostgreSQL quick setup:
+# - Install PostgreSQL server with default options
+# - Change password in mypostgres.password
+# - Set mypostgres.enabled = true
+mypostgres.enabled = false
+mypostgres.url = jdbc:postgresql:[DB]
+mypostgres.user = postgres
+mypostgres.password = secret
+mypostgres.adminDB = postgres
+mypostgres.testDB = slick-test
+mypostgres.create = CREATE TABLESPACE slick_test LOCATION '[DBPATH]'; CREATE DATABASE &quot;[DB]&quot; TEMPLATE = template0 TABLESPACE slick_test
+mypostgres.drop = DROP DATABASE IF EXISTS &quot;[DB]&quot;; DROP TABLESPACE IF EXISTS slick_test
+mypostgres.driver = org.postgresql.Driver
+</code></pre><h2 id="Testing">Testing<a href="#Testing" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p><strong>sbt test</strong> を実行すると、 <strong>MyPostgresTest</strong> を探索し、TestKitのJUnit runnerを用いて実行される。これはテストハーネスを通してセットアップされたデータベースを用いており、ドライバーを用いて適応可能な全てのテストが実行される事になる。
+</p><!--Running **sbt test** discovers **MyPostgresTest** and runs it with TestKit’s JUnit runner. This in turn causes the database to be set up through the test harness and all tests which are applicable for the driver (as determined by the **capabilities** setting in the test harness) to be run.-->
+<div class="bottom nav end span-16">
+                        
+                      </div><div class="tocwrapper show">
+      <a class="tochead nav" style="display: none" href="#toc">❦</a>
+      <a name="toc"></a>
+      <h4 class="toctitle">Contents</h4>
+      <div class="tocbody">
+      <div><a href="slick-doc-ja+2.0.html">slick-doc-ja 2.0</a></div><ol class="toc"> <li><div><a href="%E5%B0%8E%E5%85%A5.html">導入</a></div></li><li><div><a href="%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86.html">始めよう</a></div></li><li><div><a href="Slick+v2.0+Migration+Guide.html">Slick v2.0 Migration Guide</a></div></li><li><div><a href="Connections+%2F+Transactions.html">Connections / Transactions</a></div></li><li><div><a href="Schema+code+generation.html">Schema code generation</a></div></li><li><div><a href="Schemas.html">Schemas</a></div></li><li><div><a href="Queries.html">Queries</a></div></li><li><div><a href="User-Defined+Features.html">User-Defined Features</a></div></li><li><div><a href="Plain+SQL+Queries.html">Plain SQL Queries</a></div></li><li><div><a href="Slick+Extensions.html">Slick Extensions</a></div></li><li><div><a href="Direct+Embedding+%28Experimental+Feature%29.html">Direct Embedding (Experimental Feature)</a></div></li><li><div class="current">Slick TestKit</div></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
+          </div>
+        </div>
+        
+        
+      </body>
+    </html>

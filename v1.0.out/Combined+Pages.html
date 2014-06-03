@@ -1,0 +1,857 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html>
+      <head>
+        <title>slick-doc-ja 1.0 — Combined Pages</title>
+        
+        <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/blueprint/grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/> 
+        <!--[if lt IE 8]>
+          <link rel="stylesheet" href={ relativeBase + "css/blueprint/ie.css" } type="text/css" media="screen, projection"/>
+        <![endif]-->
+        <link rel="stylesheet" href="css/pamflet.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamflet-print.css" type="text/css" media="print"/>
+        <link rel="stylesheet" href="css/pamflet-grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.collapse.js"></script>
+        <script type="text/javascript" src="js/pamflet.js"></script>
+        <script type="text/javascript">
+          Pamflet.page.language = 'en';
+        </script>
+        <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+        
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"></meta>
+        
+        
+      </head>
+      <body class="color_scheme-redmond">
+        <a class="page prev nav" href="Contents+in+Depth.html">
+            <span class="space">&nbsp;</span>
+            <span class="flip">❧</span>
+          </a>
+        <div class="container">
+          <div class="span-16 prepend-1 append-1">
+            <div class="span-16 top nav">
+              <div class="span-16 title">
+                <span>slick-doc-ja 1.0</span> — Combined Pages
+              </div>
+            </div>
+          </div>
+          <div class="span-16 prepend-1 append-1 contents">
+            <div class="tocwrapper show">
+      <a class="tochead nav" style="display: none" href="#toc">❦</a>
+      <a name="toc"></a>
+      <h4 class="toctitle">Contents</h4>
+      <div class="tocbody">
+      <div><a href="#slick-doc-ja+1.0">slick-doc-ja 1.0</a></div><ol class="toc"> <li><div><a href="#%E5%B0%8E%E5%85%A5">導入</a></div></li><li><div><a href="#%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86">始めよう</a></div></li><li><div><a href="#Lifted+Embedding">Lifted Embedding</a></div></li><li><div><a href="#Plain+SQL+Queries">Plain SQL Queries</a></div></li><li><div><a href="#Direct+Embedding">Direct Embedding</a></div></li><li><div><a href="#Slick+TestKit">Slick TestKit</a></div></li><li><div><a href="#Slick+Extensions">Slick Extensions</a></div></li> </ol></div></div><h1 id="slick-doc-ja+1.0">slick-doc-ja 1.0<a href="#slick-doc-ja+1.0" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><p><a href="http://slick.typesafe.com/doc/1.0.0/">Slick 1.0 documentation</a>の日本語訳です。
+</p><ul><li>編集先: <a href="https://github.com/krrrr38/slick-doc-ja">GitHub - krrrr38/slick-doc-ja</a>
+</li><li>連絡先: <a href="https://twitter.com/krrrr38">@krrrr38</a>
+</li></ul><p>Slick 1.0.0 documentation - 01 導入
+<!-- Introduction -->
+<a href="http://slick.typesafe.com/doc/1.0.0/introduction.html">Permalink to Introduction — Slick 1.0.0 documentation</a>
+</p><h1 id="%E5%B0%8E%E5%85%A5">導入<a href="#%E5%B0%8E%E5%85%A5" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><h2 id="Slick%E3%81%A8%E3%81%AF">Slickとは<a href="#Slick%E3%81%A8%E3%81%AF" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><!-- What is Slick -->
+<p>Slickは<a href="http://www.typesafe.com">Typesafe社</a>によって開発が行われている，Scalaのためのモダンなデータベースラッパーである．データベースにアクセスしながらScalaのコレクションを扱うかのようにデータを操作する事が出来る．また，SQLを直接書く事も可能である．
+</p><!--Slick is Typesafe‘s modern database query and access library for Scala. It allows you to work with stored data almost as if you were using Scala collections while at the same time giving you full control over when a database access happens and which data is transferred. You can also use SQL directly.-->
+<pre><code class="prettyprint lang-scala">val limit = 10.0
+// クエリはこのように書く事が出来る
+( for( c &lt;- Coffees; if c.price &lt; limit ) yield c.name ).list
+// SQLを直接書いた例
+sql&quot;select name from coffees where price &lt; $limit&quot;.as[String].list
+</code></pre><p>クエリをSQLを用いて書く代わりにScalaを用いるとコンパイル時に合成が安全に行われ，より良い形で利用する事が出来る．Slickは独自のクエリコンパイラを用いてDBに対しクエリを発行する．
+</p><!--When using Scala instead of SQL for your queries you profit from the compile-time safety(何これ) and compositionality. Slick can generate queries for different backends including your own, using its extensible query compiler. -->
+<h2 id="Slick%E3%81%AE%E7%89%B9%E5%BE%B4">Slickの特徴<a href="#Slick%E3%81%AE%E7%89%B9%E5%BE%B4" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><!-- Why Slick?/Feature -->
+<p>Slickは以下のような特徴を持っている:
+</p><!-- Slick offers a unique combination of features: -->
+<h3 id="Easy">Easy<a href="#Easy" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><ul><li>Scalaコレクションを扱うかのようにデータを操作出来る
+</li><li>JDBCコネクションをもとに，統合されたセッション管理を行える
+</li><li>必要な際にはSQLもサポートする
+</li><li>セットアップが簡単
+</li></ul><!--- Access stored data just like Scala collections
+- Unified session management based on JDBC Connections
+- Supports SQL if you need it
+- Simple setup-->
+<h3 id="Concise">Concise<a href="#Concise" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><ul><li>Scala構文
+</li><li>簡単に結果を取り出せる (ResultSet.getXなどの処理は必要無い)
+</li><li>Scales naturally
+</li><li>状態を持たない
+</li><li>実行時間や移動されるデータの明示的な管理
+</li></ul><!--- Scala syntax
+- Fetch results without pain (no ResultSet.getX)
+- Scales naturally
+- Stateless (like the web)
+- Explicit control of execution time and transferred data-->
+<h3 id="Safe">Safe<a href="#Safe" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><ul><li>SQLインジェクションを防止する
+</li><li>Compile-time safety (types, names, no typos, etc.)
+</li><li>型安全なストアドプロシージャのサポート
+</li></ul><!--- No SQL-injections
+- Compile-time safety (types, names, no typos, etc.)
+- Type-safe support of stored procedures-->
+<h3 id="Composable">Composable<a href="#Composable" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><ul><li>Scalaによる実装：抽象化された，再利用が簡単に行える設計
+</li></ul><!--- It‘s Scala code: abstract and re-use with ease-->
+<p>SlickはScala2.10を必要とします．
+（Scala2.9を利用する際にはSlickの前身である，<a href="http://scalaquery.org">ScalaQuery</a>を利用してください．）
+</p><!--Slick requires Scala 2.10. (For Scala 2.9 please use [ScalaQuery](http://scalaquery.org), the predecessor of Slick).-->
+<h2 id="%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E3%81%99%E3%82%8B%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9">サポートするデータベース<a href="#%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E3%81%99%E3%82%8B%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><ul><li>DB2 (via <a href="http://slick.typesafe.com/doc/1.0.0/extensions.html">slick-extensions</a>)
+</li><li>Derby/JavaDB
+</li><li>H2
+</li><li>HSQLDB/HyperSQL
+</li><li>Microsoft Access
+</li><li>Microsoft SQL Server
+</li><li>MySQL
+</li><li>Oracle (via <a href="http://slick.typesafe.com/doc/1.0.0/extensions.html">slick-extensions</a>)
+</li><li>PostgreSQL
+</li><li>SQLite
+</li></ul><p>他のSQLデータベースもSlickなら簡単にアクセスする事が出来るでしょう．独自のSQLベースのバックエンドを持つデータベースも，プラグインを作成する事でSlickを利用することが出来ます．そのようなプラグインの作成は大きな貢献となるでしょう．
+NoSQLのような他のバックエンドを持つようなデータベースに関しては現在開発中であるため，まだ利用する事はできません．．
+</p><!--Other SQL databases can be accessed right away with a reduced feature set. Writing a fully featured plugin for your own SQL-based backend can be achieved with a reasonable amount of work. Support for other backends (like NoSQL) is under development but not yet available.-->
+<h2 id="%E7%B0%A1%E5%8D%98%E3%81%AA%E6%A6%82%E8%AA%AC">簡単な概説<a href="#%E7%B0%A1%E5%8D%98%E3%81%AA%E6%A6%82%E8%AA%AC" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>SlickのLiftedEmbeddingによるデータベースへのアクセスは以下のステップで行う事ができます．
+</p><!--Accessing databases using Slick’s lifted embedding requires the following steps.-->
+<p>1．Slickのjarファイルをプロジェクトのdependenciesへ追加する
+</p><!--Add the Slick jar and its dependencies to your project-->
+<p>2．利用するDBに応じたDriverをimportし，セッションを作成する（もしくは単純にthreadLocalSessionをimportする）．
+</p><!--Pick a driver for a particular db and create a session (or simply pick threadLocalSession)-->
+<pre><code class="prettyprint lang-scala">import scala.slick.driver.H2Driver.simple._
+import Database.threadLocalSession
+</code></pre><p>3．データベーススキーマを記述する
+</p><!--Describe your Database schema-->
+<pre><code class="prettyprint lang-scala">object Coffees extends Table[(String, Double)](&quot;COFFEES&quot;) {
+  def name = column[String](&quot;COF_NAME&quot;, O.PrimaryKey)
+  def price = column[Double](&quot;PRICE&quot;)
+  def * = name ~ price
+}
+</code></pre><p>4．セッションスコープ内にて，for式かmap/flatMapを用いてクエリを記述する
+</p><!--Write queries using for-comprehensions or map/flatMap wrapped in a session scope-->
+<pre><code class="prettyprint lang-scala">Database.forURL(&quot;jdbc:h2:mem:test1&quot;, driver = &quot;org.h2.Driver&quot;) withSession {
+  ( for( c &lt;- Coffees; if c.price &lt; 10.0 ) yield c.name ).list
+  // or
+  Coffees.filter(_.price &lt; 10.0).map(_.name).list
+}
+</code></pre><p><a href="http://slick.typesafe.com/doc/1.0.0/gettingstarted.html">次の章</a>では，より詳細な扱い方や機能について説明します．
+</p><!--The [next chapter](http://slick.typesafe.com/doc/1.0.0/gettingstarted.html) explains these steps and further aspects in more detail.-->
+<h2 id="License">License<a href="#License" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>Slick is released under a BSD-Style free and open source software <a href="https://github.com/slick/slick/blob/1.0.0/LICENSE.txt">license</a>.
+</p><p>Slick 1.0.0 documentation - 02 始めよう
+<!--Getting Started — Slick 1.0.0 documentation-->
+</p><p><a href="http://slick.typesafe.com/doc/1.0.0/gettingstarted.html">Permalink to Getting Started — Slick 1.0.0 documentation</a>
+</p><h1 id="%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86">始めよう<a href="#%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><!--# Getting Started-->
+<p>最も簡単なSlickアプリケーションの設定方法は<a href="https://github.com/slick/slick-examples/tree/1.0.0">Slick Examples</a>のプロジェクトを用いる事です．このプロジェクトに含まれているREADMEに従ってビルドをして，実行してみてください．
+</p><!--The easiest way of setting up a Slick application is by starting with the [Slick Examples][1] project. You can build and run this project by following the instructions in its README file.-->
+<h2 id="%E4%BE%9D%E5%AD%98%E6%80%A7">依存性<a href="#%E4%BE%9D%E5%AD%98%E6%80%A7" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><!--## Dependencies-->
+<p>プロジェクトではどのようにしてSlickを用いれば良いのか確認してみよう．まず初めに，Slickと組み込みデータベースを追加する必要がある．もし<a href="http://www.scala-sbt.org/">sbt</a>を使っているのなら， <strong>build.sbt</strong> に対して以下のような記述を追加すれば良い．
+</p><!--Let’s take a closer look at what’s happening in that project. First of all, you need to add Slick and the embedded databases or drivers for external databases to your project. If you are using [sbt][2], you do this in your main build.sbt file:-->
+<pre><code class="prettyprint lang-scala:build.sbt">libraryDependencies ++= List(
+  // 適切なSlickのversionをここに指定しよう
+  &quot;com.typesafe.slick&quot; %% &quot;slick&quot; % &quot;1.0.0&quot;,
+  &quot;org.slf4j&quot; % &quot;slf4j-nop&quot; % &quot;1.6.4&quot;,
+  &quot;com.h2database&quot; % &quot;h2&quot; % &quot;1.3.166&quot;
+)
+</code></pre><p>Slickはデバッグログに<a href="http://www.slf4j.org/">SLF4J</a>を用いている．そのためSLF4Jについても追加する必要がある．ここではロギングを無効にするために <strong>slf4j-nop</strong> を用いている．もしログの出力を見たいのならば<a href="http://logback.qos.ch/">Logback</a>のようなロギング用のフレームワークに替えなくてはならない．
+</p><!--Slick uses [SLF4J][3] for its own debug logging so you also need to add an SLF4J implementation. Here we are using slf4j-nop to disable logging. You have to replace this with a real logging framework like [Logback][4] if you want to see log output.-->
+<h2 id="Imports">Imports<a href="#Imports" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p><a href="https://github.com/slick/slick-examples/blob/1.0.0/src/main/scala/com/typesafe/slick/examples/lifted/FirstExample.scala">Slick example lifted/FirstExample</a>は，独立した１つのアプリケーションとなっている．このアプリケーションでは以下のようなimport文を記述している．
+</p><!--[Slick example lifted/FirstExample][5] contains a self-contained application that you can run. It starts off with some imports:-->
+<pre><code class="prettyprint lang-scala">// H2 databaseへ接続するためにH2Driverをimport
+import scala.slick.driver.H2Driver.simple._
+...
+// Use the implicit threadLocalSession
+import Database.threadLocalSession
+</code></pre><p><a href="http://h2database.com/">H2 Database</a>を用いているため，Slickの <strong>H2Driver</strong> をimportする必要がある．このdriverに含まれる <strong>simple</strong> オブジェクトには<a href="http://slick.typesafe.com/doc/1.0.0/session.html">session handling</a>といったSlickに必要な共通の機能が含まれている．それ以外にimportする必要があるのは <strong>threadLocalSession</strong> である．これは取り扱うスレッドにセッションを付与する事でセッションの取り扱いを単純化させるものである．これにより不必要なimplicit変数を割り当てたりといった実装を行わなくて済む．
+</p><!--Since we are using [H2][6] as our database system, we need to import features from Slick’s H2Driver. A driver’s simple object contains all commonly needed imports from the driver and other parts of Slick such as [*session handling*][7]. The only extra import we use is the threadLocalSession. This simplifies the session handling by attaching a session to the current thread so you do not have to pass it around on your own (or at least assign it to an implicit variable).-->
+<h2 id="Database%E3%81%B8%E3%81%AE%E6%8E%A5%E7%B6%9A">Databaseへの接続<a href="#Database%E3%81%B8%E3%81%AE%E6%8E%A5%E7%B6%9A" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>アプリケーションの中では，どのようにデータベースに接続するのかを明示する <strong>Database</strong> オブジェクトを初めに作る．そしてセッションを開き，続くブロック内に処理を記述する．
+</p><!--In the body of the application we create a Database object which specifies how to connect to a database, and then immediately open a session, running all code within the following block inside that session:-->
+<pre><code class="prettyprint lang-scala">Database.forURL(&quot;jdbc:h2:mem:test1&quot;, driver = &quot;org.h2.Driver&quot;) withSession {
+  // セッションは明示的に名付けられる事はない
+  // セッションは現在のスレッドに対し，importしたthreadLocalSessionとして束縛されるのである
+}
+</code></pre><p>Java SEの環境においては，データベースセッションはJDBCドライバークラスを用いてJDBC URLへ接続する事で作られる（正しいURLの記述法はJDBCドライバーのドキュメントを見て欲しい）．もし<a href="http://slick.typesafe.com/doc/1.0.0/sql.html">plain SQL queries</a>のみを用いるのであれば，それ以上何もする必要はない．しかし，もし<a href="http://slick.typesafe.com/doc/1.0.0/direct-embedding.html">direct embedding</a>や<a href="http://slick.typesafe.com/doc/1.0.0/lifted-embedding.html">lifted embedding</a>を用いるのであれば，SlickがSQL文を作成する事になるため， <strong>H2Driver</strong> のようなSlickのdriverを適宜importして欲しい．
+</p><!--In a Java SE environment, database sessions are usually created by connecting to a JDBC URL using a JDBC driver class (see the JDBC driver’s documentation for the correct URL syntax). If you are only using [*plain SQL queries*][8], nothing more is required, but when Slick is generating SQL code for you (using the [*direct embedding*][9] or the [*lifted embedding*][10]), you need to make sure to use a matching Slick driver (in our case the H2Driver import above).-->
+<h2 id="%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E">スキーマ<a href="#%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>このアプリケーションでは<a href="http://slick.typesafe.com/doc/1.0.0/lifted-embedding.html">lifted embedding</a>を用いているため，データベースのテーブルに対応する <strong>Table</strong> オブジェクトを書かなくてはならない．
+</p><!--We are using the [*lifted embedding*][10] in this application, so we have to write Table objects for our database tables:-->
+<pre><code class="prettyprint lang-scala">// SUPPLIERSテーブルの定義
+object Suppliers extends Table[(Int, String, String, String, String, String)](&quot;SUPPLIERS&quot;) {
+  def id = column[Int](&quot;SUP_ID&quot;, O.PrimaryKey) // 主キー
+  def name = column[String](&quot;SUP_NAME&quot;)
+  def street = column[String](&quot;STREET&quot;)
+  def city = column[String](&quot;CITY&quot;)
+  def state = column[String](&quot;STATE&quot;)
+  def zip = column[String](&quot;ZIP&quot;)
+  // 全てのテーブルではテーブルの型パラメタと同じタイプの射影*を定義する必要がある．
+  def * = id ~ name ~ street ~ city ~ state ~ zip
+}
+...
+// COFFEESテーブルの定義
+object Coffees extends Table[(String, Int, Double, Int, Int)](&quot;COFFEES&quot;) {
+  def name = column[String](&quot;COF_NAME&quot;, O.PrimaryKey)
+  def supID = column[Int](&quot;SUP_ID&quot;)
+  def price = column[Double](&quot;PRICE&quot;)
+  def sales = column[Int](&quot;SALES&quot;)
+  def total = column[Int](&quot;TOTAL&quot;)
+  def * = name ~ supID ~ price ~ sales ~ total
+  // 他のテーブルとの結合のため作成された関係を表す外部キー
+  def supplier = foreignKey(&quot;SUP_FK&quot;, supID, Suppliers)(_.id)
+}
+</code></pre><p>全ての列は名前（ScalaにおけるキャメルケースやSQLにおける大文字とアンダースコアの組み合わせ）とScalaの型（SQLの型はScalaの型から自動的に推測される）を持つ．これらは <strong>val</strong> ではなく <strong>def</strong> を用いて定義しなくてはならない．テーブルオブジェクトもScalaでの名前とSQLでの名前と型を持つ必要がある．テーブルの型引数は射影*と一致してなくてはならない．全ての列をタプルで取り出すといった簡単な処理以外にも，より複雑なオブジェクトへのマッピングを行う事も出来る．
+</p><!--All columns get a name (usually in camel case for Scala and upper case with underscores for SQL) and a Scala type (from which the SQL type can be derived automatically). Make sure to define them with def and not with val. The table object also needs a Scala name, SQL name and type. The type argument of the table must match the type of the special * projection. In simple cases this is a tuple of all columns but more complex mappings are possible.-->
+<p><strong>Coffees</strong> テーブルで定義した <strong>外部キー</strong> は， <strong>Coffees</strong> テーブルの <strong>supID</strong> のフィールドが， <strong>Suppliers</strong> テーブルで存在している <strong>id</strong> と同じ値を持っている事を保証している．要するに，ここでは多:1の関係を作成しているのである．ある <strong>Coffees</strong> の列は特定の <strong>Suppliers</strong> の列を指すが，複数のCoffeeが同じSupplierを指していたりする．この構成はデータベースレベルで強制されている．
+</p><!--The foreignKey definition in the Coffees table ensures that the supID field can only contain values for which a corresponding id exists in the Suppliers table, thus creating an *n to one* relationship: A Coffees row points to exactly one Suppliers row but any number of coffees can point to the same supplier. This constraint is enforced at the database level.-->
+<h2 id="Populating+the+Database">Populating the Database<a href="#Populating+the+Database" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>組み込みのH2データベースエンジンへ接続すると，空のデータベースが作られる．クエリを実行する前に，データベーススキーマ（ <strong>Coffees</strong> テーブルと <strong>Suppliers</strong> テーブルから成るもの）を作成し，いくつかのテストデータを挿入してみる．
+</p><!--The connection to the embedded H2 database engine provides us with an empty database. Before we can execute queries, we need to create the database schema (consisting of the Coffees and Suppliers tables) and insert some test data:-->
+<pre><code class="prettyprint lang-scala">// 主キーと外部キーを含むテーブルを作成する
+(Suppliers.ddl ++ Coffees.ddl).create
+...
+// supplierをいくつか挿入する
+Suppliers.insert(101, &quot;Acme, Inc.&quot;,      &quot;99 Market Street&quot;, &quot;Groundsville&quot;, &quot;CA&quot;, &quot;95199&quot;)
+Suppliers.insert( 49, &quot;Superior Coffee&quot;, &quot;1 Party Place&quot;,    &quot;Mendocino&quot;,    &quot;CA&quot;, &quot;95460&quot;)
+Suppliers.insert(150, &quot;The High Ground&quot;, &quot;100 Coffee Lane&quot;,  &quot;Meadows&quot;,      &quot;CA&quot;, &quot;93966&quot;)
+...
+// coffeeをいくつか挿入する（DBがサポートしている場合には，JDBCのバッチ処理を用いる）
+Coffees.insertAll(
+  (&quot;Colombian&quot;,         101, 7.99, , ),
+  (&quot;French_Roast&quot;,       49, 8.99, , ),
+  (&quot;Espresso&quot;,          150, 9.99, , ),
+  (&quot;Colombian_Decaf&quot;,   101, 8.99, , ),
+  (&quot;French_Roast_Decaf&quot;, 49, 9.99, , )
+)
+</code></pre><p>テーブルの <strong>ddl</strong> 関数は，テーブルやその他データベースのエンティティを作成したり削除したりするための，データベース特有のコードを用いて <strong>DDL</strong> （data definition language）オブジェクトを作成する．複数の <strong>DDL</strong> は <strong>++</strong> を用いる事で，お互いが依存し合っていたとしても，全てのエンティティに対し正しい順序で作成と削除を行う．
+</p><!--The tables’ **ddl** methods create **DDL** (data definition language) objects with the database-specific code for creating and dropping tables and other database entities. Multiple **DDL** values can be combined with **++** to allow all entities to be created and dropped in the correct order, even when they have circular dependencies on each other.-->
+<p>複数のデータを挿入する際は <strong>insert</strong> や <strong>insertAll</strong> といった関数を用いる．デフォルトではデータベースの <strong>Session</strong> は <em>auto-commit</em> モードになっている事に注意して欲しい． <strong>insert</strong> や <strong>insertAll</strong> のようなデータベースへの呼び出しはトランザクションにおいて，原子性が保たれるよう実行される（つまり，それらの処理は完全に実行するか全く実行しないかのいずれかが保証される）．このモードにおいては， <strong>Coffee</strong> が対応するSupplierのIDのみを参照するため， <strong>Supplier</strong> テーブルに対し先にデータを挿入しなくてはならない．
+</p><!--Inserting the tuples of data is done with the **insert** and **insertAll** methods. Note that by default a database Session is in *auto-commit* mode. Each call to the database like insert or insertAll executes atomically in its own transaction (i.e. it succeeds or fails completely but can never leave the database in an inconsistent state somewhere in between). In this mode we we have to populate the Suppliers table first because the Coffees data can only refer to valid supplier IDs.-->
+<p>これらの記述を全て包括した明示的なトランザクションのブラケットを用いることも可能である．その際，トランザクションによって処理が強制されるため，順序は重要視されない．
+</p><!--We could also use an explicit transaction bracket encompassing all these statements. Then the order would not matter because the constraints are only enforced at the end when the transaction is committed.-->
+<h2 id="Querying">Querying<a href="#Querying" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>最も簡単なクエリ例として，の一つにテーブルのデータを全て順々に取り出す処理を考える．
+</p><!--The simplest kind of query iterates over all the data in a table:-->
+<pre><code class="prettyprint lang-scala">// coffeeのデータを全て取り出し，順に出力する
+Query(Coffees) foreach { case (name, supID, price, sales, total) =&gt;
+  println(&quot;  &quot; + name + &quot;t&quot; + supID + &quot;t&quot; + price + &quot;t&quot; + sales + &quot;t&quot; + total)
+}
+</code></pre><p>この処理はSQLに <strong>SELECT * FROM COFFEES</strong> を投げた結果と同じである（ただし射影関数*を異なる形式で作成した場合には，少し違う結果となる）．ループの中で得られる値の型は当然 <strong>Coffees</strong> の型引数と一致する．
+</p><!--This corresponds to a SELECT * FROM COFFEES in SQL (except that the * is the table’s * projection we defined earlier and not whatever the database sees as *). The type of the values we get in the loop is, unsurprisingly, the type parameter of Coffees.-->
+<p>上記の例に射影処理を追加してみよう．これにはScalaで <strong>map</strong> や <em>for式</em> を用いる事で記述することが出来る．
+</p><!--Let’s add a *projection* to this basic query. This is written in Scala with the map method or a *for comprehension*:-->
+<pre><code class="prettyprint lang-scala">// なぜデータベースでは文字列の変換や連結が出来ないんだろう...?
+val q1 = for(c &lt;- Coffees) // Coffeesは自動的にQueryへとなる
+  yield ConstColumn(&quot;  &quot;) ++ c.name ++ &quot;\t&quot; ++ c.supID.asColumnOf[String] ++
+    &quot;\t&quot; ++ c.price.asColumnOf[String] ++ &quot;\t&quot; ++ c.sales.asColumnOf[String] ++
+    &quot;\t&quot; ++ c.total.asColumnOf[String]
+// 初めの文字定数はConstColumへ手動で変換する必要がある．
+// その後++オペレータにより結合させる
+q1 foreach println
+</code></pre><p>全ての行がタブによって区切られた文字列として連結した結果が得られるだろう．違いはデータベースの内側で処理が行われた事であり，結果として得られる連結した文字列は同様に取得出来る．Scalaの <strong>+</strong> オペレータはしばしばオーバーライドされてしまうため，seqの結合で一般的に用いられている <strong>++</strong> の方を利用すべきだ．また，他の引数型から文字列への自動的な型変換は存在しない．この処理は型変換関数である <strong>asColumnOf</strong> により明示的に行うべきである．
+</p><!--The output will be the same: For each row of the table, all columns get converted to strings and concatenated into one tab-separated string. The difference is that all of this now happens inside the database engine, and only the resulting concatenated string is shipped to the client. Note that we avoid Scala’s + operator (which is already heavily overloaded) in favor of ++ (commonly used for sequence concatenation). Also, there is no automatic conversion of other argument types to strings. This has to be done explicitly with the type conversion method asColumnOf.-->
+<p>テーブルの結合やフィルタリングはScalaのコレクションと同じように処理する事が出来る．
+</p><!--Joining and filtering tables is done the same way as when working with Scala collections:-->
+<pre><code class="prettyprint lang-scala">// 2つのテーブルを結合し，coffeeの値段が$9より安いもののうち，
+// coffeeの名前とsupplierの名前の組みを検索
+val q2 = for {
+  c &lt;- Coffees if c.price &lt; 9.0
+  s &lt;- Suppliers if s.id === c.supID
+} yield (c.name, s.name)
+</code></pre><p>2つの値が等しいかを比較する際に， <strong>==</strong> の代わりに <strong>===</strong> を用いている事に注意して欲しい．同様に，LiftedEmbeddingでは <strong>!=</strong> の代わりに <strong>=!=</strong> を用いている．それ以外の比較に関するオペレータ（ <strong>&lt;</strong> , <strong>&lt;=</strong> , <strong>&gt;=</strong> , <strong>&gt;</strong> ）はScalaで用いているものと同じである
+</p><!--Note the use of === instead of == for comparing two values for equality. Similarly, the lifted embedding uses =!= instead of != for inequality. (The other comparison operators are the same as in Scala: **<**, **<=**, **>=**, **>**)-->
+<p><strong>Suppliers if s.id === c.supID</strong> という表現は <strong>Coffees.supplier</strong> という外部キーにより作成された関係に基いている．joinの条件を繰り返す代わりに，このような方法で直接的に外部キーを用いた結合が行える．
+</p><!--The generator expression Suppliers if s.id === c.supID follows the relationship established by the foreign key Coffees.supplier. Instead of repeating the join condition here we can use the foreign key directly:-->
+<pre><code class="prettyprint lang-scala">val q3 = for {
+  c &lt;- Coffees if c.price &lt; 9.0
+  s &lt;- c.supplier
+} yield (c.name, s.name)
+</code></pre><p>Slick 1.0.0 documentation - 03 Lifted Embedding
+<!--Lifted Embedding — Slick 1.0.0 documentation-->
+</p><p><a href="http://slick.typesafe.com/doc/1.0.0/lifted-embedding.html">Permalink to Lifted Embedding — Slick 1.0.0 documentation</a>
+</p><h1 id="Lifted+Embedding">Lifted Embedding<a href="#Lifted+Embedding" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><p><em>lifted embedding</em> はSlickにおいて型安全なクエリ操作が行える基本的なAPIである．導入には<a href="http://slick.typesafe.com/doc/1.0.0/gettingstarted.html">*始めよう*</a>を読んで欲しい．この章ではSlick及び <em>lifted embedding</em> の特徴と詳細について説明する．
+</p><!-- The *lifted embedding* is the standard API for type-safe queries and updates in Slick. Please see [*Getting Started*][1] for an introduction. This chapter describes the available features in more detail.-->
+<p><em>Lifted Embedding</em> という名前はScalaの基本的な型を用いる<a href="http://slick.typesafe.com/doc/1.0.0/direct-embedding.html">*direct embedding*</a>と異なり，scala.slick.lifted.Repの型コンストラクタへと変化するような型を用いている事に基づいている．これはScalaのシンプルなコレクションと， <em>lifted embedding</em> を用いたコードを比べると明らかである．
+</p><!-- The name *Lifted Embedding* refers to the fact that you are not working with standard Scala types (as in the [*direct embedding*][2]) but with types that are *lifted* into a the scala.slick.lifted.Rep type constructor. This becomes clear when you compare the types of a simple Scala collections example -->
+<p>こちらがScalaのコレクションの操作，
+</p><pre><code class="prettyprint lang-scala">case class Coffee(name: String, price: Double)
+val l: List[Coffee] = //...
+val l2 = l.filter(_.price &gt; 8.0).map(_.name)
+//                  ^       ^          ^
+//                Double  Double     String
+</code></pre><p>そしてこちらが <em>Lifted Embedding</em> を用いた操作である．
+</p><!-- ... with the types of similar code using the lifted embedding: -->
+<pre><code class="prettyprint lang-scala">object Coffees extends Table[(String, Int, Double, Int, Int)](&quot;COFFEES&quot;) {
+  def name = column[String](&quot;COF_NAME&quot;, O.PrimaryKey)
+  def price = column[Double](&quot;PRICE&quot;)
+  //...
+}
+val q = Query(Coffees)
+val q2 = q.filter(_.price &gt; 8.0).map(_.name)
+//                  ^       ^          ^
+//          Rep[Double]  Rep[Double]  Rep[String]
+</code></pre><p>シンプルな型はRepへと変換させられる．レコードの型であるCoffeesは，Rep[(String, Int, Double, Int, Int)]のサブタイプへ，8.0といった数値リテラルも，自動的なimplicit conversionにより，Rep[Double]へと変化する．というのも，Rep[Double]における<strong>&gt;</strong>オペレータの右辺にその型が必要になるためである．
+</p><!-- All plain types are lifted into Rep. The same is true for the record type Coffees which is a subtype of Rep[(String, Int, Double, Int, Int)]. Even the literal 8.0 is automatically lifted to a Rep[Double] by an implicit conversion because that is what the > operator on Rep[Double] expects for the right-hand side.-->
+<h2 id="%E3%83%86%E3%83%BC%E3%83%96%E3%83%AB">テーブル<a href="#%E3%83%86%E3%83%BC%E3%83%96%E3%83%AB" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>lifted embeddingを用いるためには，データベースのテーブル毎に，テーブルオブジェクトを定義する必要がある．
+</p><!-- In order to use the lifted embedding, you need to define Table objects for your database tables: -->
+<pre><code class="prettyprint lang-scala">object Coffees extends Table[(String, Int, Double, Int, Int)](&quot;COFFEES&quot;) {
+  def name = column[String](&quot;COF_NAME&quot;, O.PrimaryKey)
+  def supID = column[Int](&quot;SUP_ID&quot;)
+  def price = column[Double](&quot;PRICE&quot;)
+  def sales = column[Int](&quot;SALES&quot;)
+  def total = column[Int](&quot;TOTAL&quot;)
+  def * = name ~ supID ~ price ~ sales ~ total
+}
+</code></pre><p>Slickはテーブルオブジェクトを複製してテーブルを作成するため，不要な状態等を付与すべきではない（操作するための関数に関しては問題無い）．Tableを継承するオブジェクトは <em>静的な位置</em> （トップレベルや他のオブジェクトの中でのみネストされた場所）で定義されることは無い．これはscalacによって行われる最適化で，不要な責務まで持ってしまうという問題を防止するためである．匿名の構造型を用いたり区別されたクラス定義を用いることで，テーブル内でvalを用いる事は推奨している．
+</p><!-- Note that Slick clones your table objects under the covers, so you should not add any extra state to them (extra methods are fine though). Also make sure that an actual object for a table is not defined in a *static* location (i.e. at the top level or nested only inside other objects) because this can cause problems in certain situations due to an overeager optimization performed by scalac. Using a val for your table (with an anonymous structural type or a separate class definition) is fine everywhere.-->
+<p>全てのカラムはカラムメソッドを通して定義される．カラムはvalではなくdefを用いて定義しなくてはならない．これはカラムは複製する必要があるためである．各々のカラムはScalaの型とデータベースにおけるカラム名（一般的には大文字）を持っている．以下のプリミティブ型については，各データベースドライバーによって課せられた特定の制限を持ちつつも，基本的にはそのまま用いる事が出来る．
+</p><!-- All columns are defined through the column method. Note that they need to be defined with def and not val due to the cloning. Each column has a Scala type and a column name for the database (usually in upper-case). The following primitive types are supported out of the box (with certain limitations imposed by the individual database drivers): -->
+<ul><li><em>数値型</em>: Byte, Short, Int, Long, BigDecimal, Float, Double
+</li><li><em>LOB型</em>: java.sql.Blob, java.sql.Clob, Array[Byte]
+</li><li><em>Date型</em>: java.sql.Date, java.sql.Time, java.sql.Timestamp
+</li><li>Boolean
+</li><li>String
+</li><li>Unit
+</li><li>java.util.UUID
+</li></ul><p>nullを許可するカラムについては，Tがプリミティブ型である際には，Option[T]を用いて表す事が出来る．ただし，Optionの全ての操作に関して，現在ではScalaのOptionセマンティクスとは少し異なったデータベースのnullプロパゲーションセマンティクスを用いている．（例として，None === None はfalseを返す）．このような挙動は将来的に改善される予定だ．
+</p><!-- Nullable columns are represented by Option[T] where T is one of the supported primitive types. Note that all operations on Option values are currently using the database’s null propagation semantics which may differ from Scala’s Option semantics. In particular, None === None evaluates to false. This behaviour may change in a future major release of Slick.-->
+<p>カラム名の後には，カラムの定義に関するオプションを追記することができる．それらのオプションはテーブルのOオブジェクトを通して利用する事が出来る．例として，以下のようなオプションを用いることが出来る．
+</p><!-- After the column name, you can add optional column options to a column definition. The applicable options are available through the table’s O object. The following ones are defined for BasicProfile:-->
+<p><strong>NotNull</strong>, <strong>Nullable</strong>
+</p><p>nullを許可する，nullを許可しないといったことを，DDLの作成時に明示するもの．nullに出来るかどうかといったことは，OptionかOptionで無いかといったように，型からも決定させることが出来る．
+</p><!-- Explicitly mark the column a nullable or non-nullable when creating the DDL statements for the table. Nullability is otherwise determined from the type (Option or non-Option).-->
+<p><strong>PrimaryKey</strong>
+</p><p>DDLを作成する際に，主キーとしてカラムを宣言する．
+</p><!-- Mark the column as a (non-compound) primary key when creating the DDL statements.-->
+<p><strong>Default\<a href="defaultValue: T">T\</a></strong>
+</p><p>データをテーブルに挿入する際に用いるデフォルト値を指定する．この情報はDDLを作成する時にのみ用いられる．
+</p><!-- Specify a default value for inserting data the table without this column. This information is only used for creating DDL statements so that the database can fill in the missing information. -->
+<p><strong>DBType(dbType: String)</strong>
+</p><p>DDLに特定のデータベースの型を用いる際に利用する．例えばStringのカラムに対してVARCHAR(20)を指定する際には，DBType(“VARCHAR(20)”)と明示する．
+</p><!-- Use a non-standard database-specific type for the DDL statements (e.g. DBType("VARCHAR(20)") for a String column).-->
+<p><strong>AutoInc</strong>
+</p><p>DDLを作成する際に，カラムに対して自動インクリメントなキーとして指定させる．他のカラムのオプションとは異なり，このオプションはDDLを作成する時以外に意味を持つ．多くのデータベースではデータを挿入する際に，自動インクリメントでないカラムを返す事を許可していない．そこでSlickでは返されるカラムが自動インクリメントとなっているかどうかを必要に応じてチェックする．
+</p><!-- Mark the column as an auto-incrementing key when creating the DDL statements. Unlike the other column options, this one also has a meaning outside of DDL creation: Many databases do not allow non-AutoInc columns to be returned when inserting data (often silently ignoring other columns), so Slick will check if the return column is properly marked as AutoInc where needed. -->
+<p>全てのテーブルではデフォルトの射影となる*関数を必要とする．これはクエリから行を返すときどのような形で値を返すかを指定するものである．Slickの*射影はデータベースから通常得られる射影と全く同じにする必要は無い．何らかの計算を行った新しいカラムを作成してもいいし．いくつかのカラムを省略してしまっても良い，*射影で得られる型と同じ型パラメータをテーブルへ指定する．おおよそこれは単一のカラム型か，カラム型のタプルになるだろう．
+</p><!-- Every table requires a * method contatining a default projection. This describes what you get back when you return rows (in the form of a table object) from a query. Slick’s * projection does not have to match the one in the database. You can add new columns (e.g. with computed values) or omit some columns as you like. The non-lifted type corresponding to the * projection is given as a type parameter to Table. For simple, non-mapped tables, this will be a single column type or a tuple of column types. -->
+<h2 id="%E6%8B%A1%E5%BC%B5%E3%83%86%E3%83%BC%E3%83%96%E3%83%AB">拡張テーブル<a href="#%E6%8B%A1%E5%BC%B5%E3%83%86%E3%83%BC%E3%83%96%E3%83%AB" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>自分で定義したクラスに対し，テーブルをマッピングする事も出来る．オペレータを用いる事で，双方向マッピングにより*射影がその型に対応するようになる．
+</p><!-- It is possible to define a mapped table that uses a custom type for its * projection by adding a bi-directional mapping with the  operator:-->
+<pre><code class="prettyprint lang-scala">case class User(id: Option[Int], first: String, last: String)
+...
+object Users extends Table[User](&quot;users&quot;) {
+  def id = column[Int](&quot;id&quot;, O.PrimaryKey, O.AutoInc)
+  def first = column[String](&quot;first&quot;)
+  def last = column[String](&quot;last&quot;)
+  def * = id.? ~ first ~ last &lt;&gt; (User, User.unapply _)
+}
+</code></pre><p>Optionで結果をラップしたシンプルなapplyメソッドとunapplyメソッドを持つcase Classへと最適化されるが，マッピングされた型を直接操作するオーバーロードも存在している．
+</p><!-- It is optimized for case classes (with a simple apply method and an unapply method that wraps its result in an Option) but there is also an overload that operates directly on the mapped types. -->
+<h2 id="%E5%88%B6%E7%B4%84">制約<a href="#%E5%88%B6%E7%B4%84" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>外部キー制約はテーブルのforeignKeyメソッドによって定義される．制約，カラム（または行），リンクされるテーブル，そしてテーブルから一致する行への関数として，特定の名前を与える必要がある．DDLを作成する際に，外部キーはその名前を用いて追加される．
+</p><!-- A foreign key constraint can be defined with a table’s foreignKey method. It takes a name for the constraint, the local column (or projection, so you can define compound foreign keys), the linked table, and a function from that table to the corresponding column(s). When creating the DDL statements for the table, the foreign key definition is added to it.-->
+<pre><code class="prettyprint lang-scala">object Suppliers extends Table[(Int, String, String, String, String, String)](&quot;SUPPLIERS&quot;) {
+  def id = column[Int](&quot;SUP_ID&quot;, O.PrimaryKey)
+  //...
+}
+...
+object Coffees extends Table[(String, Int, Double, Int, Int)](&quot;COFFEES&quot;) {
+  def supID = column[Int](&quot;SUP_ID&quot;)
+  //...
+  def supplier = foreignKey(&quot;SUP_FK&quot;, supID, Suppliers)(_.id)
+}
+</code></pre><p>データベースにおける実際の制約とは独立に， <em>join</em> を用いてデータを結合する際に，外部キーは利用される．この時，joinされたデータを探すための自分で定義した便利な関数のように動作させる事が出来る．
+</p><!-- Independent of the actual constraint defined in the database, such a foreign key can be used to navigate to the linked data with a *join*. For this purpose, it behaves the same as a manually defined utility method for finding the joined data:-->
+<pre><code class="prettyprint lang-scala">def supplier = foreignKey(&quot;SUP_FK&quot;, supID, Suppliers)(_.id)
+def supplier2 = Suppliers.where(_.id === supID)
+</code></pre><p>主キー制約はprimaryKey関数を追加する事で，同様に定義することが出来る．これは複合主キーを定義する際に役立つ．複合主キーを用いる際は，カラムのオプションにO.PrimaryKeyをつける事は出来ない．
+</p><!-- A primary key constraint can be defined in a similar fashion by adding a method that calls primaryKey. This is useful for defining compound primary keys (which cannot be done with the O.PrimaryKey column option):-->
+<pre><code class="prettyprint lang-scala">object A extends Table[(Int, Int)](&quot;a&quot;) {
+  def k1 = column[Int](&quot;k1&quot;)
+  def k2 = column[Int](&quot;k2&quot;)
+  def * = k1 ~ k2
+  def pk = primaryKey(&quot;pk_a&quot;, (k1, k2))
+}
+</code></pre><p>他のindexについてはindex関数を用いて同様に定義することが可能だ．uniqueパラメータを設定しなければ，デフォルトでは各indexはuniqueでは無い状態になっている．
+</p><!-- Other indexes are defined in a similar way with the index method. They are non-unique by default unless you set the unique parameter:-->
+<pre><code class="prettyprint lang-scala">object A extends Table[(Int, Int)](&quot;a&quot;) {
+  def k1 = column[Int](&quot;k1&quot;)
+  def k2 = column[Int](&quot;k2&quot;)
+  def * = k1 ~ k2
+  def idx = index(&quot;idx_a&quot;, (k1, k2), unique = true)
+}
+</code></pre><p>全ての制約はテーブルで定義された適切な返り値を持つ関数を探す際に，反射的に適応される．これはtableConstraints関数をオーバーライドすることにより自由にカスタマイズする事が出来る．
+</p><!-- All constraints are discovered reflectively by searching for methods with the appropriate return types which are defined in the table. This behavior can be customized by overriding the tableConstraints method.-->
+<h2 id="Data+Definition+Language">Data Definition Language<a href="#Data+Definition+Language" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>DDLステートメントはddl関数を用いて作成される．複数のDDLオブジェクトは++を用いて正しい順番にcreateとdropが行われるように連結される．これはテーブルの依存関係が循環している場合にも上手く機能する．ステートメントはcreate関数やdrop関数を用いて実行される．
+</p><!-- DDL statements for a table can be created with its ddl method. Multiple DDL objects can be concatenated with ++ to get a compound DDL object which can create and drop all entities in the correct order, even in the presence of cyclic dependencies between tables. The statements are executed with the create and drop methods:-->
+<pre><code class="prettyprint lang-scala">val ddl = Coffees.ddl ++ Suppliers.ddl
+db withSession {
+  ddl.create
+  //...
+  ddl.drop
+}
+</code></pre><p>SQLのコードを取得するには，createStatementsやdropStatements関数を用いると良い．
+</p><!-- You can use the createStatements and dropStatements methods to get the SQL code:-->
+<pre><code class="prettyprint lang-scala">ddl.createStatements.foreach(println)
+ddl.dropStatements.foreach(println)
+</code></pre><h2 id="Expressions">Expressions<a href="#Expressions" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>プリミティブ値（not 複合型，not コレクション）は，TypeMapper[T]が存在していれば，Rep[T]のサブタイプであるColumn[T]という型によって表される．内部的に用いられるいくつかの特別な関数と，nullを許可するかnullを許可しないカラム間の変換を行う関数のみ，Columnクラスで定義がなされている．
+</p><!--Primitive (non-compound, non-collection) values are representend by type Column[T] (a sub-type of Rep[T]) where a TypeMapper[T] must exist. Only some special methods for internal use and those that deal with conversions between nullable and non-nullable columns are defined directly in the Column class.-->
+<p>lifted embeddingにおいて一般的に用いられているオペレータや他の関数については，ExtensionMethodConversionsで定義された暗黙的な変換を通して追加される．実際の関数は，AnyExtensionMethods，ColumnExtensionMethods，NumericColumnExtensionMethods，BooleanColumnExtensionMethods，StringColumnExtensionMethodsといったクラスの中にある．
+</p><!-- The operators and other methods which are commonly used in the lifted embedding are added through implicit conversions defined in ExtensionMethodConversions. The actual methods can be found in the classes AnyExtensionMethods, ColumnExtensionMethods, NumericColumnExtensionMethods, BooleanColumnExtensionMethods and StringColumnExtensionMethods.-->
+<p>コレクションはflatMap，filter，take，groupByといったコレクションに本来用意されている基本的な関数を持った，Queryクラス（Rep[Seq[T]]）によって表されている．変換された型とシンプルな型といったようなQueryの異なる2つの複合型により，先のような関数はとても複雑なものになる．しかし，意味的にはScalaのコレクションと本質は同じになる．
+</p><!--Collection values are represented by the Query class (a Rep[Seq[T]]) which contains many standard collection methods like flatMap, filter, take and groupBy. Due to the two different component types of a Query (lifted and plain), the signatures for these methods are very complex but the semantics are essentially the same as for Scala collections.-->
+<p>それ以外にも，複合でない値のクエリのための関数がSingleColumnQueryExtensionMethodsへ暗黙的な変換を通して追加されている．
+</p><!--Additional methods for queries of non-compound values are added via an implicit conversion to SingleColumnQueryExtensionMethods.-->
+<h2 id="%E3%82%BD%E3%83%BC%E3%83%88%E3%81%A8%E3%83%95%E3%82%A3%E3%83%AB%E3%82%BF%E3%83%AA%E3%83%B3%E3%82%B0%EF%BC%88Sorting%2C+Filtering%EF%BC%89">ソートとフィルタリング（Sorting, Filtering）<a href="#%E3%82%BD%E3%83%BC%E3%83%88%E3%81%A8%E3%83%95%E3%82%A3%E3%83%AB%E3%82%BF%E3%83%AA%E3%83%B3%E3%82%B0%EF%BC%88Sorting%2C+Filtering%EF%BC%89" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>様々な種類のソートやフィルタリングが存在している．例えばQueryを引数に，同じ型である新しいQueryを返すものなどがある．
+</p><!--There are various methods with sorting/filtering semantics (i.e. they take a Query and return a new Query of the same type), for example:-->
+<pre><code class="prettyprint lang-scala">val q = Query(Coffees)
+val q1 = q.filter(_.supID === 101)
+val q2 = q.drop(10).take(5)
+val q3 = q.sortBy(_.name.desc.nullsFirst)
+</code></pre><h2 id="%E7%B5%90%E5%90%88%EF%BC%88Join%2C+Zipping%EF%BC%89">結合（Join, Zipping）<a href="#%E7%B5%90%E5%90%88%EF%BC%88Join%2C+Zipping%EF%BC%89" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>joinは1つのクエリで異なる2つの異なったテーブルやクエリを結合させるために用いられる．
+</p><!--Joins are used to combine two different tables or queries into a single query.-->
+<p>joinを記述するには2つの方法がある． <em>明示的な</em> joinは2つのクエリを，個々の結果であるタプルの単一クエリへと結合させる関数を呼び出すことによって行う． <em>暗黙的な</em> joinは特別な関数を呼び出すこと無く，クエリを特定の形へと変形させる．
+</p><!-- There are two different ways of writing joins: *Explicit* joins are performed by calling a method that joins two queries into a single query of a tuple of the individual results. *Implicit* joins arise from a specific shape of a query without calling a special method.-->
+<p><em>暗黙的な交差結合（cross-join）</em> はQueryにおいてflatMapを用いることで実装出来る．for式を用いることでより簡単に表現することが可能だ．
+</p><!--An *implicit cross-join* is created with a flatMap operation on a Query (i.e. by introducing more than one generator in a for-comprehension):-->
+<pre><code class="prettyprint lang-scala">val implicitCrossJoin = for {
+  c &lt;- Coffees
+  s &lt;- Suppliers
+} yield (c.name, s.name)
+</code></pre><p>もしfilterのような操作を行った場合には，それは暗黙的な内部結合（inner-join）となる．
+</p><!--If you add a filter expression, it becomes an implicit inner join:-->
+<pre><code class="prettyprint lang-scala">val implicitInnerJoin = for {
+  c &lt;- Coffees
+  s &lt;- Suppliers if c.supID === s.id
+} yield (c.name, s.name)
+</code></pre><p>これらの暗黙的な結合はScalaコレクションにおけるflatMapを用いた時と全く同じような意味を持つ．
+</p><!--The semantics of these implicit joins are the same as when you are using flatMap on Scala collections.-->
+<p>明示的な結合はjoin関数を呼び出す事で作成出来る．
+</p><!--Explicit joins are created by calling one of the available join methods:-->
+<pre><code class="prettyprint lang-scala">val explicitCrossJoin = for {
+  (c, s) &lt;- Coffees innerJoin Suppliers
+} yield (c.name, s.name)
+...
+val explicitInnerJoin = for {
+  (c, s) &lt;- Coffees innerJoin Suppliers on (_.supID === _.id)
+} yield (c.name, s.name)
+...
+val explicitLeftOuterJoin = for {
+  (c, s) &lt;- Coffees leftJoin Suppliers on (_.supID === _.id)
+} yield (c.name, s.name.?)
+...
+val explicitRightOuterJoin = for {
+  (c, s) &lt;- Coffees rightJoin Suppliers on (_.supID === _.id)
+} yield (c.name.?, s.name)
+...
+val explicitFullOuterJoin = for {
+  (c, s) &lt;- Coffees outerJoin Suppliers on (_.supID === _.id)
+} yield (c.name.?, s.name.?)
+</code></pre><p>交差結合や内部結合の明示的なversionsは，暗黙的なversions（大抵はSQLにおける暗黙的な結合）として生成されるSQLのコードへと帰着する．外部結合における.?の利用には注意して欲しい．これらの結合は付随的なNULL（左外部結合における右辺，右外部結合における左辺，完全外部結合における両辺）を生み出すが，そこからOption値を取得する事が出来る．
+</p><!-- The explicit versions of the cross join and inner join will result in the same SQL code being generated as for the implicit versions (usually an implicit join in SQL). Note the use of .? in the outer joins. Since these joins can introduce additional NULL values (on the right-hand side for a left outer join, on the left-hand sides for a right outer join, and on both sides for a full outer join), you have to make sure to retrieve Option values from them.-->
+<p>交差結合や外部結合によらない関係データベースによってサポートされる一般的なjoinオペレータに加えて，Slickでは2つのクエリのペアワイズ結合を生成するzip joinを用意している．またそれは，ScalaのコレクションにおけるzipやzipWith関数を用いた時と全く同じような意味を持つ．
+</p><!--In addition to the usual join operators supported by relational databases (which are based off a cross join or outer join), Slick also has zip joins which create a pairwise join of two queries. The semantics are again the same as for Scala collections, using the zip and zipWith methods:-->
+<pre><code class="prettyprint lang-scala">val zipJoinQuery = for {
+  (c, s) &lt;- Coffees zip Suppliers
+} yield (c.name, s.name)
+...
+val zipWithJoin = for {
+  res &lt;- Coffees.zipWith(Suppliers, (c: Coffees.type, s: Suppliers.type) =&gt; (c.name, s.name))
+} yield res
+</code></pre><p>zip joinにはzipWithIndexのような特有な結合がある．これは0から始まる無限長の数列をクエリの結果と結合させる．SQLデータベースではそのような数列を表すことが出来ないし，Slickも現在ではそれについてサポートしていない（今後変更するかもしれない）．しかし，zipされたクエリ結果というのは行番号関数を用いる事でSQLにおいても表現する事が出来る．つまりzipWithIndexはプリミティブなオペレータとしてサポートされているのである．
+</p><!-- A particular kind of zip join is provided by zipWithIndex. It zips a query result with an infinite sequence starting at 0. Such a sequence cannot be represented by an SQL database and Slick does not currently support it, either (but this is expected to change in the future). The resulting zipped query, however, can be represented in SQL with the use of a row number function, so zipWithIndex is supported as a primitive operator:-->
+<pre><code class="prettyprint lang-scala">val zipWithIndexJoin = for {
+  (c, idx) &lt;- Coffees.zipWithIndex
+} yield (c.name, idx)
+</code></pre><h2 id="%E9%80%A3%E7%B5%90%EF%BC%88Unions%EF%BC%89">連結（Unions）<a href="#%E9%80%A3%E7%B5%90%EF%BC%88Unions%EF%BC%89" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>適応可能な型については，unionやunionAllというオペレータを用いて2つのクエリを連結させる事が出来る．
+</p><!-- Two queries can be concatenated with the union and unionAll operators if they have compatible types:-->
+<pre><code class="prettyprint lang-scala">val q1 = Query(Coffees).filter(_.price &lt; 8.0)
+val q2 = Query(Coffees).filter(_.price &gt; 9.0)
+val unionQuery = q1 union q2
+val unionAllQuery = q1 unionAll q2
+</code></pre><p>複製された値をフィルタリングするような結合と異なり，unionAllではシンプルに，時折より効率的に，複数のクエリを結合させる．
+</p><!--Unlike union which filters out duplicate values, unionAll simply concatenates the queries, which is usually more efficient.-->
+<h2 id="%E9%9B%86%E7%B4%84%EF%BC%88Aggregation%EF%BC%89">集約（Aggregation）<a href="#%E9%9B%86%E7%B4%84%EF%BC%88Aggregation%EF%BC%89" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>集約の簡単な例として，単一のカラムを返すクエリからプリミティブ値を計算する事を考える．単一のカラムというのは基本的に数値型となる．
+</p><!--The simplest form of aggregation consists of computing a primitive value from a Query that returns a single column, usually with a numeric type, e.g.:-->
+<pre><code class="prettyprint lang-scala">val q = Coffees.map(_.price)
+val q1 = q.min
+val q2 = q.max
+val q3 = q.sum
+val q4 = q.avg
+</code></pre><p>以下のような集約関数は任意のクエリにおいて実行する事が出来る．
+</p><!--Some aggregation functions are defined for arbitrary queries:-->
+<pre><code class="prettyprint lang-scala">val q = Query(Coffees)
+val q1 = q.length
+val q2 = q.exists
+</code></pre><p>グループ化はgroupByメソッドによって実装されている．これもScalaのコレクション操作と同じ様に機能する．
+</p><!--Grouping is done with the groupBy method. It has the same semantics as for Scala collections:-->
+<pre><code class="prettyprint lang-scala">val q = (for {
+  c &lt;- Coffees
+  s &lt;- c.supplier
+} yield (c, s)).groupBy(_._1.supID)
+...
+val q2 = q.map { case (supID, css) =&gt;
+  (supID, css.length, css.map(_._1.price).avg)
+}
+</code></pre><!--TODO よくわからない...-->
+<p>Note that the intermediate query q contains nested values of type Query. These would turn into nested collections when executing the query, which is not supported at the moment. Therefore it is necessary to flatten the nested queries by aggregating their values (or individual columns) as done in q2.
+</p><h2 id="%E3%82%AF%E3%82%A8%E3%83%AA%E3%81%AE%E5%AE%9F%E8%A1%8C%EF%BC%88Querying%EF%BC%89">クエリの実行（Querying）<a href="#%E3%82%AF%E3%82%A8%E3%83%AA%E3%81%AE%E5%AE%9F%E8%A1%8C%EF%BC%88Querying%EF%BC%89" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>Queryは<a href="http://slick.typesafe.com/doc/1.0.0/api/#scala.slick.jdbc.Invoker">Invoker</a>トレイト（パラメータが無い場合には<a href="http://slick.typesafe.com/doc/1.0.0/api/#scala.slick.jdbc.UnitInvoker">UnitInvoker</a> ）において定義されたメソッドを用いて実行される．Queryからの暗黙的な変換が存在しているため，全てのQueryを直接的に実行する事が出来る．もっとも一般的な使用方法は，listといった特定の関数や，様々な種類のコレクションを生成する関数（to[Vector]など）を用いてコレクションへと結果を変換させる事である．
+</p><!--Queries are executed using methods defined in the [Invoker][3] trait (or [UnitInvoker][4] for the parameterless versions). There is an implicit conversion from Query, so you can execute any Query directly. The most common usage scenario is reading a complete result set into a strict collection with a specialized method such as list or the generic method to which can build any kind of collection:-->
+<pre><code class="prettyprint lang-scala">val l = q.list
+val v = q.to[Vector]
+val invoker = q.invoker
+val statement = q.selectStatement
+</code></pre><p>この例では，明示的に暗黙的な変換メソッドを呼び出す事無しに，invokerへの参照をどのようにして取得するのかを表している．
+</p><!--This snippet also shows how you can get a reference to the invoker without having to call the implicit conversion method manually.-->
+<p>クエリを実行する全てのメソッドは暗黙的にSessionの値を保持している．もちろん，明示的にsessionを通しても構わない．
+</p><!-- All methods that execute a query take an implicit Session value. Of course, you can also pass a session explicitly if you prefer:-->
+<pre><code class="prettyprint lang-scala">val l = q.list(session)
+</code></pre><p>もし返り値として一つだけの値を返したいなら，firstやfirstOptionといったメソッドを使う事が出来る．foreach, foldLeft, elementsといったメソッドは全てのデータをScalaのコレクションへとコピーする事なしに，得られた結果をイテレートさせて利用する事が出来る．
+</p><!-- If you only want a single result value, you can use first or firstOption. The methods foreach, foldLeft and elements can be used to iterate over the result set without first copying all data into a Scala collection.-->
+<h2 id="%E5%89%8A%E9%99%A4%EF%BC%88Deleting%EF%BC%89">削除（Deleting）<a href="#%E5%89%8A%E9%99%A4%EF%BC%88Deleting%EF%BC%89" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>データの削除は先のQueryingと同じように機能する．何かデータを削除する時には，適当な行をselectした後にdeleteを呼び出すだろう．Queryからdelete関数や自己参照するdeleteInvokerを持った<a href="http://slick.typesafe.com/doc/1.0.0/api/#scala.slick.driver.BasicInvokerComponent$DeleteInvoker">DeleteInvoker</a>への暗黙的な変換が存在している．
+</p><!--Deleting works very similarly to querying. You write a query which selects the rows to delete and then call the delete method on it. There is again an implicit conversion from Query to the special [DeleteInvoker][5] which provides the delete method and a self-reference deleteInvoker:-->
+<pre><code class="prettyprint lang-scala">val affectedRowsCount = q.delete
+val invoker = q.deleteInvoker
+val statement = q.deleteStatement
+</code></pre><p>削除を行うクエリは単一のテーブルのみを指定する．どんな射影も無視される．
+</p><!--A query for deleting must only select from a single table. Any projection is ignored (it always deletes full rows).-->
+<h2 id="%E6%8C%BF%E5%85%A5%EF%BC%88Inserting%EF%BC%89">挿入（Inserting）<a href="#%E6%8C%BF%E5%85%A5%EF%BC%88Inserting%EF%BC%89" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>データの挿入は単一のテーブルに対し，カラムの射影を用いて行われる．テーブルを直接的に利用する場合，挿入は*射影を用いずに実行される．挿入時にテーブルのカラムを一部省くと，データベース作成時に定義されたデフォルト値か，もしくは適当に用意した，型に応じた非明示的なデフォルト値をデータベースに挿入する．データ挿入のための全てのメソッドは<a href="http://slick.typesafe.com/doc/1.0.0/api/#scala.slick.driver.BasicInvokerComponent$InsertInvoker">InsertInvoker</a>と<a href="http://slick.typesafe.com/doc/1.0.0/api/#scala.slick.driver.BasicInvokerComponent$FullInsertInvoker">FullInsertInvoker</a>において定義されている．
+</p><!--Inserts are done based on a projection of columns from a single table. When you use the table directly, the insert is performed against its * projection. Omitting some of a table’s columns when inserting causes the database to use the default values specified in the table definition, or a type-specific default in case no explicit default was given. All methods for inserting are defined in [InsertInvoker][6] and [FullInsertInvoker][7].-->
+<pre><code class="prettyprint lang-scala">Coffees.insert(&quot;Colombian&quot;, 101, 7.99, 0, 0)
+...
+Coffees.insertAll(
+  (&quot;French_Roast&quot;, 49, 8.99, 0, 0),
+  (&quot;Espresso&quot;,    150, 9.99, 0, 0)
+)
+...
+// &quot;sales&quot;と&quot;total&quot;はデフォルト値である0を用いる
+(Coffees.name ~ Coffees.supID ~ Coffees.price).insert(&quot;Colombian_Decaf&quot;, 101, 8.99)
+...
+val statement = Coffees.insertStatement
+val invoker = Coffees.insertInvoker
+</code></pre><p>あるデータベースシステムではAutoIncとなっているカラムへの適切な値の挿入や作成された値を取得するためにNoneという値を挿入することを許可している一方，多くのデータベースではこのような操作を禁じているため，これらのカラムについて省けるかどうかは，データベースシステムについて調べて確認をしなくてはならない．Slickはまだ自動的にこの処理を行うような機能を持ってはいないが，将来的に追加する予定である．現時点では以下の例にあるforInsertのような，AutoIncとなっているカラムを含まない射影を用いるべきである．
+</p><!--While some database systems allow inserting proper values into AutoInc columns or inserting None to get a created value, most databases forbid this behaviour, so you have to make sure to omit these columns. Slick does not yet have a feature to do this automatically but it is planned for a future release. For now, you have to use a projection which does not include the AutoInc column, like forInsert in the following example:-->
+<pre><code class="prettyprint lang-scala">case class User(id: Option[Int], first: String, last: String)
+...
+object Users extends Table[User](&quot;users&quot;) {
+  def id = column[Int](&quot;id&quot;, O.PrimaryKey, O.AutoInc)
+  def first = column[String](&quot;first&quot;)
+  def last = column[String](&quot;last&quot;)
+  def * = id.? ~ first ~ last &lt;&gt; (User, User.unapply _)
+  def forInsert = first ~ last &lt;&gt; ({ t =&gt; User(None, t._1, t._2)}, { (u: User) =&gt; Some((u.first, u.last))})
+}
+...
+Users.forInsert insert User(None, &quot;Christopher&quot;, &quot;Vogt&quot;)
+</code></pre><p>このような処理を行う際，AutoIncで自動生成された主キーのカラムを取得したいと考える事があるだろう．デフォルトでは，insert関数は影響を与えた行の数（大抵1になる）を返り値として返すし，insertAll関数はOption（もしデータベースが全ての行のための数え上げ機能を提供していない場合にはNoneとなる）における計算された数を返す．insertから単一の値やタプル，insertAllからSeqのような値として，返されるカラムを指定する場合には，returning関数を用いる事で指定が可能になる．
+</p><!--In these cases you frequently want to get back the auto-generated primary key column. By default, insert gives you a count of the number of affected rows (which will usually be 1) and insertAll gives you an accumulated count in an Option (which can be None if the database system does not provide counts for all rows). This can be changed with the returning method where you specify the columns to be returned (as a single value or tuple from insert and a Seq of such values from insertAll):-->
+<pre><code class="prettyprint lang-scala">val userId =
+  Users.forInsert returning Users.id insert User(None, &quot;Stefan&quot;, &quot;Zeiger&quot;)
+</code></pre><p>多くのデータベースでは単一のカラムを返す際に，テーブルのAutoIncな主キーを返す事を許可している．もし他のカラムが叩かれたら，SlickExceptionが実行中に（データベースが実際にそれをサポートしていない限り）投げられてしまう．
+</p><!--Note that many database systems only allow a single column to be returned which must be the table’s auto-incrementing primary key. If you ask for other columns a SlickException is thrown at runtime (unless the database actually supports it).-->
+<p>クライアント側からデータを挿入する代わりに，データベースサーバーにおいて実行されるQueryやスカラー表現によって作られたデータを挿入すること事も出来る．
+</p><!--Instead of inserting data from the client side you can also insert data created by a Query or a scalar expression that is executed in the database server:-->
+<pre><code class="prettyprint lang-scala">object Users2 extends Table[(Int, String)](&quot;users2&quot;) {
+  def id = column[Int](&quot;id&quot;, O.PrimaryKey)
+  def name = column[String](&quot;name&quot;)
+  def * = id ~ name
+}
+...
+Users2.ddl.create
+Users2 insert (Users.map { u =&gt; (u.id, u.first ++ &quot; &quot; ++ u.last) })
+Users2 insertExpr (Query(Users).length + 1, &quot;admin&quot;)
+</code></pre><h2 id="%E6%9B%B4%E6%96%B0%EF%BC%88Updating%EF%BC%89">更新（Updating）<a href="#%E6%9B%B4%E6%96%B0%EF%BC%88Updating%EF%BC%89" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>データの更新は該当するデータをselectしてから，新たなデータへ更新することになるだろう．そのようなクエリは単一テーブルからselectされた生のカラム（計算された値ではない）のみを返すべきである．更新に関係する関数は<a href="http://slick.typesafe.com/doc/1.0.0/api/#scala.slick.driver.BasicInvokerComponent$UpdateInvoker">UpdateInvoker</a>において定義されている．
+</p><!--Updates are performed by writing a query that selects the data to update and then replacing it with new data. The query must only return raw columns (no computed values) selected from a single table. The relevant methods for updating are defined in [UpdateInvoker][8].-->
+<pre><code class="prettyprint lang-scala">val q = for { c &lt;- Coffees if c.name === &quot;Espresso&quot; } yield c.price
+q.update(10.49)
+...
+val statement = q.updateStatement
+val invoker = q.updateInvoker
+</code></pre><p>現時点では，更新のための，データベース内にあるデータのスカラー表現や変換を利用する方法は無い．
+</p><!--There is currently no way to use scalar expressions or transformations of the existing data in the database for updates.-->
+<h2 id="%E3%82%AF%E3%82%A8%E3%83%AA%E3%83%86%E3%83%B3%E3%83%97%E3%83%AC%E3%83%BC%E3%83%88">クエリテンプレート<a href="#%E3%82%AF%E3%82%A8%E3%83%AA%E3%83%86%E3%83%B3%E3%83%97%E3%83%AC%E3%83%BC%E3%83%88" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>クエリテンプレートは任意のパラメータが決められたクエリのことである．複数のパラメータを取る関数のようにテンプレートは機能し，より効率的にQueryを返す．通常，クエリを作成するために関数を評価する際，新しいクエリとなるASTをその関数は構築し，そのクエリを実行する際に，たとえ同じSQL文が結果を返したとしても，常にクエリコンパイラによって毎度クエリはコンパイルされる．一方で，クエリテンプレートは単一のSQL文（全てのパラメータが変数へバインドされるが）に制限され，たった一度しかクエリはビルド，コンパイルされない．
+</p><!--Query templates are parameterized queries. A template works like a function that takes some parameters and returns a Query for them except that the template is more efficient. When you evaluate a function to create a query the function constructs a new query AST, and when you execute that query it has to be compiled anew by the query compiler every time even if that always results in the same SQL string. A query template on the other hand is limited to a single SQL string (where all parameters are turned into bind variables) by design but the query is built and compiled only once.-->
+<p>クエリテンプレートは<a href="http://slick.typesafe.com/doc/1.0.0/api/#scala.slick.lifted.Parameters">Parameters</a>オブジェクトのflatMapを呼び出すことによって作る事が出来る．大抵の場合，for式を1つ書くことで，テンプレートを作成する事が出来る．
+</p><!--You can create a query template by calling flatMap on a [Parameters][9] object. In many cases this enables you to write a single for comprehension for a template.-->
+<pre><code class="prettyprint lang-scala">val userNameByID = for {
+  id &lt;- Parameters[Int]
+  u &lt;- Users if u.id is id
+} yield u.first
+...
+val name = userNameByID(2).first
+...
+val userNameByIDRange = for {
+  (min, max) &lt;- Parameters[(Int, Int)]
+  u &lt;- Users if u.id &gt;= min &amp;&amp; u.id &lt; max
+} yield u.first
+...
+val names = userNameByIDRange(2, 5).list
+</code></pre><h2 id="%E3%83%A6%E3%83%BC%E3%82%B6%E5%AE%9A%E7%BE%A9%E9%96%A2%E6%95%B0%E3%81%A8%E3%83%A6%E3%83%BC%E3%82%B6%E5%AE%9A%E7%BE%A9%E5%9E%8B">ユーザ定義関数とユーザ定義型<a href="#%E3%83%A6%E3%83%BC%E3%82%B6%E5%AE%9A%E7%BE%A9%E9%96%A2%E6%95%B0%E3%81%A8%E3%83%A6%E3%83%BC%E3%82%B6%E5%AE%9A%E7%BE%A9%E5%9E%8B" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>もしデータベースシステムがSlickにおける関数として利用出来るスカラー関数を用意していたとしたら，それを<a href="http://slick.typesafe.com/doc/1.0.0/api/#scala.slick.lifted.SimpleFunction">SimpleFunction</a>として定義することが出来る．パラメータと返り値を固定した1つ，2つ，もしくは3つの関数を作成するための関数が既に定義されている．
+</p><!--If your database system supports a scalar function that is not available as a method in Slick you can define it as a [SimpleFunction][10]. There are predefined methods for creating unary, binary and ternary functions with fixed parameter and return types.-->
+<pre><code class="prettyprint lang-scala">// H2はタイムスタンプから曜日を抽出する関数であるday_of_week()を持っている
+val dayOfWeek = SimpleFunction.unary[Date, Int](&quot;day_of_week&quot;)
+...
+// 曜日によってグループ化するクエリにおいて，拡張された関数を用いる事が出来る
+val q1 = for {
+  (dow, q) &lt;- SalesPerDay.map(s =&gt; (dayOfWeek(s.day), s.count)).groupBy(_._1)
+} yield (dow, q.map(_._2).sum)
+</code></pre><p>もし特定の型（varargsや，ポリモーフィックな関数，もしくはある関数におけるOptionや非Option型をサポートするため）を評価する，より柔軟な機能が欲しいのならば，型の決められていないインスタンスを得るためにSimpleFunction.applyを用いる事ができるし，適切な型検査をつけたラッパー関数を自身で書くことも出来る．
+</p><!--If you need more flexibility regarding the types (e.g. for varargs, polymorphic functions, or to support Option and non-Option types in a single function), you can use SimpleFunction.apply to get an untyped instance and write your own wrapper function with the proper type-checking:-->
+<pre><code class="prettyprint lang-scala">def dayOfWeek2(c: Column[Date]) =
+  SimpleFunction(&quot;day_of_week&quot;)(TypeMapper.IntTypeMapper)(Seq(c))
+</code></pre><p><a href="http://slick.typesafe.com/doc/1.0.0/api/#scala.slick.lifted.SimpleBinaryOperator">SimpleBinaryOperator</a>と<a href="http://slick.typesafe.com/doc/1.0.0/api/#scala.slick.lifted.SimpleLiteral">SimpleLiteral</a>はよく似た機能を持っている．さらにより柔軟な機能（普遍的でないシンタックスを持った関数に近い表現など）のために，<a href="http://slick.typesafe.com/doc/1.0.0/api/#scala.slick.lifted.SimpleExpression">SimpleExpression</a>を用いる事が出来る．
+</p><!--[SimpleBinaryOperator][11] and [SimpleLiteral][12] work in a similar way. For even more flexibility (e.g. function-like expressions with unusual syntax), you can use [SimpleExpression][13].-->
+<p>もしカスタムしたカラム型を必要とするのならば，<a href="http://slick.typesafe.com/doc/1.0.0/api/#scala.slick.lifted.TypeMapper">TypeMapper</a>と<a href="http://slick.typesafe.com/doc/1.0.0/api/#scala.slick.lifted.TypeMapperDelegate">TypeMapperDelegate</a>を実装すれば良い．大抵の場面，アプリケーション特有の型をデータベースに既にサポートされた型へとマッピングする事になる．これは全ての共通事項(boilerplate)を考慮した<a href="http://slick.typesafe.com/doc/1.0.0/api/#scala.slick.lifted.MappedTypeMapper">MappedTypeMapper</a>を用いることによってより簡単に実装する事が出来る．
+</p><!--If you need a custom column type you can implement [TypeMapper][14] and [TypeMapperDelegate][15]. The most common scenario is mapping an application-specific type to an already supported type in the database. This can be done much simpler by using a [MappedTypeMapper][16] which takes care of all the boilerplate:-->
+<pre><code class="prettyprint lang-scala">// booleanの代数型
+sealed trait Bool
+case object True extends Bool
+case object False extends Bool
+...
+// 上記のbooleanを1と0のIntへと変換するTypeMapper
+implicit val boolTypeMapper = MappedTypeMapper.base[Bool, Int](
+  { b =&gt; if(b == True) 1 else 0 },    // map Bool to Int
+  { i =&gt; if(i == 1) True else False } // map Int to Bool
+)
+</code></pre><p>Bool型をテーブルやクエリなどにおいて，ビルドインされたカラム型であるかのように扱う事が出来る．
+さらにより柔軟な操作にはサブクラスであるMappedTypeMapperを用いる事が出来る．
+</p><!--// You can now use Bool like any built-in column type (in tables, queries, etc.)
+You can also subclass MappedTypeMapper for a bit more flexibility.-->
+<p>Slick 1.0.0 documentation - 04 Plain SQL Queries
+</p><!--Plain SQL Queries — Slick 1.0.0 documentation-->
+<p><a href="http://slick.typesafe.com/doc/1.0.0/sql.html">Permalink to Plain SQL Queries — Slick 1.0.0 documentation</a>
+</p><h1 id="Plain+SQL+Queries">Plain SQL Queries<a href="#Plain+SQL+Queries" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><p>抽象的で高度な操作について，SQLコードを直接書きたくなる事があるかもしれない．Slickの <em>Plain SQL</em> クエリでは，<a href="http://en.wikipedia.org/wiki/Java_Database_Connectivity">JDBC</a>の低レイアに触れる事無しに，よりScalaベースな記述を行う事が出来る．
+</p><!--Sometimes you may need to write your own SQL code for an operation which is not well supported at a higher level of abstraction. Instead of falling back to the low level of [JDBC][1], you can use Slick’s *Plain SQL* queries with a much nicer Scala-based API.-->
+<h2 id="Scaffolding">Scaffolding<a href="#Scaffolding" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p><a href="https://github.com/slick/slick-examples/blob/1.0.0/src/main/scala/com/typesafe/slick/examples/jdbc/PlainSQL.scala">SLick example jdbc/PlainSQL</a>では <em>Plain SQL</em> の特徴についていくつか説明している．インポートすべきパッケージが<a href="http://slick.typesafe.com/doc/1.0.0/lifted-embedding.html">*lifted embedding*</a>や<a href="http://slick.typesafe.com/doc/1.0.0/direct-embedding.html">*direct embedding*</a>とは異なっている事に注意して欲しい．
+</p><!--[Slick example jdbc/PlainSQL][2] demonstrates some features of the *Plain SQL* support. The imports are different from what you’re used to for the [*lifted embedding*][3] or [*direct embedding*][4]:-->
+<pre><code class="prettyprint lang-scala">import scala.slick.session.Database
+import Database.threadLocalSession
+import scala.slick.jdbc.{GetResult, StaticQuery =&gt; Q}
+</code></pre><p>まず初めに， <em>Slick driver</em> をインポートする必要がない．SlickのJDBCに基づくAPIはJDBC自身のみに依存しているし，データベース特有の抽象化を全く実装する必要がない．データベースに接続するために必要なものは，scala.slick.session.Databaseとセッション処理を単純化したthreeadLocalSessionのみである．
+</p><!--First of all, there is no *Slick driver* being imported. The JDBC-based APIs in Slick depend only on JDBC itself and do not implement any database-specific abstractions. All we need for the database connection is Database, plus the threadLocalSession to simplify session handling.-->
+<p><em>Plain SQL</em> クエリを用いるために必要なクラスは，ここではQという名前でインポートしている，scala.slick.jdbc.StaticQueryである．
+</p><!--The most important class for *Plain SQL* queries is scala.slick.jdbc.StaticQuery which gets imported as Q for more convenient use.-->
+<p>データベースの接続方法は<a href="http://slick.typesafe.com/doc/1.0.0/gettingstarted.html#gettingstarted-dbconnection">*in the usual way*</a>にある．例を示すために，以下のようなcase classを定義した．
+</p><!--The database connection is opened [*in the usual way*][5]. We are also defining some case classes for our data:-->
+<pre><code class="prettyprint lang-scala">case class Supplier(id: Int, name: String, street: String, city: String, state: String, zip: String)
+case class Coffee(name: String, supID: Int, price: Double, sales: Int, total: Int)
+...
+Database.forURL(&quot;jdbc:h2:mem:test1&quot;, driver = &quot;org.h2.Driver&quot;) withSession {
+}
+</code></pre><h2 id="DDL%2FDML+Statements">DDL/DML Statements<a href="#DDL%2FDML+Statements" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>最もシンプルなStaticQueryのメソッドは，updateNAである（NA = no args）．updateNAは，結果の代わりにDDLステートメントから行数を返すStaticQuery[Unit, Int]を作成する，これは[<em>lifted embedding</em>][3]を用いるクエリと同じように実行する事が出来る．ここでは結果を得ずに，クエリを.executeを用いて実行させている．
+</p><!--The simplest StaticQuery method is updateNA which creates a parameterless (*NA = no args*) StaticQuery[Unit, Int] that is supposed to return the row count from a DDL statement instead of a result set. It can be executed the same way as a query that uses the [*lifted embedding*][3]. Here we are using .execute to run the query without getting the results:-->
+<pre><code class="prettyprint lang-scala">// 主キーと外部キーを含むテーブルを作成する
+Q.updateNA(&quot;create table suppliers(&quot;+
+  &quot;id int not null primary key, &quot;+
+  &quot;name varchar not null, &quot;+
+  &quot;street varchar not null, &quot;+
+  &quot;city varchar not null, &quot;+
+  &quot;state varchar not null, &quot;+
+  &quot;zip varchar not null)&quot;).execute
+.updateNA(&quot;create table coffees(&quot;+
+  &quot;name varchar not null, &quot;+
+  &quot;sup_id int not null, &quot;+
+  &quot;price double not null, &quot;+
+  &quot;sales int not null, &quot;+
+  &quot;total int not null, &quot;+
+  &quot;foreign key(sup_id) references suppliers(id))&quot;).execute
+</code></pre><p>文字列を既存のStaticQueryオブジェクトに対し，+を用いて結合する事が出来る．この際，新しいStaticQueryが生成される．StaticQuery.uは，便利な関数であり，StaticQuery.updateNA(””)で生成される空の <em>update</em> クエリを生成する．SUPPLIERSテーブルにいくつかのデータを挿入するためにStaticQuery.uを用いてみる．
+</p><!--You can append a String to an existing StaticQuery object with +, yielding a new StaticQuery with the same types. The convenience method StaticQuery.u constructs an empty *update* query to start with (identical to StaticQuery.updateNA("")). We are using it to insert some data into the SUPPLIERS table:-->
+<pre><code class="prettyprint lang-scala">// 複数のsupplierを挿入する
+(Q.u + &quot;insert into suppliers values(101, 'Acme, Inc.', '99 Market Street', 'Groundsville', 'CA', '95199')&quot;).execute
+(Q.u + &quot;insert into suppliers values(49, 'Superior Coffee', '1 Party Place', 'Mendocino', 'CA', '95460')&quot;).execute
+(Q.u + &quot;insert into suppliers values(150, 'The High Ground', '100 Coffee Lane', 'Meadows', 'CA', '93966')&quot;).execute
+</code></pre><p>SQLコード内にリテラルを埋め込む事は，一般的にセキュリティやパフォーマンスの観点から推奨されない．特に，ユーザが提供したデータを実行時に用いるような際には危険な処理になる．変数をクエリ文字列に追加するためには，特別な連結オペレータである+?を用いる．これはSQL文が実行される際に，渡された値を用いてインスタンス化するものである．
+</p><!--Embedding literals into SQL code is generally not recommended for security and performance reasons, especially if they are to be filled at run-time with user-provided data. You can use the special concatenation operator +? to add a bind variable to a query string and instantiate it with the provided value when the statement gets executed:-->
+<pre><code class="prettyprint lang-scala">def insert(c: Coffee) = (Q.u + &quot;insert into coffees values (&quot; +? c.name +
+  &quot;,&quot; +? c.supID + &quot;,&quot; +? c.price + &quot;,&quot; +? c.sales + &quot;,&quot; +? c.total + &quot;)&quot;).execute
+...
+// Insert some coffees
+Seq(
+  Coffee(&quot;Colombian&quot;, 101, 7.99, , ),
+  Coffee(&quot;French_Roast&quot;, 49, 8.99, , ),
+  Coffee(&quot;Espresso&quot;, 150, 9.99, , ),
+  Coffee(&quot;Colombian_Decaf&quot;, 101, 8.99, , ),
+  Coffee(&quot;French_Roast_Decaf&quot;, 49, 9.99, , )
+).foreach(insert)
+</code></pre><p>SQL文は全ての呼び出しで同じもの（insert into coffees values (?,?,?,?,?)）となっている．
+</p><!--The SQL statement is the same for all calls: insert into coffees values (?,?,?,?,?)-->
+<h2 id="Query+Statements">Query Statements<a href="#Query+Statements" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>updateNAと似た，返り値となる行の型パラメータを取るqueryNAというメソッドがある．このメソッドは <em>select文</em> を実行し，結果をiteratorで回す事が出来る．
+</p><!--Similar to updateNA, there is a queryNA method which takes a type parameter for the rows of the result set. You can use it to execute a *select* statement and iterate over the results:-->
+<pre><code class="prettyprint lang-scala">Q.queryNA[Coffee](&quot;select * from coffees&quot;) foreach { c =&gt;
+  println(&quot;  &quot; + c.name + &quot;t&quot; + c.supID + &quot;t&quot; + c.price + &quot;t&quot; + c.sales + &quot;t&quot; + c.total)
+}
+</code></pre><p>これらを上手く機能させるためには，SlickはPositionedResultオブジェクトからCoffeeの値をどのようにして読み取ればいいのかを知らせなくてはならない．これは暗黙的なGetResultによって行われる．GetResultを持つ基本的なJDBCの型や，NULLを許可するカラムを表すためのOptionや，タプルに対して，暗黙的なGetResultが定義されていなくてはならない．この例においてはSupplierクラスやCoffeeクラスのためのGetResultを以下のように用意する必要がある．
+</p><!--In order for this to work, Slick needs to know how to read Coffee values from a PositionedResult object. This is done with an implicit GetResult value. There are predefined GetResult implicits for the standard JDBC types, for Options of those (to represent nullable columns) and for tuples of types which have a GetResult. For the Supplier and Coffee classes in this example we have to write our own:-->
+<pre><code class="prettyprint lang-scala">// Result set getters
+implicit val getSupplierResult = GetResult(r =&gt; Supplier(r.nextInt, r.nextString, r.nextString,
+      r.nextString, r.nextString, r.nextString))
+implicit val getCoffeeResult = GetResult(r =&gt; Coffee(r.&lt;&lt;, r.&lt;&lt;, r.&lt;&lt;, r.&lt;&lt;, r.&lt;&lt;))
+</code></pre><p>GetResult[T]はPositionedResult =&gt; Tとなる関数のシンプルなラッパーである．上の例において，1つ目のGetResultでは現在の行から次のInt，次のStringといった値を読み込むgetInt，getStringといったPositionedResultの明示的なメソッドを用いている．2つ目のGetResultでは自動的に型を推測する簡易化されたメソッド&lt;&lt;を用いている．コンスタクタの呼び出しにおいて実際に型を判別出来る際にのみこれは用いる事ができる．
+</p><!--GetResult[T] is simply a wrapper for a function PositionedResult => T. The first one above uses the explicit PositionedResult methods getInt and getString to read the next Int or String value in the current row. The second one uses the shortcut method << which returns a value of whatever type is expected at this place. (Of course you can only use it when the type is actually known like in this constructor call.)-->
+<p>パラメータの無いクエリのための，queryNAメソッドは2つの型パラメータ（1つはクエリパラメータ，もう1つは返り値となる行の型パラメータ）を取るクエリによって補完される．同様に，updateNAのための適切なupdateが存在する．StaticQueryの実行関数は型パラメータを用いて呼ばれる必要がある．以下の例では.listがそれにあたる．
+</p><!--The queryNA method for parameterless queries is complemented by query which takes two type parameters, one for the query parameters and one for the result set rows. Similarly, there is a matching update for updateNA. The execution methods of the resulting StaticQuery need to be called with the query parameters, as seen here in the call to .list:-->
+<pre><code class="prettyprint lang-scala">// 価格が$9.00より小さい全てのコーヒーに対し，coffeeのnameとsupplierのnameを取り出す
+val q2 = Q.query[Double, (String, String)](&quot;&quot;&quot;
+  select c.name, s.name
+  from coffees c, suppliers s
+  where c.price &lt; ? and s.id = c.sup_id
+&quot;&quot;&quot;)
+// この場合，結果はListとして読むことが出来る
+val l2 = q2.list(9.0)
+for (t &lt;- l2) println(&quot;  &quot; + t._1 + &quot; supplied by &quot; + t._2)
+</code></pre><p>また，パラメータを直接的にクエリへ適用させる事も出来る．これを用いると，パラメータの無いクエリへと変換させることが出来る．これは通常の関数適用と同じように，クエリのパラメータを決めさせる事が出来る．
+</p><!--As an alternative, you can apply the parameters directly to the query, thus reducing it to a parameterless query. This makes the syntax for parameterized queries the same as for normal function application:-->
+<pre><code class="prettyprint lang-scala">val supplierById = Q[Int, Supplier] + &quot;select * from suppliers where id = ?&quot;
+println(&quot;Supplier #49: &quot; + supplierById(49).first)
+</code></pre><h2 id="String+Interpolation">String Interpolation<a href="#String+Interpolation" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>文字列補完接頭辞（string interpolation prefix）であるsqlやsqluを用いるためには，以下のインポート文を追加する必要がある．
+</p><!--In order to use the string interpolation prefixes sql and sqlu, you need to add one more import statement:-->
+<pre><code class="prettyprint lang-scala">import Q.interpolation
+</code></pre><p>再利用可能なクエリを必要としない場合には，interpolationはパラメータが付与されたクエリを生成する，最も簡単で統語的にナイスな手法である．クエリを挿入するどんな変数や式も，バインドした変数を結果を返すクエリ文字列へと変換する事が出来る（クエリへ直接挿入されるリテラル値を取得するのに$の代わりに#$を用いることも出来る）．返り値の型は呼び出しの中で，sql interpolatorによって作られたオブジェクトをStaticQueryへと変換させる.asによって指定される．
+</p><!--As long as you don’t want function-like reusable queries, interpolation is the easiest and syntactically nicest way of building a parameterized query. Any variable or expression injected into a query gets turned into a bind variable in the resulting query string. (You can use #$ instead of $ to get the literal value inserted directly into the query.) The result type is specified in a call to .as which turns the object produced by the sql interpolator into a StaticQuery:-->
+<pre><code class="prettyprint lang-scala">def coffeeByName(name: String) = sql&quot;select * from coffees where name = $name&quot;.as[Coffee]
+println(&quot;Coffee Colombian: &quot; + coffeeByName(&quot;Colombian&quot;).firstOption)
+</code></pre><p>update文を生成するためのよく似た補完（interpolator），sqluというものもある．これはInt値を返す事を強制するため，.asのような関数を必要としない．
+</p><!--There is a similar interpolator sqlu for building update statements. It is hardcoded to return an Int value so it does not need the extra .as call:-->
+<pre><code class="prettyprint lang-scala">def deleteCoffee(name: String) = sqlu&quot;delete from coffees where name = $name&quot;.first
+val rows = deleteCoffee(&quot;Colombian&quot;)
+println(s&quot;Deleted $rows rows&quot;)
+</code></pre><p>Slick 1.0.0 documentation - 05 Direct Embedding
+<!--Direct Embedding — Slick 1.0.0 documentation-->
+</p><p><a href="http://slick.typesafe.com/doc/1.0.0/direct-embedding.html">Permalink to Direct Embedding — Slick 1.0.0 documentation</a>
+</p><h1 id="Direct+Embedding">Direct Embedding<a href="#Direct+Embedding" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><p>direct embeddingは新しい，しかしまだ不完全で実験的なクエリAPIである．現在実験中．開発中の段階であるため，リリースに応じて非推奨な期間など無しに変更される事がある．安全に利用する事の出来る，安定したlifted embeddingクエリAPIに取って代わるような予定は無く，direct embeddingは共存させていく．lifted embeddingと違って，direct enbeddingは実装のための暗黙的な変換やオーバーロードするオペレータの代わりにマクロを用いて操作を行う．ユーザのために，コード内における違いは少なくしているが，direct enbeddingを用いるクエリは普遍的なScalaの型を用いて機能している．これは表示されるエラーメッセージの理解性を上げるためでもある．
+</p><!--The direct embedding is a new, still incomplete, experimental Query API under development. It may change without deprecation period in any release during its experimental status. There is no plan to replace the stable lifted embedding Query API, which you can safely bet on for production use. The direct embedding co-exists. Unlike the lifted embedding, the direct embedding uses macros instead of operator overloading and implicit conversions for its implementation. For a user the difference in the code is small, but queries using the direct embedding work with ordinary Scala types, which can make error messages easier to understand.-->
+<p>以下の説明は<a href="http://slick.typesafe.com/gettingstarted.html">*lifted embedding*</a>の説明に類似した例である．
+</p><!--The following descriptions are anolog to the description of the [*lifted embedding*][1].-->
+<h2 id="Dependencies">Dependencies<a href="#Dependencies" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>direct embeddingは型検査のために実行時にScalaコンパイラにアクセスする必要がある．Slickは必要性に駆られない限り，アプリケーションに対し，依存性を避けるためにScalaコンパイラへの依存性を任意としている．そのため，direct embeddingを用いる際にはプロジェクトの <strong>build.sbt</strong> に対し明示的にその依存性を記述しなくてはならない．
+</p><!--The direct embedding requires access to the Scala compiler at runtime for typechecking. Slick only declares an *optional* dependency on scala-compiler in order to avoid bringing it (along with all transitive dependencies) into your application if you don’t need it. You must add it explicitly to your own project’s build.sbt file if you want to use the direct embedding:-->
+<pre><code class="prettyprint lang-scala">libraryDependencies &lt;+= (scalaVersion)(&quot;org.scala-lang&quot; % &quot;scala-compiler&quot; % _)
+</code></pre><h2 id="Imports">Imports<a href="#Imports" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><pre><code class="prettyprint lang-scala">import scala.slick.driver.H2Driver
+import H2Driver.simple.Database
+import Database.{threadLocalSession =&gt; session}
+import scala.slick.direct._
+import scala.slick.direct.AnnotationMapper._
+</code></pre><h2 id="Row+class+and+schema">Row class and schema<a href="#Row+class+and+schema" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>スキーマは現在でえは行を保持しているケースクラスに対してアノテーションを付与する事で記述する事が出来る．今後，より柔軟にスキーマの情報を拡張出来るような機能を提供する予定だ．
+</p><!--The schema description is currently provided as annotations on a case class which is used for holding rows. We will later provide more flexible and customizable means of providing the schema information.-->
+<pre><code class="prettyprint lang-scala">// describe schema for direct embedding
+@table(name=&quot;COFFEES&quot;)
+case class Coffee(
+  @column(name=&quot;NAME&quot;)
+  name : String,
+  @column(name=&quot;PRICE&quot;)
+  price : Double
+)
+</code></pre><h2 id="Query">Query<a href="#Query" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>Queryableはテーブルデータに対しクエリの演算を行うためのものであり，注釈付けられた型引数を取る．
+</p><!--Queryable takes an annotated case class as its type argument to formulate queries agains the corresponding table.-->
+<p>_.priceはここではInt型である．潜在的な，マクロベースの実装においてはmapやfilterに与えられた引数はJVM上で実行されないが，その代わりにデータベースクエリへと変換される事を覚えておいて欲しい．
+</p><!--_.price is of type Int here. The underlying, macro-based implementation takes care of that the shown arguments to map and filter are not executed on the JVM but translated to database queries instead.-->
+<pre><code class="prettyprint lang-scala">// query database using direct embedding
+val q1 = Queryable[Coffee]
+val q2 = q1.filter( _.price &gt; 3.0 ).map( _ .name )
+</code></pre><h2 id="Execution">Execution<a href="#Execution" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>クエリを実行するためには，選択したデータベースのドライバーを用いるSlickBackendインスタンスを作成する必要がある．
+</p><!--To execute the queries we need to create a SlickBackend instance passing in the chosen database backend driver.-->
+<pre><code class="prettyprint lang-scala">val db = Database.forURL(&quot;jdbc:h2:mem:test1&quot;, driver = &quot;org.h2.Driver&quot;)
+db withSession {
+    // execute query using a chosen db backend
+    val backend = new SlickBackend( H2Driver, AnnotationMapper )
+    println( backend.result( q2, session ) )
+    println( backend.result( q2.length, session ) )
+}
+</code></pre><h2 id="Alternative+direct+embedding+bound+to+a+driver+and+session">Alternative direct embedding bound to a driver and session<a href="#Alternative+direct+embedding+bound+to+a+driver+and+session" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>ImplicitQueryableを用いると，queryableはバックエンドとセッションに束縛される．クエリはその上で以下のような方法で簡単に実行する事が出来る．
+</p><!--Using ImplicitQueryable, a queryable can be bound to a backend and session. The query can be further adapted and easily executed this way.-->
+<pre><code class="prettyprint lang-scala">//
+val iq1 = ImplicitQueryable( q1, backend, session )
+val iq2 = iq1.filter( c =&gt; c.price &gt; 3.0 )
+println( iq2.toSeq ) //  &lt;- triggers execution 
+println( iq2.length ) // &lt;- triggers execution
+</code></pre><h2 id="Features">Features<a href="#Features" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>direct embeddingは現在， <strong>String</strong>, <strong>Int</strong>, <strong>Double</strong> といった値にたいしマッピングされるデータベースカラムのみサポートしている．
+</p><!--The direct embedding currently only supports database columns, which can be mapped to either **String** , **Int** , **Double** .-->
+<p>QueryableとImplicitQueryableは現在，次のようなメソッドを用意している．
+</p><!--Queryable and ImplicitQueryable currently support the following methods:-->
+<p><strong>map, flatMap, filter, length</strong>
+</p><p>これらのメソッドはimmutableな演算を行うが，関数呼び出しによる変化を包含した新しいQuaryableを返す．
+</p><!--The methods are all immutable meaning they leave the left-hand-side Queryable unmodified, but return a new Queryable incorporating the changes by the method call.-->
+<p>上記の関数におけるシンタックスとして，以下の様なオペレータを利用する事が出来る．
+</p><!--Within the expressions passed to the above methods, the following operators may be used:-->
+<p><strong>Any: ==</strong>
+</p><p><strong>Int, Double: + &lt; &gt;</strong>
+</p><p><strong>String: +</strong>
+</p><p><strong>Boolean: || &amp;&amp;</strong>
+</p><p>他に定義された独自のオペレータについても，型検査がマッチしていれば利用する事が出来る．しかし現時点では，それらのオペレータは実行時に失敗するクエリを生成するようなSQLへ変換する事が出来ない．（例: <strong>(coffees.map( c =&gt; c.ma,e.repr ))</strong>）将来的には，コンパイル中にそのようなものもキャッチするような方法を検討している．
+</p><!--Other operators may type check and compile ok, if they are defined for the corresponding types. They can however currently not be translated to SQL, which makes the query fail at runtime, for example: **(coffees.map( c => c.name.repr ))** . We are evaluating ways to catch those cases at compile time in the future-->
+<p>クエリは行を補完するようなオブジェクトを保持する，任意にネストされたタプルのシーケンスを結果として返す．
+</p><!--Queries may result in sequences of arbitrarily nested tuples, which may also contain objects representing complete rows. E.g.-->
+<pre><code class="prettyprint lang-scala">q1.map( c =&gt; (c.name, (c, c.price)) )
+</code></pre><p>direct embeddingは現在データの挿入といった機能を持っていない．その代わりに<a href="http://slick.typesafe.com/lifted-embedding.html">*lifted embedding*</a>や<a href="http://slick.typesafe.com/sql.html">*plain SQL queries*</a>などを用いる事ができる．
+</p><!--The direct embedding currently does not feature insertion of data. Instead you can use the [*lifted embedding*][2] or [*plain SQL queries*][3].-->
+<p>Slick 1.0.0 documentation - 06 Slick TestKit
+<!--Slick TestKit — Slick 1.0.0 documentation-->
+</p><p><a href="http://slick.typesafe.com/doc/1.0.0/testkit.html">“Permalink to Slick TestKit — Slick 1.0.0 documentation</a>
+</p><h1 id="Slick+TestKit">Slick TestKit<a href="#Slick+TestKit" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><p>Slickに対し，独自のデータベースドライバーを記述する際には，きちんと動作するのか，何が現時点で実装されていないのかなどを確認するために基本となるユニットテスト（もしくは加えて他の独自のカスタマイズしたテスト）を実行して欲しい．このためにSlickユニットテストとしてのSlick Test Kitプロジェクトを別に用意している．
+</p><!--When you write your own database driver for Slick, you need a way to run all the standard unit tests on it (in addition to any custom tests you may want to add) to ensure that it works correctly and does not claim to support any capabilities which are not actually implemented. For this purpose the Slick unit tests have been factored out into a separate Slick TestKit project.-->
+<p>これを用いるためには，Slickの基本的なPostgreSQLドライバーと，それをビルドするために必要なものを全て含んだ<a href="https://github.com/slick/slick-testkit-example/tree/1.0.0">Slick TestKit Example</a>をクローンして，それをテストして欲しい．
+</p><!--To get started, you can clone the [Slick TestKit Example][1] project which contains a (slightly outdated) version of Slick’s standard PostgreSQL driver and all the infrastructure required to build and test it.-->
+<h2 id="Scaffolding">Scaffolding<a href="#Scaffolding" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>build.sbtは以下のように記述する．一般的な名前とバージョン設定と区別して，SlickとTestKit，junit-interface，Logback，PostgreSQL JDBC Driverへの依存性を追加する．そしてテストを行うためのオプションをいくつか記述する必要がある．
+</p><!--Its build.sbt file is straight-forward. Apart from the usual name and version settings, it adds the dependencies for Slick, the TestKit, junit-interface, Logback and the PostgreSQL JDBC driver, and it sets some options for the test runs:-->
+<pre><code class="prettyprint lang-scala">libraryDependencies ++= Seq(
+  &quot;com.typesafe.slick&quot; %% &quot;slick&quot; % &quot;1.0.0&quot;,
+  &quot;com.typesafe.slick&quot; %% &quot;slick-testkit&quot; % &quot;1.0.0&quot; % &quot;test&quot;,
+  &quot;com.novocode&quot; % &quot;junit-interface&quot; % &quot;0.10-M1&quot; % &quot;test&quot;,
+  &quot;ch.qos.logback&quot; % &quot;logback-classic&quot; % &quot;0.9.28&quot; % &quot;test&quot;,
+  &quot;postgresql&quot; % &quot;postgresql&quot; % &quot;9.1-901.jdbc4&quot; % &quot;test&quot;
+)
+...
+testOptions += Tests.Argument(TestFrameworks.JUnit, &quot;-q&quot;, &quot;-v&quot;, &quot;-s&quot;, &quot;-a&quot;)
+...
+parallelExecution in Test := false
+...
+logBuffered := false
+</code></pre><p>src/test/resources/logback-test.xmlに，Slickのlogbackについての設定のコピーがある．しかし，もし異なるものを用いたい場合には，loggingフレームワークを取り替える事が出来る．
+</p><!--There is a copy of Slick’s logback configuration in src/test/resources/logback-test.xml but you can swap out the logging framework if you prefer a different one.-->
+<h2 id="Driver">Driver<a href="#Driver" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>実際のドライバーの実装はsrc/main/scalaの中にある．
+</p><!--The actual driver implementation can be found under src/main/scala.-->
+<h2 id="Test+Harness">Test Harness<a href="#Test+Harness" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>TestKitテストを実行するためには，DriberTestを継承したクラスを作成する必要がある．加えて，TestKitに対してどのようにtestデータベースへ接続するのか，テーブルのリストをどのように取得するのか，テスト間におけるクリーンをどのようにして行うのかなどといった事を伝えるTestDBの実装が必要になる．
+</p><!--In order to run the TestKit tests, you need to add a class that extends DriverTest, plus an implementation of TestDB which tells the TestKit how to connect to a test database, get a list of tables, clean up between tests, etc.-->
+<p>PostgreSQLのテーストハーネス（src/test/scala/scala/slick/driver/test/MyPostgreTestの中にある）の場合は，大抵のデフォルトとなる実装はボックスの外で利用される．
+</p><!--In the case of the PostgreSQL test harness (in **src/test/scala/scala/slick/driver/test/MyPostgresTest.scala**) most of the default implementations can be used out of the box:-->
+<pre><code class="prettyprint lang-scala">@RunWith(classOf[Testkit])
+class MyPostgresTest extends DriverTest(MyPostgresTest.tdb)
+...
+object MyPostgresTest {
+  def tdb(cname: String) = new ExternalTestDB(&quot;mypostgres&quot;, MyPostgresDriver) {
+    override def getLocalTables(implicit session: Session) = {
+      val tables = ResultSetInvoker[(String,String,String, String)](_.conn.getMetaData().getTables(&quot;&quot;, &quot;public&quot;, null, null))
+      tables.list.filter(_._4.toUpperCase == &quot;TABLE&quot;).map(_._3).sorted
+    }
+    override def getLocalSequences(implicit session: Session) = {
+      val tables = ResultSetInvoker[(String,String,String, String)](_.conn.getMetaData().getTables(&quot;&quot;, &quot;public&quot;, null, null))
+      tables.list.filter(_._4.toUpperCase == &quot;SEQUENCE&quot;).map(_._3).sorted
+    }
+    override lazy val capabilities = driver.capabilities + TestDB.plainSql
+  }
+}
+</code></pre><h2 id="Database+Configuration">Database Configuration<a href="#Database+Configuration" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>PostgreSQLのテストハーネスは <strong>ExternalTestDB</strong> に基づいている一方， <strong>test-dbs/databases.properties</strong> において設定が行われてなくてはならない．
+</p><!--Since the PostgreSQL test harness is based on **ExternalTestDB**, it needs to be configured in **test-dbs/databases.properties**:-->
+<p>PostgreSQL quick setup:  
+</p><ul><li>Install PostgreSQL server with default options  
+</li><li>Change password in mypostgres.password  
+</li><li>Set mypostgres.enabled = true  
+<code>`scala
+mypostgres.enabled = false
+mypostgres.url = jdbc:postgresql:[DB]
+mypostgres.user = postgres
+mypostgres.password = secret
+mypostgres.adminDB = postgres
+mypostgres.testDB = slick-test
+mypostgres.create = CREATE TABLESPACE slick_test LOCATION '[DBPATH]'; CREATE DATABASE &quot;[DB]&quot; TEMPLATE = template0 TABLESPACE slick_test
+mypostgres.drop = DROP DATABASE IF EXISTS &quot;[DB]&quot;; DROP TABLESPACE IF EXISTS slick_test
+mypostgres.driver = org.postgresql.Driver
+</code>`
+</li></ul><h2 id="Testing">Testing<a href="#Testing" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p><strong>sbt test</strong> を実行すると， <strong>MyPostgresTest</strong> を探索し，TestKitのJUnit runnerを用いて実行される．これはテストハーネスを通してセットアップされたデータベースを用いており，ドライバーを用いて適応可能な全てのテストが実行される事になる．
+</p><!--Running **sbt test** discovers **MyPostgresTest** and runs it with TestKit’s JUnit runner. This in turn causes the database to be set up through the test harness and all tests which are applicable for the driver (as determined by the **capabilities** setting in the test harness) to be run.-->
+<p>Slick 1.0.0 documentation - 07 Slick Extensions
+<!--Slick Extensions — Slick 1.0.0 documentation-->
+</p><p><a href="http://slick.typesafe.com/doc/1.0.0/extensions.html">Permalink to Slick Extensions — Slick 1.0.0 documentation</a>
+</p><h1 id="Slick+Extensions">Slick Extensions<a href="#Slick+Extensions" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><p>OracleのためのSlickドライバー（ <strong>com.typesafe.slick.driver.oracle.OracleDriver</strong> ）とDB2（ <strong>com.typesafe.slick.driver.db2.DB2Driver</strong> ）は， Typesafe社によって商用サポートされたパッケージである，<em>slick-extensions</em> において利用する事が出来る．<a href="http://typesafe.com/public/legal/TypesafeSubscriptionAgreement-v1.pdf">Typesafe Subscription Agreement</a> (PDF)の諸条件の元，利用可能である．
+</p><!--Slick drivers for Oracle (**com.typesafe.slick.driver.oracle.OracleDriver**) and DB2 (**com.typesafe.slick.driver.db2.DB2Driver**) are available in *slick-extensions*, a closed-source package package with commercial support provided by Typesafe, Inc. It is made available under the terms and conditions of the [Typesafe Subscription Agreement][1] (PDF).-->
+<p>もし<a href="http://www.scala-sbt.org/">sbt</a>を用いているのならば， Typesafeのリポジトリを用いるために次のように記述すれば良い．
+</p><!--If you are using [sbt][2], you can add *slick-extensions* and the Typesafe repository (which contains the required artifacts) to your build definition like this:-->
+<pre><code class="prettyprint lang-scala">// Use the right Slick version here:
+libraryDependencies += &quot;com.typesafe.slick&quot; %% &quot;slick-extensions&quot; % &quot;1.0.0&quot;
+resolvers += &quot;Typesafe Releases&quot; at &quot;http://repo.typesafe.com/typesafe/maven-releases/&quot;
+</code></pre>
+          </div>
+        </div>
+        
+        
+      </body>
+    </html>

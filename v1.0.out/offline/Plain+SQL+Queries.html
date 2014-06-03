@@ -1,0 +1,165 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html manifest="pamflet.manifest">
+      <head>
+        <title>slick-doc-ja 1.0 — Plain SQL Queries</title>
+        
+        <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/blueprint/grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/> 
+        <!--[if lt IE 8]>
+          <link rel="stylesheet" href={ relativeBase + "css/blueprint/ie.css" } type="text/css" media="screen, projection"/>
+        <![endif]-->
+        <link rel="stylesheet" href="css/pamflet.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamflet-print.css" type="text/css" media="print"/>
+        <link rel="stylesheet" href="css/pamflet-grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.collapse.js"></script>
+        <script type="text/javascript" src="js/pamflet.js"></script>
+        <script type="text/javascript">
+          Pamflet.page.language = 'en';
+        </script>
+        <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+        
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"></meta>
+        
+        
+      </head>
+      <body class="color_scheme-redmond">
+        <a class="page prev nav" href="Lifted+Embedding.html">
+            <span class="space">&nbsp;</span>
+            <span class="flip">❧</span>
+          </a><a class="page next nav" href="Direct+Embedding.html">
+            <span class="space">&nbsp;</span>
+            <span>❧</span>
+          </a>
+        <div class="container">
+          <div class="span-16 prepend-1 append-1">
+            <div class="span-16 top nav">
+              <div class="span-16 title">
+                <span>slick-doc-ja 1.0</span> — Plain SQL Queries
+              </div>
+            </div>
+          </div>
+          <div class="span-16 prepend-1 append-1 contents">
+            <p>Slick 1.0.0 documentation - 04 Plain SQL Queries
+</p><!--Plain SQL Queries — Slick 1.0.0 documentation-->
+<p><a href="http://slick.typesafe.com/doc/1.0.0/sql.html">Permalink to Plain SQL Queries — Slick 1.0.0 documentation</a>
+</p><h1 id="Plain+SQL+Queries">Plain SQL Queries<a href="#Plain+SQL+Queries" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><p>抽象的で高度な操作について，SQLコードを直接書きたくなる事があるかもしれない．Slickの <em>Plain SQL</em> クエリでは，<a href="http://en.wikipedia.org/wiki/Java_Database_Connectivity">JDBC</a>の低レイアに触れる事無しに，よりScalaベースな記述を行う事が出来る．
+</p><!--Sometimes you may need to write your own SQL code for an operation which is not well supported at a higher level of abstraction. Instead of falling back to the low level of [JDBC][1], you can use Slick’s *Plain SQL* queries with a much nicer Scala-based API.-->
+<h2 id="Scaffolding">Scaffolding<a href="#Scaffolding" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p><a href="https://github.com/slick/slick-examples/blob/1.0.0/src/main/scala/com/typesafe/slick/examples/jdbc/PlainSQL.scala">SLick example jdbc/PlainSQL</a>では <em>Plain SQL</em> の特徴についていくつか説明している．インポートすべきパッケージが<a href="http://slick.typesafe.com/doc/1.0.0/lifted-embedding.html">*lifted embedding*</a>や<a href="http://slick.typesafe.com/doc/1.0.0/direct-embedding.html">*direct embedding*</a>とは異なっている事に注意して欲しい．
+</p><!--[Slick example jdbc/PlainSQL][2] demonstrates some features of the *Plain SQL* support. The imports are different from what you’re used to for the [*lifted embedding*][3] or [*direct embedding*][4]:-->
+<pre><code class="prettyprint lang-scala">import scala.slick.session.Database
+import Database.threadLocalSession
+import scala.slick.jdbc.{GetResult, StaticQuery =&gt; Q}
+</code></pre><p>まず初めに， <em>Slick driver</em> をインポートする必要がない．SlickのJDBCに基づくAPIはJDBC自身のみに依存しているし，データベース特有の抽象化を全く実装する必要がない．データベースに接続するために必要なものは，scala.slick.session.Databaseとセッション処理を単純化したthreeadLocalSessionのみである．
+</p><!--First of all, there is no *Slick driver* being imported. The JDBC-based APIs in Slick depend only on JDBC itself and do not implement any database-specific abstractions. All we need for the database connection is Database, plus the threadLocalSession to simplify session handling.-->
+<p><em>Plain SQL</em> クエリを用いるために必要なクラスは，ここではQという名前でインポートしている，scala.slick.jdbc.StaticQueryである．
+</p><!--The most important class for *Plain SQL* queries is scala.slick.jdbc.StaticQuery which gets imported as Q for more convenient use.-->
+<p>データベースの接続方法は<a href="http://slick.typesafe.com/doc/1.0.0/gettingstarted.html#gettingstarted-dbconnection">*in the usual way*</a>にある．例を示すために，以下のようなcase classを定義した．
+</p><!--The database connection is opened [*in the usual way*][5]. We are also defining some case classes for our data:-->
+<pre><code class="prettyprint lang-scala">case class Supplier(id: Int, name: String, street: String, city: String, state: String, zip: String)
+case class Coffee(name: String, supID: Int, price: Double, sales: Int, total: Int)
+...
+Database.forURL(&quot;jdbc:h2:mem:test1&quot;, driver = &quot;org.h2.Driver&quot;) withSession {
+}
+</code></pre><h2 id="DDL%2FDML+Statements">DDL/DML Statements<a href="#DDL%2FDML+Statements" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>最もシンプルなStaticQueryのメソッドは，updateNAである（NA = no args）．updateNAは，結果の代わりにDDLステートメントから行数を返すStaticQuery[Unit, Int]を作成する，これは[<em>lifted embedding</em>][3]を用いるクエリと同じように実行する事が出来る．ここでは結果を得ずに，クエリを.executeを用いて実行させている．
+</p><!--The simplest StaticQuery method is updateNA which creates a parameterless (*NA = no args*) StaticQuery[Unit, Int] that is supposed to return the row count from a DDL statement instead of a result set. It can be executed the same way as a query that uses the [*lifted embedding*][3]. Here we are using .execute to run the query without getting the results:-->
+<pre><code class="prettyprint lang-scala">// 主キーと外部キーを含むテーブルを作成する
+Q.updateNA(&quot;create table suppliers(&quot;+
+  &quot;id int not null primary key, &quot;+
+  &quot;name varchar not null, &quot;+
+  &quot;street varchar not null, &quot;+
+  &quot;city varchar not null, &quot;+
+  &quot;state varchar not null, &quot;+
+  &quot;zip varchar not null)&quot;).execute
+.updateNA(&quot;create table coffees(&quot;+
+  &quot;name varchar not null, &quot;+
+  &quot;sup_id int not null, &quot;+
+  &quot;price double not null, &quot;+
+  &quot;sales int not null, &quot;+
+  &quot;total int not null, &quot;+
+  &quot;foreign key(sup_id) references suppliers(id))&quot;).execute
+</code></pre><p>文字列を既存のStaticQueryオブジェクトに対し，+を用いて結合する事が出来る．この際，新しいStaticQueryが生成される．StaticQuery.uは，便利な関数であり，StaticQuery.updateNA(””)で生成される空の <em>update</em> クエリを生成する．SUPPLIERSテーブルにいくつかのデータを挿入するためにStaticQuery.uを用いてみる．
+</p><!--You can append a String to an existing StaticQuery object with +, yielding a new StaticQuery with the same types. The convenience method StaticQuery.u constructs an empty *update* query to start with (identical to StaticQuery.updateNA("")). We are using it to insert some data into the SUPPLIERS table:-->
+<pre><code class="prettyprint lang-scala">// 複数のsupplierを挿入する
+(Q.u + &quot;insert into suppliers values(101, 'Acme, Inc.', '99 Market Street', 'Groundsville', 'CA', '95199')&quot;).execute
+(Q.u + &quot;insert into suppliers values(49, 'Superior Coffee', '1 Party Place', 'Mendocino', 'CA', '95460')&quot;).execute
+(Q.u + &quot;insert into suppliers values(150, 'The High Ground', '100 Coffee Lane', 'Meadows', 'CA', '93966')&quot;).execute
+</code></pre><p>SQLコード内にリテラルを埋め込む事は，一般的にセキュリティやパフォーマンスの観点から推奨されない．特に，ユーザが提供したデータを実行時に用いるような際には危険な処理になる．変数をクエリ文字列に追加するためには，特別な連結オペレータである+?を用いる．これはSQL文が実行される際に，渡された値を用いてインスタンス化するものである．
+</p><!--Embedding literals into SQL code is generally not recommended for security and performance reasons, especially if they are to be filled at run-time with user-provided data. You can use the special concatenation operator +? to add a bind variable to a query string and instantiate it with the provided value when the statement gets executed:-->
+<pre><code class="prettyprint lang-scala">def insert(c: Coffee) = (Q.u + &quot;insert into coffees values (&quot; +? c.name +
+  &quot;,&quot; +? c.supID + &quot;,&quot; +? c.price + &quot;,&quot; +? c.sales + &quot;,&quot; +? c.total + &quot;)&quot;).execute
+...
+// Insert some coffees
+Seq(
+  Coffee(&quot;Colombian&quot;, 101, 7.99, , ),
+  Coffee(&quot;French_Roast&quot;, 49, 8.99, , ),
+  Coffee(&quot;Espresso&quot;, 150, 9.99, , ),
+  Coffee(&quot;Colombian_Decaf&quot;, 101, 8.99, , ),
+  Coffee(&quot;French_Roast_Decaf&quot;, 49, 9.99, , )
+).foreach(insert)
+</code></pre><p>SQL文は全ての呼び出しで同じもの（insert into coffees values (?,?,?,?,?)）となっている．
+</p><!--The SQL statement is the same for all calls: insert into coffees values (?,?,?,?,?)-->
+<h2 id="Query+Statements">Query Statements<a href="#Query+Statements" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>updateNAと似た，返り値となる行の型パラメータを取るqueryNAというメソッドがある．このメソッドは <em>select文</em> を実行し，結果をiteratorで回す事が出来る．
+</p><!--Similar to updateNA, there is a queryNA method which takes a type parameter for the rows of the result set. You can use it to execute a *select* statement and iterate over the results:-->
+<pre><code class="prettyprint lang-scala">Q.queryNA[Coffee](&quot;select * from coffees&quot;) foreach { c =&gt;
+  println(&quot;  &quot; + c.name + &quot;t&quot; + c.supID + &quot;t&quot; + c.price + &quot;t&quot; + c.sales + &quot;t&quot; + c.total)
+}
+</code></pre><p>これらを上手く機能させるためには，SlickはPositionedResultオブジェクトからCoffeeの値をどのようにして読み取ればいいのかを知らせなくてはならない．これは暗黙的なGetResultによって行われる．GetResultを持つ基本的なJDBCの型や，NULLを許可するカラムを表すためのOptionや，タプルに対して，暗黙的なGetResultが定義されていなくてはならない．この例においてはSupplierクラスやCoffeeクラスのためのGetResultを以下のように用意する必要がある．
+</p><!--In order for this to work, Slick needs to know how to read Coffee values from a PositionedResult object. This is done with an implicit GetResult value. There are predefined GetResult implicits for the standard JDBC types, for Options of those (to represent nullable columns) and for tuples of types which have a GetResult. For the Supplier and Coffee classes in this example we have to write our own:-->
+<pre><code class="prettyprint lang-scala">// Result set getters
+implicit val getSupplierResult = GetResult(r =&gt; Supplier(r.nextInt, r.nextString, r.nextString,
+      r.nextString, r.nextString, r.nextString))
+implicit val getCoffeeResult = GetResult(r =&gt; Coffee(r.&lt;&lt;, r.&lt;&lt;, r.&lt;&lt;, r.&lt;&lt;, r.&lt;&lt;))
+</code></pre><p>GetResult[T]はPositionedResult =&gt; Tとなる関数のシンプルなラッパーである．上の例において，1つ目のGetResultでは現在の行から次のInt，次のStringといった値を読み込むgetInt，getStringといったPositionedResultの明示的なメソッドを用いている．2つ目のGetResultでは自動的に型を推測する簡易化されたメソッド&lt;&lt;を用いている．コンスタクタの呼び出しにおいて実際に型を判別出来る際にのみこれは用いる事ができる．
+</p><!--GetResult[T] is simply a wrapper for a function PositionedResult => T. The first one above uses the explicit PositionedResult methods getInt and getString to read the next Int or String value in the current row. The second one uses the shortcut method << which returns a value of whatever type is expected at this place. (Of course you can only use it when the type is actually known like in this constructor call.)-->
+<p>パラメータの無いクエリのための，queryNAメソッドは2つの型パラメータ（1つはクエリパラメータ，もう1つは返り値となる行の型パラメータ）を取るクエリによって補完される．同様に，updateNAのための適切なupdateが存在する．StaticQueryの実行関数は型パラメータを用いて呼ばれる必要がある．以下の例では.listがそれにあたる．
+</p><!--The queryNA method for parameterless queries is complemented by query which takes two type parameters, one for the query parameters and one for the result set rows. Similarly, there is a matching update for updateNA. The execution methods of the resulting StaticQuery need to be called with the query parameters, as seen here in the call to .list:-->
+<pre><code class="prettyprint lang-scala">// 価格が$9.00より小さい全てのコーヒーに対し，coffeeのnameとsupplierのnameを取り出す
+val q2 = Q.query[Double, (String, String)](&quot;&quot;&quot;
+  select c.name, s.name
+  from coffees c, suppliers s
+  where c.price &lt; ? and s.id = c.sup_id
+&quot;&quot;&quot;)
+// この場合，結果はListとして読むことが出来る
+val l2 = q2.list(9.0)
+for (t &lt;- l2) println(&quot;  &quot; + t._1 + &quot; supplied by &quot; + t._2)
+</code></pre><p>また，パラメータを直接的にクエリへ適用させる事も出来る．これを用いると，パラメータの無いクエリへと変換させることが出来る．これは通常の関数適用と同じように，クエリのパラメータを決めさせる事が出来る．
+</p><!--As an alternative, you can apply the parameters directly to the query, thus reducing it to a parameterless query. This makes the syntax for parameterized queries the same as for normal function application:-->
+<pre><code class="prettyprint lang-scala">val supplierById = Q[Int, Supplier] + &quot;select * from suppliers where id = ?&quot;
+println(&quot;Supplier #49: &quot; + supplierById(49).first)
+</code></pre><h2 id="String+Interpolation">String Interpolation<a href="#String+Interpolation" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>文字列補完接頭辞（string interpolation prefix）であるsqlやsqluを用いるためには，以下のインポート文を追加する必要がある．
+</p><!--In order to use the string interpolation prefixes sql and sqlu, you need to add one more import statement:-->
+<pre><code class="prettyprint lang-scala">import Q.interpolation
+</code></pre><p>再利用可能なクエリを必要としない場合には，interpolationはパラメータが付与されたクエリを生成する，最も簡単で統語的にナイスな手法である．クエリを挿入するどんな変数や式も，バインドした変数を結果を返すクエリ文字列へと変換する事が出来る（クエリへ直接挿入されるリテラル値を取得するのに$の代わりに#$を用いることも出来る）．返り値の型は呼び出しの中で，sql interpolatorによって作られたオブジェクトをStaticQueryへと変換させる.asによって指定される．
+</p><!--As long as you don’t want function-like reusable queries, interpolation is the easiest and syntactically nicest way of building a parameterized query. Any variable or expression injected into a query gets turned into a bind variable in the resulting query string. (You can use #$ instead of $ to get the literal value inserted directly into the query.) The result type is specified in a call to .as which turns the object produced by the sql interpolator into a StaticQuery:-->
+<pre><code class="prettyprint lang-scala">def coffeeByName(name: String) = sql&quot;select * from coffees where name = $name&quot;.as[Coffee]
+println(&quot;Coffee Colombian: &quot; + coffeeByName(&quot;Colombian&quot;).firstOption)
+</code></pre><p>update文を生成するためのよく似た補完（interpolator），sqluというものもある．これはInt値を返す事を強制するため，.asのような関数を必要としない．
+</p><!--There is a similar interpolator sqlu for building update statements. It is hardcoded to return an Int value so it does not need the extra .as call:-->
+<pre><code class="prettyprint lang-scala">def deleteCoffee(name: String) = sqlu&quot;delete from coffees where name = $name&quot;.first
+val rows = deleteCoffee(&quot;Colombian&quot;)
+println(s&quot;Deleted $rows rows&quot;)
+</code></pre><div class="bottom nav span-16">
+                        <em>Next Page</em>
+                        <span class="arrow">❧</span>
+                        <a href="Direct+Embedding.html"> Direct Embedding </a>                        
+                        
+                      </div><div class="tocwrapper show">
+      <a class="tochead nav" style="display: none" href="#toc">❦</a>
+      <a name="toc"></a>
+      <h4 class="toctitle">Contents</h4>
+      <div class="tocbody">
+      <div><a href="slick-doc-ja+1.0.html">slick-doc-ja 1.0</a></div><ol class="toc"> <li><div><a href="%E5%B0%8E%E5%85%A5.html">導入</a></div></li><li><div><a href="%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86.html">始めよう</a></div></li><li><div><a href="Lifted+Embedding.html">Lifted Embedding</a></div></li><li><div class="current">Plain SQL Queries</div></li><li><div><a href="Direct+Embedding.html">Direct Embedding</a></div></li><li><div><a href="Slick+TestKit.html">Slick TestKit</a></div></li><li><div><a href="Slick+Extensions.html">Slick Extensions</a></div></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
+          </div>
+        </div>
+        
+        
+      </body>
+    </html>

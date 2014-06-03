@@ -1,0 +1,189 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html manifest="pamflet.manifest">
+      <head>
+        <title>slick-doc-ja 1.0 — 始めよう</title>
+        
+        <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/blueprint/grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/> 
+        <!--[if lt IE 8]>
+          <link rel="stylesheet" href={ relativeBase + "css/blueprint/ie.css" } type="text/css" media="screen, projection"/>
+        <![endif]-->
+        <link rel="stylesheet" href="css/pamflet.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamflet-print.css" type="text/css" media="print"/>
+        <link rel="stylesheet" href="css/pamflet-grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.collapse.js"></script>
+        <script type="text/javascript" src="js/pamflet.js"></script>
+        <script type="text/javascript">
+          Pamflet.page.language = 'en';
+        </script>
+        <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+        
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"></meta>
+        
+        
+      </head>
+      <body class="color_scheme-redmond">
+        <a class="page prev nav" href="%E5%B0%8E%E5%85%A5.html">
+            <span class="space">&nbsp;</span>
+            <span class="flip">❧</span>
+          </a><a class="page next nav" href="Lifted+Embedding.html">
+            <span class="space">&nbsp;</span>
+            <span>❧</span>
+          </a>
+        <div class="container">
+          <div class="span-16 prepend-1 append-1">
+            <div class="span-16 top nav">
+              <div class="span-16 title">
+                <span>slick-doc-ja 1.0</span> — 始めよう
+              </div>
+            </div>
+          </div>
+          <div class="span-16 prepend-1 append-1 contents">
+            <p>Slick 1.0.0 documentation - 02 始めよう
+<!--Getting Started — Slick 1.0.0 documentation-->
+</p><p><a href="http://slick.typesafe.com/doc/1.0.0/gettingstarted.html">Permalink to Getting Started — Slick 1.0.0 documentation</a>
+</p><h1 id="%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86">始めよう<a href="#%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><!--# Getting Started-->
+<p>最も簡単なSlickアプリケーションの設定方法は<a href="https://github.com/slick/slick-examples/tree/1.0.0">Slick Examples</a>のプロジェクトを用いる事です．このプロジェクトに含まれているREADMEに従ってビルドをして，実行してみてください．
+</p><!--The easiest way of setting up a Slick application is by starting with the [Slick Examples][1] project. You can build and run this project by following the instructions in its README file.-->
+<h2 id="%E4%BE%9D%E5%AD%98%E6%80%A7">依存性<a href="#%E4%BE%9D%E5%AD%98%E6%80%A7" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><!--## Dependencies-->
+<p>プロジェクトではどのようにしてSlickを用いれば良いのか確認してみよう．まず初めに，Slickと組み込みデータベースを追加する必要がある．もし<a href="http://www.scala-sbt.org/">sbt</a>を使っているのなら， <strong>build.sbt</strong> に対して以下のような記述を追加すれば良い．
+</p><!--Let’s take a closer look at what’s happening in that project. First of all, you need to add Slick and the embedded databases or drivers for external databases to your project. If you are using [sbt][2], you do this in your main build.sbt file:-->
+<pre><code class="prettyprint lang-scala:build.sbt">libraryDependencies ++= List(
+  // 適切なSlickのversionをここに指定しよう
+  &quot;com.typesafe.slick&quot; %% &quot;slick&quot; % &quot;1.0.0&quot;,
+  &quot;org.slf4j&quot; % &quot;slf4j-nop&quot; % &quot;1.6.4&quot;,
+  &quot;com.h2database&quot; % &quot;h2&quot; % &quot;1.3.166&quot;
+)
+</code></pre><p>Slickはデバッグログに<a href="http://www.slf4j.org/">SLF4J</a>を用いている．そのためSLF4Jについても追加する必要がある．ここではロギングを無効にするために <strong>slf4j-nop</strong> を用いている．もしログの出力を見たいのならば<a href="http://logback.qos.ch/">Logback</a>のようなロギング用のフレームワークに替えなくてはならない．
+</p><!--Slick uses [SLF4J][3] for its own debug logging so you also need to add an SLF4J implementation. Here we are using slf4j-nop to disable logging. You have to replace this with a real logging framework like [Logback][4] if you want to see log output.-->
+<h2 id="Imports">Imports<a href="#Imports" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p><a href="https://github.com/slick/slick-examples/blob/1.0.0/src/main/scala/com/typesafe/slick/examples/lifted/FirstExample.scala">Slick example lifted/FirstExample</a>は，独立した１つのアプリケーションとなっている．このアプリケーションでは以下のようなimport文を記述している．
+</p><!--[Slick example lifted/FirstExample][5] contains a self-contained application that you can run. It starts off with some imports:-->
+<pre><code class="prettyprint lang-scala">// H2 databaseへ接続するためにH2Driverをimport
+import scala.slick.driver.H2Driver.simple._
+...
+// Use the implicit threadLocalSession
+import Database.threadLocalSession
+</code></pre><p><a href="http://h2database.com/">H2 Database</a>を用いているため，Slickの <strong>H2Driver</strong> をimportする必要がある．このdriverに含まれる <strong>simple</strong> オブジェクトには<a href="http://slick.typesafe.com/doc/1.0.0/session.html">session handling</a>といったSlickに必要な共通の機能が含まれている．それ以外にimportする必要があるのは <strong>threadLocalSession</strong> である．これは取り扱うスレッドにセッションを付与する事でセッションの取り扱いを単純化させるものである．これにより不必要なimplicit変数を割り当てたりといった実装を行わなくて済む．
+</p><!--Since we are using [H2][6] as our database system, we need to import features from Slick’s H2Driver. A driver’s simple object contains all commonly needed imports from the driver and other parts of Slick such as [*session handling*][7]. The only extra import we use is the threadLocalSession. This simplifies the session handling by attaching a session to the current thread so you do not have to pass it around on your own (or at least assign it to an implicit variable).-->
+<h2 id="Database%E3%81%B8%E3%81%AE%E6%8E%A5%E7%B6%9A">Databaseへの接続<a href="#Database%E3%81%B8%E3%81%AE%E6%8E%A5%E7%B6%9A" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>アプリケーションの中では，どのようにデータベースに接続するのかを明示する <strong>Database</strong> オブジェクトを初めに作る．そしてセッションを開き，続くブロック内に処理を記述する．
+</p><!--In the body of the application we create a Database object which specifies how to connect to a database, and then immediately open a session, running all code within the following block inside that session:-->
+<pre><code class="prettyprint lang-scala">Database.forURL(&quot;jdbc:h2:mem:test1&quot;, driver = &quot;org.h2.Driver&quot;) withSession {
+  // セッションは明示的に名付けられる事はない
+  // セッションは現在のスレッドに対し，importしたthreadLocalSessionとして束縛されるのである
+}
+</code></pre><p>Java SEの環境においては，データベースセッションはJDBCドライバークラスを用いてJDBC URLへ接続する事で作られる（正しいURLの記述法はJDBCドライバーのドキュメントを見て欲しい）．もし<a href="http://slick.typesafe.com/doc/1.0.0/sql.html">plain SQL queries</a>のみを用いるのであれば，それ以上何もする必要はない．しかし，もし<a href="http://slick.typesafe.com/doc/1.0.0/direct-embedding.html">direct embedding</a>や<a href="http://slick.typesafe.com/doc/1.0.0/lifted-embedding.html">lifted embedding</a>を用いるのであれば，SlickがSQL文を作成する事になるため， <strong>H2Driver</strong> のようなSlickのdriverを適宜importして欲しい．
+</p><!--In a Java SE environment, database sessions are usually created by connecting to a JDBC URL using a JDBC driver class (see the JDBC driver’s documentation for the correct URL syntax). If you are only using [*plain SQL queries*][8], nothing more is required, but when Slick is generating SQL code for you (using the [*direct embedding*][9] or the [*lifted embedding*][10]), you need to make sure to use a matching Slick driver (in our case the H2Driver import above).-->
+<h2 id="%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E">スキーマ<a href="#%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>このアプリケーションでは<a href="http://slick.typesafe.com/doc/1.0.0/lifted-embedding.html">lifted embedding</a>を用いているため，データベースのテーブルに対応する <strong>Table</strong> オブジェクトを書かなくてはならない．
+</p><!--We are using the [*lifted embedding*][10] in this application, so we have to write Table objects for our database tables:-->
+<pre><code class="prettyprint lang-scala">// SUPPLIERSテーブルの定義
+object Suppliers extends Table[(Int, String, String, String, String, String)](&quot;SUPPLIERS&quot;) {
+  def id = column[Int](&quot;SUP_ID&quot;, O.PrimaryKey) // 主キー
+  def name = column[String](&quot;SUP_NAME&quot;)
+  def street = column[String](&quot;STREET&quot;)
+  def city = column[String](&quot;CITY&quot;)
+  def state = column[String](&quot;STATE&quot;)
+  def zip = column[String](&quot;ZIP&quot;)
+  // 全てのテーブルではテーブルの型パラメタと同じタイプの射影*を定義する必要がある．
+  def * = id ~ name ~ street ~ city ~ state ~ zip
+}
+...
+// COFFEESテーブルの定義
+object Coffees extends Table[(String, Int, Double, Int, Int)](&quot;COFFEES&quot;) {
+  def name = column[String](&quot;COF_NAME&quot;, O.PrimaryKey)
+  def supID = column[Int](&quot;SUP_ID&quot;)
+  def price = column[Double](&quot;PRICE&quot;)
+  def sales = column[Int](&quot;SALES&quot;)
+  def total = column[Int](&quot;TOTAL&quot;)
+  def * = name ~ supID ~ price ~ sales ~ total
+  // 他のテーブルとの結合のため作成された関係を表す外部キー
+  def supplier = foreignKey(&quot;SUP_FK&quot;, supID, Suppliers)(_.id)
+}
+</code></pre><p>全ての列は名前（ScalaにおけるキャメルケースやSQLにおける大文字とアンダースコアの組み合わせ）とScalaの型（SQLの型はScalaの型から自動的に推測される）を持つ．これらは <strong>val</strong> ではなく <strong>def</strong> を用いて定義しなくてはならない．テーブルオブジェクトもScalaでの名前とSQLでの名前と型を持つ必要がある．テーブルの型引数は射影*と一致してなくてはならない．全ての列をタプルで取り出すといった簡単な処理以外にも，より複雑なオブジェクトへのマッピングを行う事も出来る．
+</p><!--All columns get a name (usually in camel case for Scala and upper case with underscores for SQL) and a Scala type (from which the SQL type can be derived automatically). Make sure to define them with def and not with val. The table object also needs a Scala name, SQL name and type. The type argument of the table must match the type of the special * projection. In simple cases this is a tuple of all columns but more complex mappings are possible.-->
+<p><strong>Coffees</strong> テーブルで定義した <strong>外部キー</strong> は， <strong>Coffees</strong> テーブルの <strong>supID</strong> のフィールドが， <strong>Suppliers</strong> テーブルで存在している <strong>id</strong> と同じ値を持っている事を保証している．要するに，ここでは多:1の関係を作成しているのである．ある <strong>Coffees</strong> の列は特定の <strong>Suppliers</strong> の列を指すが，複数のCoffeeが同じSupplierを指していたりする．この構成はデータベースレベルで強制されている．
+</p><!--The foreignKey definition in the Coffees table ensures that the supID field can only contain values for which a corresponding id exists in the Suppliers table, thus creating an *n to one* relationship: A Coffees row points to exactly one Suppliers row but any number of coffees can point to the same supplier. This constraint is enforced at the database level.-->
+<h2 id="Populating+the+Database">Populating the Database<a href="#Populating+the+Database" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>組み込みのH2データベースエンジンへ接続すると，空のデータベースが作られる．クエリを実行する前に，データベーススキーマ（ <strong>Coffees</strong> テーブルと <strong>Suppliers</strong> テーブルから成るもの）を作成し，いくつかのテストデータを挿入してみる．
+</p><!--The connection to the embedded H2 database engine provides us with an empty database. Before we can execute queries, we need to create the database schema (consisting of the Coffees and Suppliers tables) and insert some test data:-->
+<pre><code class="prettyprint lang-scala">// 主キーと外部キーを含むテーブルを作成する
+(Suppliers.ddl ++ Coffees.ddl).create
+...
+// supplierをいくつか挿入する
+Suppliers.insert(101, &quot;Acme, Inc.&quot;,      &quot;99 Market Street&quot;, &quot;Groundsville&quot;, &quot;CA&quot;, &quot;95199&quot;)
+Suppliers.insert( 49, &quot;Superior Coffee&quot;, &quot;1 Party Place&quot;,    &quot;Mendocino&quot;,    &quot;CA&quot;, &quot;95460&quot;)
+Suppliers.insert(150, &quot;The High Ground&quot;, &quot;100 Coffee Lane&quot;,  &quot;Meadows&quot;,      &quot;CA&quot;, &quot;93966&quot;)
+...
+// coffeeをいくつか挿入する（DBがサポートしている場合には，JDBCのバッチ処理を用いる）
+Coffees.insertAll(
+  (&quot;Colombian&quot;,         101, 7.99, , ),
+  (&quot;French_Roast&quot;,       49, 8.99, , ),
+  (&quot;Espresso&quot;,          150, 9.99, , ),
+  (&quot;Colombian_Decaf&quot;,   101, 8.99, , ),
+  (&quot;French_Roast_Decaf&quot;, 49, 9.99, , )
+)
+</code></pre><p>テーブルの <strong>ddl</strong> 関数は，テーブルやその他データベースのエンティティを作成したり削除したりするための，データベース特有のコードを用いて <strong>DDL</strong> （data definition language）オブジェクトを作成する．複数の <strong>DDL</strong> は <strong>++</strong> を用いる事で，お互いが依存し合っていたとしても，全てのエンティティに対し正しい順序で作成と削除を行う．
+</p><!--The tables’ **ddl** methods create **DDL** (data definition language) objects with the database-specific code for creating and dropping tables and other database entities. Multiple **DDL** values can be combined with **++** to allow all entities to be created and dropped in the correct order, even when they have circular dependencies on each other.-->
+<p>複数のデータを挿入する際は <strong>insert</strong> や <strong>insertAll</strong> といった関数を用いる．デフォルトではデータベースの <strong>Session</strong> は <em>auto-commit</em> モードになっている事に注意して欲しい． <strong>insert</strong> や <strong>insertAll</strong> のようなデータベースへの呼び出しはトランザクションにおいて，原子性が保たれるよう実行される（つまり，それらの処理は完全に実行するか全く実行しないかのいずれかが保証される）．このモードにおいては， <strong>Coffee</strong> が対応するSupplierのIDのみを参照するため， <strong>Supplier</strong> テーブルに対し先にデータを挿入しなくてはならない．
+</p><!--Inserting the tuples of data is done with the **insert** and **insertAll** methods. Note that by default a database Session is in *auto-commit* mode. Each call to the database like insert or insertAll executes atomically in its own transaction (i.e. it succeeds or fails completely but can never leave the database in an inconsistent state somewhere in between). In this mode we we have to populate the Suppliers table first because the Coffees data can only refer to valid supplier IDs.-->
+<p>これらの記述を全て包括した明示的なトランザクションのブラケットを用いることも可能である．その際，トランザクションによって処理が強制されるため，順序は重要視されない．
+</p><!--We could also use an explicit transaction bracket encompassing all these statements. Then the order would not matter because the constraints are only enforced at the end when the transaction is committed.-->
+<h2 id="Querying">Querying<a href="#Querying" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>最も簡単なクエリ例として，の一つにテーブルのデータを全て順々に取り出す処理を考える．
+</p><!--The simplest kind of query iterates over all the data in a table:-->
+<pre><code class="prettyprint lang-scala">// coffeeのデータを全て取り出し，順に出力する
+Query(Coffees) foreach { case (name, supID, price, sales, total) =&gt;
+  println(&quot;  &quot; + name + &quot;t&quot; + supID + &quot;t&quot; + price + &quot;t&quot; + sales + &quot;t&quot; + total)
+}
+</code></pre><p>この処理はSQLに <strong>SELECT * FROM COFFEES</strong> を投げた結果と同じである（ただし射影関数*を異なる形式で作成した場合には，少し違う結果となる）．ループの中で得られる値の型は当然 <strong>Coffees</strong> の型引数と一致する．
+</p><!--This corresponds to a SELECT * FROM COFFEES in SQL (except that the * is the table’s * projection we defined earlier and not whatever the database sees as *). The type of the values we get in the loop is, unsurprisingly, the type parameter of Coffees.-->
+<p>上記の例に射影処理を追加してみよう．これにはScalaで <strong>map</strong> や <em>for式</em> を用いる事で記述することが出来る．
+</p><!--Let’s add a *projection* to this basic query. This is written in Scala with the map method or a *for comprehension*:-->
+<pre><code class="prettyprint lang-scala">// なぜデータベースでは文字列の変換や連結が出来ないんだろう...?
+val q1 = for(c &lt;- Coffees) // Coffeesは自動的にQueryへとなる
+  yield ConstColumn(&quot;  &quot;) ++ c.name ++ &quot;\t&quot; ++ c.supID.asColumnOf[String] ++
+    &quot;\t&quot; ++ c.price.asColumnOf[String] ++ &quot;\t&quot; ++ c.sales.asColumnOf[String] ++
+    &quot;\t&quot; ++ c.total.asColumnOf[String]
+// 初めの文字定数はConstColumへ手動で変換する必要がある．
+// その後++オペレータにより結合させる
+q1 foreach println
+</code></pre><p>全ての行がタブによって区切られた文字列として連結した結果が得られるだろう．違いはデータベースの内側で処理が行われた事であり，結果として得られる連結した文字列は同様に取得出来る．Scalaの <strong>+</strong> オペレータはしばしばオーバーライドされてしまうため，seqの結合で一般的に用いられている <strong>++</strong> の方を利用すべきだ．また，他の引数型から文字列への自動的な型変換は存在しない．この処理は型変換関数である <strong>asColumnOf</strong> により明示的に行うべきである．
+</p><!--The output will be the same: For each row of the table, all columns get converted to strings and concatenated into one tab-separated string. The difference is that all of this now happens inside the database engine, and only the resulting concatenated string is shipped to the client. Note that we avoid Scala’s + operator (which is already heavily overloaded) in favor of ++ (commonly used for sequence concatenation). Also, there is no automatic conversion of other argument types to strings. This has to be done explicitly with the type conversion method asColumnOf.-->
+<p>テーブルの結合やフィルタリングはScalaのコレクションと同じように処理する事が出来る．
+</p><!--Joining and filtering tables is done the same way as when working with Scala collections:-->
+<pre><code class="prettyprint lang-scala">// 2つのテーブルを結合し，coffeeの値段が$9より安いもののうち，
+// coffeeの名前とsupplierの名前の組みを検索
+val q2 = for {
+  c &lt;- Coffees if c.price &lt; 9.0
+  s &lt;- Suppliers if s.id === c.supID
+} yield (c.name, s.name)
+</code></pre><p>2つの値が等しいかを比較する際に， <strong>==</strong> の代わりに <strong>===</strong> を用いている事に注意して欲しい．同様に，LiftedEmbeddingでは <strong>!=</strong> の代わりに <strong>=!=</strong> を用いている．それ以外の比較に関するオペレータ（ <strong>&lt;</strong> , <strong>&lt;=</strong> , <strong>&gt;=</strong> , <strong>&gt;</strong> ）はScalaで用いているものと同じである
+</p><!--Note the use of === instead of == for comparing two values for equality. Similarly, the lifted embedding uses =!= instead of != for inequality. (The other comparison operators are the same as in Scala: **<**, **<=**, **>=**, **>**)-->
+<p><strong>Suppliers if s.id === c.supID</strong> という表現は <strong>Coffees.supplier</strong> という外部キーにより作成された関係に基いている．joinの条件を繰り返す代わりに，このような方法で直接的に外部キーを用いた結合が行える．
+</p><!--The generator expression Suppliers if s.id === c.supID follows the relationship established by the foreign key Coffees.supplier. Instead of repeating the join condition here we can use the foreign key directly:-->
+<pre><code class="prettyprint lang-scala">val q3 = for {
+  c &lt;- Coffees if c.price &lt; 9.0
+  s &lt;- c.supplier
+} yield (c.name, s.name)
+</code></pre><div class="bottom nav span-16">
+                        <em>Next Page</em>
+                        <span class="arrow">❧</span>
+                        <a href="Lifted+Embedding.html"> Lifted Embedding </a>                        
+                        
+                      </div><div class="tocwrapper show">
+      <a class="tochead nav" style="display: none" href="#toc">❦</a>
+      <a name="toc"></a>
+      <h4 class="toctitle">Contents</h4>
+      <div class="tocbody">
+      <div><a href="slick-doc-ja+1.0.html">slick-doc-ja 1.0</a></div><ol class="toc"> <li><div><a href="%E5%B0%8E%E5%85%A5.html">導入</a></div></li><li><div class="current">始めよう</div></li><li><div><a href="Lifted+Embedding.html">Lifted Embedding</a></div></li><li><div><a href="Plain+SQL+Queries.html">Plain SQL Queries</a></div></li><li><div><a href="Direct+Embedding.html">Direct Embedding</a></div></li><li><div><a href="Slick+TestKit.html">Slick TestKit</a></div></li><li><div><a href="Slick+Extensions.html">Slick Extensions</a></div></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
+          </div>
+        </div>
+        
+        
+      </body>
+    </html>
