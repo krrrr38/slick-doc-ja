@@ -630,10 +630,10 @@ You can also subclass MappedTypeMapper for a bit more flexibility.-->
 [2]: http://slick.typesafe.com/doc/1.0.0/direct-embedding.html
 [3]: http://slick.typesafe.com/doc/1.0.0/api/#scala.slick.jdbc.Invoker
 [4]: http://slick.typesafe.com/doc/1.0.0/api/#scala.slick.jdbc.UnitInvoker
-[5]: http://slick.typesafe.com/doc/1.0.0/api/#scala.slick.driver.BasicInvokerComponent$DeleteInvoker
-[6]: http://slick.typesafe.com/doc/1.0.0/api/#scala.slick.driver.BasicInvokerComponent$InsertInvoker
-[7]: http://slick.typesafe.com/doc/1.0.0/api/#scala.slick.driver.BasicInvokerComponent$FullInsertInvoker
-[8]: http://slick.typesafe.com/doc/1.0.0/api/#scala.slick.driver.BasicInvokerComponent$UpdateInvoker
+[5]: http://slick.typesafe.com/doc/1.0.0/api/#scala.slick.driver.BasicInvokerComponent\$DeleteInvoker
+[6]: http://slick.typesafe.com/doc/1.0.0/api/#scala.slick.driver.BasicInvokerComponent\$InsertInvoker
+[7]: http://slick.typesafe.com/doc/1.0.0/api/#scala.slick.driver.BasicInvokerComponent\$FullInsertInvoker
+[8]: http://slick.typesafe.com/doc/1.0.0/api/#scala.slick.driver.BasicInvokerComponent\$UpdateInvoker
 [9]: http://slick.typesafe.com/doc/1.0.0/api/#scala.slick.lifted.Parameters
 [10]: http://slick.typesafe.com/doc/1.0.0/api/#scala.slick.lifted.SimpleFunction
 [11]: http://slick.typesafe.com/doc/1.0.0/api/#scala.slick.lifted.SimpleBinaryOperator

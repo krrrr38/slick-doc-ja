@@ -135,7 +135,7 @@ implicit val getCoffeeResult = GetResult(r => Coffee(r.<<, r.<<, r.<<, r.<<, r.<
 <!--The queryNA method for parameterless queries is complemented by query which takes two type parameters, one for the query parameters and one for the result set rows. Similarly, there is a matching update for updateNA. The execution methods of the resulting StaticQuery need to be called with the query parameters, as seen here in the call to .list:-->
 
 ```scala
-// 価格が$9.00より小さい全てのコーヒーに対し、coffeeのnameとsupplierのnameを取り出す
+// 価格が\$9.00より小さい全てのコーヒーに対し、coffeeのnameとsupplierのnameを取り出す
 val q2 = Q.query[Double, (String, String)]("""
   select c.name, s.name
   from coffees c, suppliers s
@@ -166,12 +166,12 @@ SQL を発行する *string interpolation* 接頭辞である、`sql` や `sqlu`
 import Q.interpolation
 ```
 
-再利用可能なクエリを必要としない場合には、interpolationはパラメータが付与されたクエリを生成する、最も簡単で統語的にナイスな手法である。クエリを挿入するどんな変数や式も、バインドした変数を結果を返すクエリ文字列へと変換する事が出来る（クエリへ直接挿入されるリテラル値を取得するのに `$` の代わりに `#$` を用いることも出来る）。返り値の型は呼び出しの中で、`sql` interpolatorによって作られたオブジェクトを `StaticQuery` へと変換させる `.as` によって指定される。
+再利用可能なクエリを必要としない場合には、interpolationはパラメータが付与されたクエリを生成する、最も簡単で統語的にナイスな手法である。クエリを挿入するどんな変数や式も、バインドした変数を結果を返すクエリ文字列へと変換する事が出来る（クエリへ直接挿入されるリテラル値を取得するのに `\$` の代わりに `#\$` を用いることも出来る）。返り値の型は呼び出しの中で、`sql` interpolatorによって作られたオブジェクトを `StaticQuery` へと変換させる `.as` によって指定される。
 
-<!--As long as you don’t want function-like reusable queries, interpolation is the easiest and syntactically nicest way of building a parameterized query. Any variable or expression injected into a query gets turned into a bind variable in the resulting query string. (You can use #$ instead of $ to get the literal value inserted directly into the query.) The result type is specified in a call to .as which turns the object produced by the sql interpolator into a StaticQuery:-->
+<!--As long as you don’t want function-like reusable queries, interpolation is the easiest and syntactically nicest way of building a parameterized query. Any variable or expression injected into a query gets turned into a bind variable in the resulting query string. (You can use #\$ instead of \$ to get the literal value inserted directly into the query.) The result type is specified in a call to .as which turns the object produced by the sql interpolator into a StaticQuery:-->
 
 ```scala
-def coffeeByName(name: String) = sql"select * from coffees where name = $name".as[Coffee]
+def coffeeByName(name: String) = sql"select * from coffees where name = \$name".as[Coffee]
 println("Coffee Colombian: " + coffeeByName("Colombian").firstOption)
 ```
 *update* 文を生成するための interpolator に、`sqlu` というものもある。これは `Int` 値を返す事を強制するため、`.as` のような関数を必要としない。
@@ -179,9 +179,9 @@ println("Coffee Colombian: " + coffeeByName("Colombian").firstOption)
 <!--There is a similar interpolator sqlu for building update statements. It is hardcoded to return an Int value so it does not need the extra .as call:-->
 
 ```scala
-def deleteCoffee(name: String) = sqlu"delete from coffees where name = $name".first
+def deleteCoffee(name: String) = sqlu"delete from coffees where name = \$name".first
 val rows = deleteCoffee("Colombian")
-println(s"Deleted $rows rows")
+println(s"Deleted \$rows rows")
 ```
 
 [1]: http://en.wikipedia.org/wiki/Java_Database_Connectivity

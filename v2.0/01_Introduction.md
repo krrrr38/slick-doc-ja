@@ -18,7 +18,7 @@ val limit = 10.0
 // クエリはこのように書く事が出来る
 ( for( c <- Coffees; if c.price < limit ) yield c.name ).list
 // SQLを直接書いた例
-sql"select name from coffees where price < $limit".as[String].list
+sql"select name from coffees where price < \$limit".as[String].list
 ```
 
 SQLを直接書くのに比べ、Scalaを通してSQLを発行すると、コンパイル時により良いクエリを型安全に提供する事が出来る。Slickは独自のクエリコンパイラを用いてDBに対するクエリを発行する。

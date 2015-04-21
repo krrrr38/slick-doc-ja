@@ -1,6 +1,8 @@
 <!DOCTYPE html SYSTEM "about:legacy-compat">
 <html manifest="pamflet.manifest">
       <head>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
         <title>slick-doc-ja 2.0 — 始めよう</title>
         
         <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
@@ -15,6 +17,7 @@
         <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
         <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
         <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamfletheight_2em_2em.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
         <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
         <script type="text/javascript" src="js/jquery.collapse.js"></script>
         <script type="text/javascript" src="js/pamflet.js"></script>
@@ -24,34 +27,36 @@
         <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
         window.onload=function() { prettyPrint(); };
       --></script>
-        
-        <meta charset="utf-8"/>
-        <meta content="width=device-width, initial-scale=1" name="viewport"></meta>
-        
-        
+        <link rel="stylesheet" href="css/layout.css" type="text/css" media="screen, projection"/>
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-37666832-7']);
+            _gaq.push(['_trackPageview']);
+            (function() {
+              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+            </script>
+        <script type="text/javascript">
+              Pamflet.twitter = '#slick';
+            </script>
       </head>
       <body class="color_scheme-redmond">
         <a class="page prev nav" href="%E5%B0%8E%E5%85%A5.html">
             <span class="space">&nbsp;</span>
-            <span class="flip">❧</span>
+            <span class="flip arrow">❧</span>
           </a><a class="page next nav" href="Slick+v2.0+Migration+Guide.html">
             <span class="space">&nbsp;</span>
-            <span>❧</span>
+            <span class="arrow">❧</span>
           </a>
-        <div class="container">
-          <div class="span-16 prepend-1 append-1">
-            <div class="span-16 top nav">
-              <div class="span-16 title">
-                <span>slick-doc-ja 2.0</span> — 始めよう
-              </div>
-            </div>
-          </div>
+        <div class="container contentswrapper">
           <div class="span-16 prepend-1 append-1 contents">
             <p>Slick 2.0.0 documentation - 02 始めよう(Getting Started)
 <!--Getting Started — Slick 2.0.0 documentation-->
 </p><p><a href="http://slick.typesafe.com/doc/2.0.0/gettingstarted.html">Permalink to Getting Started — Slick 2.0.0 documentation</a>
 </p><h1 id="%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86">始めよう<a href="#%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><!-- Getting Started-->
-<p><a href="http://typesafe.com/activator">Typesafe Activator</a>を使うのが、最も簡単なSlickを用いたアプリケーションを試すのに良い。Slickの基本を学びたいのなら、<a href="http://typesafe.com/activator/template/hello-slick">Hello Slick</a>テンプレートを使うと良い。Slickを使ったPlay Frameworkアプリケーションを使いたいのなら、<a href="http://typesafe.com/activator/template/play-slick-advanced">Play Slick with Typesafe IDs</a>テンプレートを試すと良いだろう。
+<p>軽くSlickを試すのなら、<a href="http://typesafe.com/activator">Typesafe Activator</a>を使うのが良い。Slickの基本を学びたいのなら、<a href="http://typesafe.com/activator/template/hello-slick">Hello Slick</a>テンプレートを使うと良い。Slickを使ったPlay Frameworkアプリケーションを使いたいのなら、<a href="http://typesafe.com/activator/template/play-slick-advanced">Play Slick with Typesafe IDs</a>テンプレートを試すと良いだろう。
 </p><!-- The easiest way to get started is with a working application in -->
 <!-- [Typesafe Activator](http://typesafe.com/activator). To learn the basics -->
 <!-- of Slick start with the [Hello -->
@@ -60,7 +65,7 @@
 <!-- Slick with Typesafe -->
 <!-- IDs](http://typesafe.com/activator/template/play-slick-advanced) -->
 <!-- template. -->
-<p>Slickを既存のプロジェクトに導入するには以下の様な依存関係を記述する。
+<p>Slickを既存のプロジェクトに導入するには各プロジェクトに応じた依存関係を記述する。
 sbtプロジェクトには<code>libraryDependencies</code>に次のように書き加える。
 </p><!-- To include Slick into an existing project use the library published on -->
 <!-- Maven Central. For sbt projects add the following to your -->
@@ -81,9 +86,9 @@ sbtプロジェクトには<code>libraryDependencies</code>に次のように書
 &lt;/dependency&gt;
 </code></pre><p>Slickはデバッグログに<a href="http://www.slf4j.org/">SLF4J</a>を用いている。そのためSLF4Jについても追加する必要がある。ここではロギングを無効にするために <code>slf4j-nop</code> を用いている。もしログの出力を見たいのならば<a href="http://logback.qos.ch/">Logback</a>のようなロギング用のフレームワークに替えなくてはならない。
 </p><!--Slick uses [SLF4J][3] for its own debug logging so you also need to add an SLF4J implementation. Here we are using slf4j-nop to disable logging. You have to replace this with a real logging framework like [Logback][4] if you want to see log output.-->
-<h2 id="Slick+Examples">Slick Examples<a href="#Slick+Examples" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p><a href="https://github.com/slick/slick-examples/tree/2.0.0">Slick Examples</a>を見ると、複数のデータベースを使ったり、生のクエリを発行したりといった例をチェックする事が出来る。
+<h2 id="Slick+Examples">Slick Examples<a href="#Slick+Examples" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p><a href="https://github.com/slick/slick-examples/tree/2.0.0">Slick Examples</a>では、複数のデータベースを使ったり、生のクエリを発行したりといったサンプルを公開している。
 </p><!-- Check out the Slick Examples\_ project for more examples like using multiple databases, using native queries, and advanced invoker usage. -->
-<h2 id="Quick+Introduction">Quick Introduction<a href="#Quick+Introduction" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>Slickを使う際、初めに使うデータベースに応じたAPIを以下のようにインポートする必要がある。
+<h2 id="Quick+Introduction">Quick Introduction<a href="#Quick+Introduction" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>Slickを使う際、まず初めに、利用するデータベースに応じたAPIを以下のようにインポートする必要がある。
 </p><!-- To use Slick you first need to import the API for the database you will be using, like: -->
 <pre><code class="prettyprint lang-scala">// H2 databaseへ接続するためにH2Driverをimport
 import scala.slick.driver.H2Driver.simple._
@@ -95,9 +100,9 @@ import scala.slick.driver.H2Driver.simple._
   implicit session =&gt;
   // &lt;- クエリはここへ書こう
 }
-</code></pre><p>Java SEの環境においては、データベースセッションはJDBCドライバークラスを用いてJDBC URLへ接続する事で作られる（正しいURLの記述法はJDBCドライバーのドキュメントを見て欲しい）。もし<a href="http://slick.typesafe.com/doc/2.0.0/sql.html">plain SQL queries</a>のみを用いるのであれば、それ以上何もする必要はない。しかし、もし<a href="http://slick.typesafe.com/doc/2.0.0/direct-embedding.html">direct embedding</a>や<a href="http://slick.typesafe.com/doc/2.0.0/introduction.html#lifted-embedding">lifted embedding</a>を用いるのであれば、SlickがSQL文を作成する事になるため、 <code>H2Driver</code> のようなSlickのdriverを適宜importして欲しい。
+</code></pre><p>Java SEの環境においては、データベースセッションはJDBCドライバークラスを用いてJDBC URLへ接続する事で作られる（正しいURLの記述法はJDBCドライバーのドキュメントを見て欲しい）。もし<a href="http://slick.typesafe.com/doc/2.0.0/sql.html">plain SQL queries</a>のみを用いるのであれば、それ以上何もする必要はない。一方で、もし<a href="http://slick.typesafe.com/doc/2.0.0/direct-embedding.html">direct embedding</a>や<a href="http://slick.typesafe.com/doc/2.0.0/introduction.html#lifted-embedding">lifted embedding</a>を用いるのであれば、SlickがSQL文を作成する事になるため、 <code>H2Driver</code> のようなSlickのdriverを適宜importして欲しい。
 </p><!--In a Java SE environment, database sessions are usually created by connecting to a JDBC URL using a JDBC driver class (see the JDBC driver’s documentation for the correct URL syntax). If you are only using [*plain SQL queries*][8], nothing more is required, but when Slick is generating SQL code for you (using the [*direct embedding*][9] or the [*lifted embedding*][10]), you need to make sure to use a matching Slick driver (in our case the H2Driver import above).-->
-<h2 id="%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E">スキーマ<a href="#%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>ここでは <a href="http://slick.typesafe.com/doc/2.0.0/introduction.html#lifted-embedding">lifted embedding</a>を用いたアプリケーションを書いてみる。初めに、データベースのテーブル毎に<code>Table</code>型を継承させたクラスと、<code>TableQuery</code>型の値を定義する。これらは、<a href="http://slick.typesafe.com/doc/2.0.0/code-generation.html">code generator</a>を使うとデータベーススキーマから自動的に作成することができるし、直接手で書いても良い
+<h2 id="%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E">スキーマ<a href="#%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>ここでは <a href="http://slick.typesafe.com/doc/2.0.0/introduction.html#lifted-embedding">lifted embedding</a>を用いたアプリケーションを書いてみる。初めに、データベースのテーブル毎に<code>Table</code>型を継承させたクラスと、<code>TableQuery</code>型の値を定義する。これらは、<a href="http://slick.typesafe.com/doc/2.0.0/code-generation.html">code generator</a>を使うとデータベーススキーマから自動的に作成することができるし、直接手で書いても良い。
 </p><!-- We are using the lifted embedding \<lifted-embedding\> in this -->
 <!-- application, so we need `Table` row classes and `TableQuery` values for -->
 <!-- our database tables. You can either use the -->
@@ -128,7 +133,7 @@ class Coffees(tag: Tag) extends Table[(String, Int, Double, Int, Int)](tag, &quo
   def supplier = foreignKey(&quot;SUP_FK&quot;, supID, suppliers)(_.id)
 }
 val coffees = TableQuery[Coffees]
-</code></pre><p>全ての列は名前（ScalaにおけるキャメルケースやSQLにおける大文字とアンダースコアの組み合わせ）とScalaの型（SQLの型はScalaの型から自動的に推測される）を持つ。これらは <code>val</code> ではなく <code>def</code> を用いて定義しなくてはならない。テーブルオブジェクトもScalaでの名前とSQLでの名前と型を持つ必要がある。テーブルの型引数は射影*と一致してなくてはならない。全ての列をタプルで取り出すといった簡単な処理以外にも、より複雑なオブジェクトへのマッピングを行う事も出来る。
+</code></pre><p>全ての列は名前（ScalaにおけるキャメルケースやSQLにおける大文字とアンダースコアの組み合わせ）とScalaの型（SQLの型はScalaの型から自動的に推測される）を持つ。これらは <code>val</code> ではなく <code>def</code> を用いて定義しなくてはならない。テーブルオブジェクトもScalaでの名前とSQLでの名前と型を持つ必要がある。テーブルの型引数は射影*と一致してなくてはならない。全ての列をタプルで取り出すといった簡単な処理だけでなく、射影にはより複雑なオブジェクトへのマッピングを行う事も出来る。
 </p><!--All columns get a name (usually in camel case for Scala and upper case with underscores for SQL) and a Scala type (from which the SQL type can be derived automatically). Make sure to define them with def and not with val. The table object also needs a Scala name, SQL name and type. The type argument of the table must match the type of the special * projection. In simple cases this is a tuple of all columns but more complex mappings are possible.-->
 <p><code>Coffees</code> テーブルで定義した <code>外部キー</code> は、 <code>Coffees</code> テーブルの <code>supID</code> のフィールドが、 <code>Suppliers</code> テーブルで存在している <code>id</code> と同じ値を持っている事を保証している。要するに、ここでは <em>多:1</em> の関係を作成しているのである。ある <code>Coffees</code> の列は特定の <code>Suppliers</code> の列を指すが、複数のCoffeeが同じSupplierを指していたりする。この構成はデータベースレベルで強制されている。
 </p><!--The foreignKey definition in the Coffees table ensures that the supID field can only contain values for which a corresponding id exists in the Suppliers table, thus creating an *n to one* relationship: A Coffees row points to exactly one Suppliers row but any number of coffees can point to the same supplier. This constraint is enforced at the database level.-->
@@ -156,7 +161,7 @@ Coffees.insertAll(
 </p><!--Inserting the tuples of data is done with the `insert` and `insertAll` methods. Note that by default a database Session is in *auto-commit* mode. Each call to the database like insert or insertAll executes atomically in its own transaction (i.e. it succeeds or fails completely but can never leave the database in an inconsistent state somewhere in between). In this mode we we have to populate the Suppliers table first because the Coffees data can only refer to valid supplier IDs.-->
 <p>これらの記述を全て包括した明示的なトランザクションのブラケットを用いることも可能である。その際、トランザクションによって処理が強制されるため、順序は重要視されない。
 </p><!--We could also use an explicit transaction bracket encompassing all these statements. Then the order would not matter because the constraints are only enforced at the end when the transaction is committed.-->
-<h2 id="Querying">Querying<a href="#Querying" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>最も簡単なクエリ例として、テーブルのデータ全てを順々に取り出す処理を考える。
+<h2 id="Querying">Querying<a href="#Querying" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>最も簡単なクエリ例として、テーブルのデータを全て順々に取り出す処理を考える。
 </p><!--The simplest kind of query iterates over all the data in a table:-->
 <pre><code class="prettyprint lang-scala">// coffeeのデータを全て取り出し、順に出力する
 Query(Coffees) foreach { case (name, supID, price, sales, total) =&gt;
@@ -205,7 +210,27 @@ val q2 = for {
       <div><a href="slick-doc-ja+2.0.html">slick-doc-ja 2.0</a></div><ol class="toc"> <li><div><a href="%E5%B0%8E%E5%85%A5.html">導入</a></div></li><li><div class="current">始めよう</div></li><li><div><a href="Slick+v2.0+Migration+Guide.html">Slick v2.0 Migration Guide</a></div></li><li><div><a href="Connections+%2F+Transactions.html">Connections / Transactions</a></div></li><li><div><a href="Schema+code+generation.html">Schema code generation</a></div></li><li><div><a href="Schemas.html">Schemas</a></div></li><li><div><a href="Queries.html">Queries</a></div></li><li><div><a href="User-Defined+Features.html">User-Defined Features</a></div></li><li><div><a href="Plain+SQL+Queries.html">Plain SQL Queries</a></div></li><li><div><a href="Slick+Extensions.html">Slick Extensions</a></div></li><li><div><a href="Direct+Embedding+%28Experimental+Feature%29.html">Direct Embedding (Experimental Feature)</a></div></li><li><div><a href="Slick+TestKit.html">Slick TestKit</a></div></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
           </div>
         </div>
-        
-        
+        <div class="header">
+          <div class="container">
+        <div class="span-16 prepend-1 append-1">
+          <div class="span-16 top nav">
+            <div class="span-16 title">
+              <span>slick-doc-ja 2.0</span> — 始めよう
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        <a href="http://github.com/krrrr38/slick-doc-ja" class="fork nav"><img src="img/fork.png" alt="Fork me on GitHub"/></a>
+        <div class="highlight-outer">
+              <div class="highlight-menu">
+                <ul>
+                  <li><button id="highlight-button-twitter"><img src="img/twitter-bird-dark-bgs.png"/></button></li>
+                </ul>
+              </div>
+            </div>
       </body>
     </html>

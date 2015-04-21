@@ -60,7 +60,7 @@ class Suppliers(tag: Tag) extends Table[(Int, String, String)](tag, "SUPPLIERS")
 val suppliers = TableQuery[Suppliers]
 ```
 
-以前に用いていた`~`シンタックスをそのまま使いたい場合には、[TupleMethod._](http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.util.TupleMethods$)をインポートすれば良い。`TableQuery[T]`を用いると、内部的には`new TableQuery(new T(_))`のような処理が行われ、適切なTableQueryインスタンスが作成される。Slick1.0では共通処理に関して、静的メソッドでテーブルオブジェクトに定義がなされていた。2.0においても以下のようにカスタムされた`TableQuery`オブジェクトを用いて、同様の事が出来る。
+以前に用いていた`~`シンタックスをそのまま使いたい場合には、[TupleMethod._](http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.util.TupleMethods\$)をインポートすれば良い。`TableQuery[T]`を用いると、内部的には`new TableQuery(new T(_))`のような処理が行われ、適切なTableQueryインスタンスが作成される。Slick1.0では共通処理に関して、静的メソッドでテーブルオブジェクトに定義がなされていた。2.0においても以下のようにカスタムされた`TableQuery`オブジェクトを用いて、同様の事が出来る。
 
 <!-- You can import TupleMethods \<scala.slick.util.TupleMethods\$\>.\_ to -->
 <!-- get support for the old \~ syntax. The simple `TableQuery[T]` syntax is -->
@@ -308,4 +308,4 @@ case class MyID(value: Int) extends MappedTo[Int]
 // No extra implicit required any more
 ```
 
-[1]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.profile.RelationalTypesComponent$MappedColumnTypeFactory@base[T,U](T)=>U,(U)=>T)(ClassTag[T],(RelationalTypesComponent.this)#BaseColumnType[U]):(RelationalTypesComponent.this)#BaseColumnType[T])
+[1]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.profile.RelationalTypesComponent\$MappedColumnTypeFactory@base[T,U](T)=>U,(U)=>T)(ClassTag[T],(RelationalTypesComponent.this)#BaseColumnType[U]):(RelationalTypesComponent.this)#BaseColumnType[T])

@@ -89,6 +89,7 @@ PostgreSQL quick setup:
 - Install PostgreSQL server with default options  
 - Change password in mypostgres.password  
 - Set mypostgres.enabled = true  
+
 ```scala
 mypostgres.enabled = false
 mypostgres.url = jdbc:postgresql:[DB]

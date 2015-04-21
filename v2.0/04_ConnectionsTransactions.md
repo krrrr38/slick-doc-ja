@@ -13,7 +13,7 @@ Connections / Transactions
 Database connection
 -------------------
 
-用いるJDBCデータベースに対してどのように接続するのかを、それらの情報をカプセル化した[`Database`](http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend@Database:Database)オブジェクトを作成することで、Slickへ伝える事が出来る。`Database`オブジェクトを作成するには`scala.slick.jdbc.JdbcBackend.Database`にいくつかの[ファクトリメソッド](http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseFactoryDef)が用意されており、どのような方法で接続するかによって使い分ける事が出来る。
+用いるJDBCデータベースに対してどのように接続するのかを、それらの情報をカプセル化した[`Database`](http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend@Database:Database)オブジェクトを作成することで、Slickへ伝える事が出来る。`Database`オブジェクトを作成するには`scala.slick.jdbc.JdbcBackend.Database`にいくつかの[ファクトリメソッド](http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend\$DatabaseFactoryDef)が用意されており、どのような方法で接続するかによって使い分ける事が出来る。
 
 <!-- You can tell Slick how to connect to the JDBC database of your choice by -->
 <!-- creating a Database \<scala.slick.jdbc.JdbcBackend@Database:Database\> -->
@@ -259,7 +259,7 @@ db.withSession {
 import Database.dynamicSession // <- implicit def dynamicSession : Session
 ```
 
-現在のコールスタック内のどこかで[withDynSession][14]か[withDynTransaction][15]スコープが開かれていた場合において、[dynamicSession](http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseFactoryDef@dynamicSession:Session)は適切な[Session](http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend@Session:Session)を返却する暗黙的な関数となる。
+現在のコールスタック内のどこかで[withDynSession][14]か[withDynTransaction][15]スコープが開かれていた場合において、[dynamicSession](http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend\$DatabaseFactoryDef@dynamicSession:Session)は適切な[Session](http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend@Session:Session)を返却する暗黙的な関数となる。
 
 <!-- dynamicSession \<scala.slick.jdbc.JdbcBackend\$DatabaseFactoryDef@dynamicSession:Session\> -->
 <!-- is an implicit def that returns a valid -->
@@ -275,7 +275,7 @@ db.withDynSession {
 }
 ```
 
-注意して欲しいのは、もし[dynamicSession](http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseFactoryDef@dynamicSession:Session)がインポートさあれ、[withDynSession][14]や[withDynTransaction][15]スコープの外側でクエリが実行されようとしているのならば、実行時例外を吐いてしまう事である。つまり、静的な安全性を犠牲にしているのである。[dynamicSession](http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseFactoryDef@dynamicSession:Session)は内部的に[DynamicVariable](http://www.scala-lang.org/api/2.10.0/#scala.util.DynamicVariable)を用いる。これは動的にスコープのある変数を作成し、Javaの[InheritableThreadLocal](http://docs.oracle.com/javase/7/docs/api/java/lang/InheritableThreadLocal.html)を順々に用いるものである。静的であることの安全性とスレッドの安全性に配慮して欲しい。
+注意して欲しいのは、もし[dynamicSession](http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend\$DatabaseFactoryDef@dynamicSession:Session)がインポートさあれ、[withDynSession][14]や[withDynTransaction][15]スコープの外側でクエリが実行されようとしているのならば、実行時例外を吐いてしまう事である。つまり、静的な安全性を犠牲にしているのである。[dynamicSession](http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend\$DatabaseFactoryDef@dynamicSession:Session)は内部的に[DynamicVariable](http://www.scala-lang.org/api/2.10.0/#scala.util.DynamicVariable)を用いる。これは動的にスコープのある変数を作成し、Javaの[InheritableThreadLocal](http://docs.oracle.com/javase/7/docs/api/java/lang/InheritableThreadLocal.html)を順々に用いるものである。静的であることの安全性とスレッドの安全性に配慮して欲しい。
 
 <!-- Be careful, if you import -->
 <!-- dynamicSession \<scala.slick.jdbc.JdbcBackend\$DatabaseFactoryDef@dynamicSession:Session\> -->
@@ -309,18 +309,18 @@ Slickは独自のコネクションプール実装を持っていない。JEEや
 <!-- statement caching in the connection pool's configuration and select a -->
 <!-- sufficiently large pool size. -->
 
-[1]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseFactoryDef@forURL(String,String,String,Properties,String):DatabaseDef
-[2]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseFactoryDef@forDataSource(DataSource):DatabaseDef
-[3]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseFactoryDef@forName(String):DatabaseDef
-[4]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseDef@withSession[T]((Session)=>T):T
-[5]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseDef@withSession[T](Session)=>T):T
+[1]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend\$DatabaseFactoryDef@forURL(String,String,String,Properties,String):DatabaseDef
+[2]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend\$DatabaseFactoryDef@forDataSource(DataSource):DatabaseDef
+[3]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend\$DatabaseFactoryDef@forName(String):DatabaseDef
+[4]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend\$DatabaseDef@withSession[T]((Session)=>T):T
+[5]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend\$DatabaseDef@withSession[T](Session)=>T):T
 [6]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.Invoker@list(P)(SessionDef):List[R]
-[7]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.driver.JdbcInvokerComponent$BaseInsertInvoker@insert(U)(SessionDef):SingleInsertResult
-[8]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.driver.JdbcInvokerComponent$BaseInsertInvoker@insertAll(U*)(SessionDef):MultiInsertResult
-[9]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseDef@withSession[T](Session)=>T):T)
+[7]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.driver.JdbcInvokerComponent\$BaseInsertInvoker@insert(U)(SessionDef):SingleInsertResult
+[8]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.driver.JdbcInvokerComponent\$BaseInsertInvoker@insertAll(U*)(SessionDef):MultiInsertResult
+[9]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend\$DatabaseDef@withSession[T](Session)=>T):T)
 [10]: http://www.scala-lang.org/api/2.10.0/#scala.concurrent.package@Future[T](=>T)(ExecutionContext):Future[T]
-[11]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$SessionDef@withTransaction[T](=>T):T
-[12]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$SessionDef@rollback():Unit
-[13]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseDef@withTransaction[T]((Session)=>T):T
-[14]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseDef@withDynSession[T](=>T):T
-[15]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseDef@withDynTransaction[T](=>T):T
+[11]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend\$SessionDef@withTransaction[T](=>T):T
+[12]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend\$SessionDef@rollback():Unit
+[13]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend\$DatabaseDef@withTransaction[T]((Session)=>T):T
+[14]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend\$DatabaseDef@withDynSession[T](=>T):T
+[15]: http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend\$DatabaseDef@withDynTransaction[T](=>T):T

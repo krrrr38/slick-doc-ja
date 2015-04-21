@@ -219,7 +219,7 @@ q1 foreach println
 <!--Joining and filtering tables is done the same way as when working with Scala collections:-->
 
 ```scala
-// 2つのテーブルを結合し、coffeeの値段が$9より安いもののうち、
+// 2つのテーブルを結合し、coffeeの値段が\$9より安いもののうち、
 // coffeeの名前とsupplierの名前の組みを検索
 val q2 = for {
   c <- Coffees if c.price < 9.0

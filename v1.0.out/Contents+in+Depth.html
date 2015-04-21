@@ -1,6 +1,8 @@
 <!DOCTYPE html SYSTEM "about:legacy-compat">
 <html>
       <head>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
         <title>slick-doc-ja 1.0 — Contents in Depth</title>
         
         <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
@@ -15,6 +17,7 @@
         <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
         <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
         <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamfletheight_2em_2em.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
         <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
         <script type="text/javascript" src="js/jquery.collapse.js"></script>
         <script type="text/javascript" src="js/pamflet.js"></script>
@@ -22,40 +25,62 @@
           Pamflet.page.language = 'en';
         </script>
         
-        
-        <meta charset="utf-8"/>
-        <meta content="width=device-width, initial-scale=1" name="viewport"></meta>
-        
-        
+        <link rel="stylesheet" href="css/layout.css" type="text/css" media="screen, projection"/>
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-37666832-7']);
+            _gaq.push(['_trackPageview']);
+            (function() {
+              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+            </script>
+        <script type="text/javascript">
+              Pamflet.twitter = '#slick';
+            </script>
       </head>
       <body class="color_scheme-redmond">
         <a class="page prev nav" href="Slick+Extensions.html">
             <span class="space">&nbsp;</span>
-            <span class="flip">❧</span>
+            <span class="flip arrow">❧</span>
           </a><a class="page next nav" href="Combined+Pages.html">
             <span class="space">&nbsp;</span>
-            <span>❧</span>
+            <span class="arrow">❧</span>
           </a>
-        <div class="container">
-          <div class="span-16 prepend-1 append-1">
-            <div class="span-16 top nav">
-              <div class="span-16 title">
-                <span>slick-doc-ja 1.0</span> — Contents in Depth
-              </div>
-            </div>
-          </div>
+        <div class="container contentswrapper">
           <div class="span-16 prepend-1 append-1 contents">
             <div class="tocwrapper show">
       <a class="tochead nav" style="display: none" href="#toc">❦</a>
       <a name="toc"></a>
       <h4 class="toctitle">Contents</h4>
       <div class="tocbody">
-      <div><a href="slick-doc-ja+1.0.html">slick-doc-ja 1.0</a></div><ol class="toc"> <li><div><a href="%E5%B0%8E%E5%85%A5.html">導入</a></div><ul class="outline"> <li> <a href="%E5%B0%8E%E5%85%A5.html#Slick%E3%81%A8%E3%81%AF">Slickとは </a> </li><li> <a href="%E5%B0%8E%E5%85%A5.html#Slick%E3%81%AE%E7%89%B9%E5%BE%B4">Slickの特徴 </a>
+      <div><a href="slick-doc-ja+1.0.html">slick-doc-ja 1.0</a></div><ul class="outline"> <li> <a href="slick-doc-ja+1.0.html#%E4%BB%96%E3%81%AE%E3%83%90%E3%83%BC%E3%82%B8%E3%83%A7%E3%83%B3%E3%81%AE%E3%83%89%E3%82%AD%E3%83%A5%E3%83%A1%E3%83%B3%E3%83%88">他のバージョンのドキュメント </a> </li> </ul><ol class="toc"> <li><div><a href="%E5%B0%8E%E5%85%A5.html">導入</a></div><ul class="outline"> <li> <a href="%E5%B0%8E%E5%85%A5.html#Slick%E3%81%A8%E3%81%AF">Slickとは </a> </li><li> <a href="%E5%B0%8E%E5%85%A5.html#Slick%E3%81%AE%E7%89%B9%E5%BE%B4">Slickの特徴 </a>
               <ul class="outline"> <li> <a href="%E5%B0%8E%E5%85%A5.html#Easy">Easy </a> </li><li> <a href="%E5%B0%8E%E5%85%A5.html#Concise">Concise </a> </li><li> <a href="%E5%B0%8E%E5%85%A5.html#Safe">Safe </a> </li><li> <a href="%E5%B0%8E%E5%85%A5.html#Composable">Composable </a> </li> </ul>
             </li><li> <a href="%E5%B0%8E%E5%85%A5.html#%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E3%81%99%E3%82%8B%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9">サポートするデータベース </a> </li><li> <a href="%E5%B0%8E%E5%85%A5.html#%E7%B0%A1%E5%8D%98%E3%81%AA%E6%A6%82%E8%AA%AC">簡単な概説 </a> </li><li> <a href="%E5%B0%8E%E5%85%A5.html#License">License </a> </li> </ul></li><li><div><a href="%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86.html">始めよう</a></div><ul class="outline"> <li> <a href="%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86.html#%E4%BE%9D%E5%AD%98%E6%80%A7">依存性 </a> </li><li> <a href="%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86.html#Imports">Imports </a> </li><li> <a href="%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86.html#Database%E3%81%B8%E3%81%AE%E6%8E%A5%E7%B6%9A">Databaseへの接続 </a> </li><li> <a href="%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86.html#%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E">スキーマ </a> </li><li> <a href="%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86.html#Populating+the+Database">Populating the Database </a> </li><li> <a href="%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86.html#Querying">Querying </a> </li> </ul></li><li><div><a href="Lifted+Embedding.html">Lifted Embedding</a></div><ul class="outline"> <li> <a href="Lifted+Embedding.html#%E3%83%86%E3%83%BC%E3%83%96%E3%83%AB">テーブル </a> </li><li> <a href="Lifted+Embedding.html#%E6%8B%A1%E5%BC%B5%E3%83%86%E3%83%BC%E3%83%96%E3%83%AB">拡張テーブル </a> </li><li> <a href="Lifted+Embedding.html#%E5%88%B6%E7%B4%84">制約 </a> </li><li> <a href="Lifted+Embedding.html#Data+Definition+Language">Data Definition Language </a> </li><li> <a href="Lifted+Embedding.html#Expressions">Expressions </a> </li><li> <a href="Lifted+Embedding.html#%E3%82%BD%E3%83%BC%E3%83%88%E3%81%A8%E3%83%95%E3%82%A3%E3%83%AB%E3%82%BF%E3%83%AA%E3%83%B3%E3%82%B0%EF%BC%88Sorting%2C+Filtering%EF%BC%89">ソートとフィルタリング（Sorting, Filtering） </a> </li><li> <a href="Lifted+Embedding.html#%E7%B5%90%E5%90%88%EF%BC%88Join%2C+Zipping%EF%BC%89">結合（Join, Zipping） </a> </li><li> <a href="Lifted+Embedding.html#%E9%80%A3%E7%B5%90%EF%BC%88Unions%EF%BC%89">連結（Unions） </a> </li><li> <a href="Lifted+Embedding.html#%E9%9B%86%E7%B4%84%EF%BC%88Aggregation%EF%BC%89">集約（Aggregation） </a> </li><li> <a href="Lifted+Embedding.html#%E3%82%AF%E3%82%A8%E3%83%AA%E3%81%AE%E5%AE%9F%E8%A1%8C%EF%BC%88Querying%EF%BC%89">クエリの実行（Querying） </a> </li><li> <a href="Lifted+Embedding.html#%E5%89%8A%E9%99%A4%EF%BC%88Deleting%EF%BC%89">削除（Deleting） </a> </li><li> <a href="Lifted+Embedding.html#%E6%8C%BF%E5%85%A5%EF%BC%88Inserting%EF%BC%89">挿入（Inserting） </a> </li><li> <a href="Lifted+Embedding.html#%E6%9B%B4%E6%96%B0%EF%BC%88Updating%EF%BC%89">更新（Updating） </a> </li><li> <a href="Lifted+Embedding.html#%E3%82%AF%E3%82%A8%E3%83%AA%E3%83%86%E3%83%B3%E3%83%97%E3%83%AC%E3%83%BC%E3%83%88">クエリテンプレート </a> </li><li> <a href="Lifted+Embedding.html#%E3%83%A6%E3%83%BC%E3%82%B6%E5%AE%9A%E7%BE%A9%E9%96%A2%E6%95%B0%E3%81%A8%E3%83%A6%E3%83%BC%E3%82%B6%E5%AE%9A%E7%BE%A9%E5%9E%8B">ユーザ定義関数とユーザ定義型 </a> </li> </ul></li><li><div><a href="Plain+SQL+Queries.html">Plain SQL Queries</a></div><ul class="outline"> <li> <a href="Plain+SQL+Queries.html#Scaffolding">Scaffolding </a> </li><li> <a href="Plain+SQL+Queries.html#DDL%2FDML+Statements">DDL/DML Statements </a> </li><li> <a href="Plain+SQL+Queries.html#Query+Statements">Query Statements </a> </li><li> <a href="Plain+SQL+Queries.html#String+Interpolation">String Interpolation </a> </li> </ul></li><li><div><a href="Direct+Embedding.html">Direct Embedding</a></div><ul class="outline"> <li> <a href="Direct+Embedding.html#Dependencies">Dependencies </a> </li><li> <a href="Direct+Embedding.html#Imports">Imports </a> </li><li> <a href="Direct+Embedding.html#Row+class+and+schema">Row class and schema </a> </li><li> <a href="Direct+Embedding.html#Query">Query </a> </li><li> <a href="Direct+Embedding.html#Execution">Execution </a> </li><li> <a href="Direct+Embedding.html#Alternative+direct+embedding+bound+to+a+driver+and+session">Alternative direct embedding bound to a driver and session </a> </li><li> <a href="Direct+Embedding.html#Features">Features </a> </li> </ul></li><li><div><a href="Slick+TestKit.html">Slick TestKit</a></div><ul class="outline"> <li> <a href="Slick+TestKit.html#Scaffolding">Scaffolding </a> </li><li> <a href="Slick+TestKit.html#Driver">Driver </a> </li><li> <a href="Slick+TestKit.html#Test+Harness">Test Harness </a> </li><li> <a href="Slick+TestKit.html#Database+Configuration">Database Configuration </a> </li><li> <a href="Slick+TestKit.html#Testing">Testing </a> </li> </ul></li><li><div><a href="Slick+Extensions.html">Slick Extensions</a></div></li><li class="generated"><div class="current">Contents in Depth</div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
           </div>
         </div>
-        
-        
+        <div class="header">
+          <div class="container">
+        <div class="span-16 prepend-1 append-1">
+          <div class="span-16 top nav">
+            <div class="span-16 title">
+              <span>slick-doc-ja 1.0</span> — Contents in Depth
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        <a href="http://github.com/krrrr38/slick-doc-ja" class="fork nav"><img src="img/fork.png" alt="Fork me on GitHub"/></a>
+        <div class="highlight-outer">
+              <div class="highlight-menu">
+                <ul>
+                  <li><button id="highlight-button-twitter"><img src="img/twitter-bird-dark-bgs.png"/></button></li>
+                </ul>
+              </div>
+            </div>
       </body>
     </html>

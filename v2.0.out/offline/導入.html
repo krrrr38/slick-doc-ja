@@ -1,6 +1,8 @@
 <!DOCTYPE html SYSTEM "about:legacy-compat">
 <html manifest="pamflet.manifest">
       <head>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
         <title>slick-doc-ja 2.0 — 導入</title>
         
         <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
@@ -15,6 +17,7 @@
         <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
         <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
         <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamfletheight_2em_2em.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
         <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
         <script type="text/javascript" src="js/jquery.collapse.js"></script>
         <script type="text/javascript" src="js/pamflet.js"></script>
@@ -24,28 +27,30 @@
         <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
         window.onload=function() { prettyPrint(); };
       --></script>
-        
-        <meta charset="utf-8"/>
-        <meta content="width=device-width, initial-scale=1" name="viewport"></meta>
-        
-        
+        <link rel="stylesheet" href="css/layout.css" type="text/css" media="screen, projection"/>
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-37666832-7']);
+            _gaq.push(['_trackPageview']);
+            (function() {
+              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+            </script>
+        <script type="text/javascript">
+              Pamflet.twitter = '#slick';
+            </script>
       </head>
       <body class="color_scheme-redmond">
         <a class="page prev nav" href="slick-doc-ja+2.0.html">
             <span class="space">&nbsp;</span>
-            <span class="flip">❧</span>
+            <span class="flip arrow">❧</span>
           </a><a class="page next nav" href="%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86.html">
             <span class="space">&nbsp;</span>
-            <span>❧</span>
+            <span class="arrow">❧</span>
           </a>
-        <div class="container">
-          <div class="span-16 prepend-1 append-1">
-            <div class="span-16 top nav">
-              <div class="span-16 title">
-                <span>slick-doc-ja 2.0</span> — 導入
-              </div>
-            </div>
-          </div>
+        <div class="container contentswrapper">
           <div class="span-16 prepend-1 append-1 contents">
             <p>Slick 2.0.0 documentation - 01 導入(Introduction)
 <!-- Introduction -->
@@ -58,12 +63,12 @@
 ( for( c &lt;- Coffees; if c.price &lt; limit ) yield c.name ).list
 // SQLを直接書いた例
 sql&quot;select name from coffees where price &lt; $limit&quot;.as[String].list
-</code></pre><p>クエリをSQLを用いて書く代わりにScalaを用いるとコンパイル時に合成が安全に行われ、より良い形で利用する事が出来る。Slickは独自のクエリコンパイラを用いてDBに対しクエリを発行する。
+</code></pre><p>SQLを直接書くのに比べ、Scalaを通してSQLを発行すると、コンパイル時により良いクエリを型安全に提供する事が出来る。Slickは独自のクエリコンパイラを用いてDBに対するクエリを発行する。
 </p><!--When using Scala instead of SQL for your queries you profit from the compile-time safety(何これ) and compositionality. Slick can generate queries for different backends including your own, using its extensible query compiler. -->
 <p>すぐにSlickを試したいのなら、<a href="http://typesafe.com/activator">Typesafe Activator</a>にある<a href="http://typesafe.com/activator/template/hello-slick">Hello Slick</a>テンプレートを使うと良い。
 </p><!-- Get started learning Slick in minutes using the [Hello Slick](http://typesafe.com/activator/template/hello-slick) template in[Typesafe Activator](http://typesafe.com/activator).-->
 <h2 id="Slick%E3%81%AE%E7%89%B9%E5%BE%B4">Slickの特徴<a href="#Slick%E3%81%AE%E7%89%B9%E5%BE%B4" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><!-- Features -->
-<h3 id="Scala">Scala<a href="#Scala" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><ul><li>クエリ、テーブル、カラムの操作は全て生のScalaに依るものだ
+<h3 id="Scala">Scala<a href="#Scala" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><ul><li>クエリ、テーブル、カラムの定義は全てScalaで記述する
 <!-- -   Queries, Table & Column Mappings, and types are plain Scala-->
 </li></ul><pre><code class="prettyprint lang-scala">class Coffees(tag: Tag) extends Table[(String, Double)](tag, &quot;COFFEES&quot;) {
   def name = column[String](&quot;COF_NAME&quot;, O.PrimaryKey)
@@ -71,13 +76,13 @@ sql&quot;select name from coffees where price &lt; $limit&quot;.as[String].list
   def * = (name, price)
 }
 val coffees = TableQuery[Coffees]
-</code></pre><ul><li>Scalaのコレクションかのようにデータリソースを扱う事が出来る
+</code></pre><ul><li>Scalaのコレクションを扱うかのようにデータリソースを扱う事が出来る
 <!-- -   Data access APIs similar to Scala collections-->
 </li></ul><pre><code class="prettyprint lang-scala">// name というカラムを返すクエリ
 coffees.map(_.name)
 // 価格が 10.0 未満という条件を用いたクエリ
 coffees.filter(_.price &lt; 10.0)
-</code></pre><h3 id="Type+Safe">Type Safe<a href="#Type+Safe" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><ul><li>IDEがコードを書く手助けをしてくれるだろう
+</code></pre><h3 id="Type+Safe">Type Safe<a href="#Type+Safe" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><ul><li>IDEがコードを書く手助けをしてくれる
 <!-- -   Let your IDE help you write your code-->
 </li><li>実行時でなくコンパイル時に問題を発見出来る
 <!-- -   Find problems at compile-time instead of at runtime-->
@@ -105,7 +110,7 @@ coffees.filter(_.price &lt; 10.0).sortBy(_.name).map(_.name)
 </li><li>Oracle (via <a href="http://slick.typesafe.com/doc/2.0.0/extensions.html">slick-extensions</a>)
 </li><li>PostgreSQL
 </li><li>SQLite
-</li></ul><p>他のSQLデータベースもSlickなら簡単にアクセスする事が出来るでしょう。独自のSQLベースのバックエンドを持つデータベースも、プラグインを作成する事でSlickを利用することが出来ます。そのようなプラグインの作成は大きな貢献となるでしょう。
+</li></ul><p>他のSQLデータベースもSlickなら簡単にアクセスする事が出来る。独自のSQLベースのバックエンドを持つデータベースも、プラグインを作成する事でSlickを利用することが出来ます。そのようなプラグインの作成は大きな貢献となる。
 NoSQLのような他のバックエンドを持つようなデータベースに関しては現在開発中であるため、まだ利用する事はできません。
 </p><!--Other SQL databases can be accessed right away with a reduced feature set. Writing a fully featured plugin for your own SQL-based backend can be achieved with a reasonable amount of work. Support for other backends (like NoSQL) is under development but not yet available.-->
 <h2 id="License">License<a href="#License" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><blockquote><p>Slick is released under a BSD-Style free and open source software
@@ -138,7 +143,7 @@ val coffees = TableQuery[Coffees]
 val q = coffees.filter(_.price &gt; 8.0).map(_.name)
 //                       ^       ^          ^
 //               Rep[Double]  Rep[Double]  Rep[String]
-</code></pre><p>全ての型は<strong>Rep</strong>へと昇華される。カラムの型である<strong>Coffees</strong>も同様に<code>Rep[(String, Double)]</code>へと昇華されている。数値リテラルである<code>8.0</code>も自動的に<code>Rep[Double]</code>へと昇華する。これは条件式<code>&gt;</code>の左辺が<code>Rep[Double]</code>であることから、右辺には暗黙的な変換が行われるためである。生のScalaの型や値を用いることは、SQLへの変換を行う上で充分な情報を提供しない。これらの変換はそのために行なわれるのである。
+</code></pre><p>全ての型は<strong>Rep</strong>へと持ち上げられる。カラムの型である<strong>Coffees</strong>も同様に<code>Rep[(String, Double)]</code>へと持ち上げられる。数値リテラルである<code>8.0</code>も自動的に<code>Rep[Double]</code>へと持ち上げられる。これは条件式<code>&gt;</code>の左辺が<code>Rep[Double]</code>であることから、右辺には暗黙的な変換が行われるためである。生のScalaの型や値を用いることは、SQLへの変換を行う上で充分な情報を提供しない。これらの変換はそのために行なわれるのである。
 </p><!-- All plain types are lifted into **Rep**. The same is true for the table -->
 <!-- row type **Coffees** which is a subtype of `Rep[(String, Double)]`. Even -->
 <!-- the literal `8.0` is automatically lifted to a `Rep[Double]` by an -->
@@ -161,7 +166,27 @@ val q = coffees.filter(_.price &gt; 8.0).map(_.name)
       <div><a href="slick-doc-ja+2.0.html">slick-doc-ja 2.0</a></div><ol class="toc"> <li><div class="current">導入</div></li><li><div><a href="%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86.html">始めよう</a></div></li><li><div><a href="Slick+v2.0+Migration+Guide.html">Slick v2.0 Migration Guide</a></div></li><li><div><a href="Connections+%2F+Transactions.html">Connections / Transactions</a></div></li><li><div><a href="Schema+code+generation.html">Schema code generation</a></div></li><li><div><a href="Schemas.html">Schemas</a></div></li><li><div><a href="Queries.html">Queries</a></div></li><li><div><a href="User-Defined+Features.html">User-Defined Features</a></div></li><li><div><a href="Plain+SQL+Queries.html">Plain SQL Queries</a></div></li><li><div><a href="Slick+Extensions.html">Slick Extensions</a></div></li><li><div><a href="Direct+Embedding+%28Experimental+Feature%29.html">Direct Embedding (Experimental Feature)</a></div></li><li><div><a href="Slick+TestKit.html">Slick TestKit</a></div></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
           </div>
         </div>
-        
-        
+        <div class="header">
+          <div class="container">
+        <div class="span-16 prepend-1 append-1">
+          <div class="span-16 top nav">
+            <div class="span-16 title">
+              <span>slick-doc-ja 2.0</span> — 導入
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        <a href="http://github.com/krrrr38/slick-doc-ja" class="fork nav"><img src="img/fork.png" alt="Fork me on GitHub"/></a>
+        <div class="highlight-outer">
+              <div class="highlight-menu">
+                <ul>
+                  <li><button id="highlight-button-twitter"><img src="img/twitter-bird-dark-bgs.png"/></button></li>
+                </ul>
+              </div>
+            </div>
       </body>
     </html>

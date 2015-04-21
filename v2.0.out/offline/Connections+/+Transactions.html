@@ -1,6 +1,8 @@
 <!DOCTYPE html SYSTEM "about:legacy-compat">
 <html manifest="pamflet.manifest">
       <head>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
         <title>slick-doc-ja 2.0 — Connections / Transactions</title>
         
         <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
@@ -15,6 +17,7 @@
         <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
         <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
         <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamfletheight_2em_2em.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
         <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
         <script type="text/javascript" src="js/jquery.collapse.js"></script>
         <script type="text/javascript" src="js/pamflet.js"></script>
@@ -24,54 +27,56 @@
         <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
         window.onload=function() { prettyPrint(); };
       --></script>
-        
-        <meta charset="utf-8"/>
-        <meta content="width=device-width, initial-scale=1" name="viewport"></meta>
-        
-        
+        <link rel="stylesheet" href="css/layout.css" type="text/css" media="screen, projection"/>
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-37666832-7']);
+            _gaq.push(['_trackPageview']);
+            (function() {
+              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+            </script>
+        <script type="text/javascript">
+              Pamflet.twitter = '#slick';
+            </script>
       </head>
       <body class="color_scheme-redmond">
         <a class="page prev nav" href="Slick+v2.0+Migration+Guide.html">
             <span class="space">&nbsp;</span>
-            <span class="flip">❧</span>
+            <span class="flip arrow">❧</span>
           </a><a class="page next nav" href="Schema+code+generation.html">
             <span class="space">&nbsp;</span>
-            <span>❧</span>
+            <span class="arrow">❧</span>
           </a>
-        <div class="container">
-          <div class="span-16 prepend-1 append-1">
-            <div class="span-16 top nav">
-              <div class="span-16 title">
-                <span>slick-doc-ja 2.0</span> — Connections / Transactions
-              </div>
-            </div>
-          </div>
+        <div class="container contentswrapper">
           <div class="span-16 prepend-1 append-1 contents">
             <p>Slick 2.0.0 documentation - 04 Connection/Transactions
 </p><p><a href="http://slick.typesafe.com/doc/2.0.0/connection.html">Permalink to Connections/Transactions - Slick 2.0.0 documentation</a>
-</p><h1 id="Connections+%2F+Transactions">Connections / Transactions<a href="#Connections+%2F+Transactions" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><p>クエリはプログラム中のどこにでも書くことが出来る。クエリを実行する際には、データベースコネクションが必要になる。
+</p><h1 id="Connections+%2F+Transactions">Connections / Transactions<a href="#Connections+%2F+Transactions" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><p>クエリはプログラムのどこにでも書くことが出来る。クエリを実行する際には、データベースコネクションが必要になる。
 </p><!-- You can write queries anywhere in your program. When you want to execute -->
 <!-- them you need a database connection. -->
 <h2 id="Database+connection">Database connection<a href="#Database+connection" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>用いるJDBCデータベースに対してどのように接続するのかを、それらの情報をカプセル化した<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend@Database:Database"><code>Database</code></a>オブジェクトを作成することで、Slickへ伝える事が出来る。<code>Database</code>オブジェクトを作成するには<code>scala.slick.jdbc.JdbcBackend.Database</code>にいくつかの<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseFactoryDef">ファクトリメソッド</a>が用意されており、どのような方法で接続するかによって使い分ける事が出来る。
 </p><!-- You can tell Slick how to connect to the JDBC database of your choice by -->
 <!-- creating a Database \<scala.slick.jdbc.JdbcBackend@Database:Database\> -->
 <!-- object, which encapsulates the information. There are several -->
-<!-- factory methods \<scala.slick.jdbc.JdbcBackend\$DatabaseFactoryDef\> on -->
+<!-- factory methods \<scala.slick.jdbc.JdbcBackend$DatabaseFactoryDef\> on -->
 <!-- scala.slick.jdbc.JdbcBackend.Database that you can use depending on what -->
 <!-- connection data you have available. -->
 <h3 id="Using+a+JDBC+URL">Using a JDBC URL<a href="#Using+a+JDBC+URL" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><p>JDBC URLを用いて接続を行う際には、<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseFactoryDef@forURL(String,String,String,Properties,String):DatabaseDef">`forURL`</a>を用いる事が出来る。(正しいURLを記述する際には、データベースのJDBCドライバー用ドキュメントを参照して欲しい)
 </p><!-- You can provide a JDBC URL to -->
-<!-- forURL \<scala.slick.jdbc.JdbcBackend\$DatabaseFactoryDef@forURL(String,String,String,Properties,String):DatabaseDef\>. -->
+<!-- forURL \<scala.slick.jdbc.JdbcBackend$DatabaseFactoryDef@forURL(String,String,String,Properties,String):DatabaseDef\>. -->
 <!-- (see your database's JDBC driver's documentation for the correct URL -->
 <!-- syntax). -->
 <pre><code class="prettyprint lang-scala">val db = Database.forURL(&quot;jdbc:h2:mem:test1;DB_CLOSE_DELAY=-1&quot;, driver=&quot;org.h2.Driver&quot;)
-</code></pre><p>ここでは例として、新しく空のデータベースへと接続をしてみる。これはインメモリ型のH2データベースであり、データベース名が<code>test1</code>、そしてJVMが終了するまで残り続ける(<code>DB_CLOSE_DELAY=-1</code>はH2データベース特有のオプション)データベースとなっている。
+</code></pre><p>ここでは例として、新しく空のデータベースへと接続をしてみる。用いるのはインメモリ型のH2データベースであり、データベース名が<code>test1</code>、そしてJVMが終了するまで残り続けるような(<code>DB_CLOSE_DELAY=-1</code>はH2データベース特有のオプション)データベースとなっている。
 </p><!-- Here we are connecting to a new, empty, in-memory H2 database called -->
 <!-- `test1` and keep it resident until the JVM ends (`DB_CLOSE_DELAY=-1`, -->
 <!-- which is H2 specific). -->
 <h3 id="Using+a+DataSource">Using a DataSource<a href="#Using+a+DataSource" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><p><a href="http://docs.oracle.com/javase/7/docs/api/javax/sql/DataSource.html"><code>DataSource</code></a>オブジェクトを既に持っているのなら、<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseFactoryDef@forDataSource(DataSource):DatabaseDef">`forDataSource`</a>を用いて<code>Database</code>オブジェクトを作成出来る。もしアプリケーションフレームワークのコネクションプールから<code>DataSource</code>オブジェクトを取得出来るのなら、Slickのプールへと繋いで欲しい。
 </p><!-- You can provide a DataSource \<javax/sql/DataSource\> object to -->
-<!-- forDataSource \<scala.slick.jdbc.JdbcBackend\$DatabaseFactoryDef@forDataSource(DataSource):DatabaseDef\>. -->
+<!-- forDataSource \<scala.slick.jdbc.JdbcBackend$DatabaseFactoryDef@forDataSource(DataSource):DatabaseDef\>. -->
 <!-- If you got it from the connection pool of your application framework, -->
 <!-- this plugs the pool into Slick. -->
 <pre><code class="prettyprint lang-scala">val db = Database.forDataSource(dataSource: javax.sql.DataSource)
@@ -81,7 +86,7 @@
 <!-- the pool. -->
 <h3 id="Using+a+JNDI+Name">Using a JNDI Name<a href="#Using+a+JNDI+Name" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><p>もし<a href="http://en.wikipedia.org/wiki/JNDI">JNDI</a>を用いているのなら、<a href="http://docs.oracle.com/javase/7/docs/api/javax/sql/DataSource.html">DataSource</a>オブジェクトが見つかるJNDIの名前を<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseFactoryDef@forName(String):DatabaseDef">forName</a>に渡してあげたら良い。
 </p><!-- If you are using JNDI you can provide a JNDI name to -->
-<!-- forName \<scala.slick.jdbc.JdbcBackend\$DatabaseFactoryDef@forName(String):DatabaseDef\> -->
+<!-- forName \<scala.slick.jdbc.JdbcBackend$DatabaseFactoryDef@forName(String):DatabaseDef\> -->
 <!-- under which a DataSource \<javax/sql/DataSource\> object can be looked -->
 <!-- up. -->
 <h2 id="Session+handling">Session handling<a href="#Session+handling" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p><a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend@Database:Database">Database</a>オブジェクトを持っているのなら、<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend@Session:Session">Session</a>オブジェクトにSlickがカプセル化したデータベースコネクションを開く事が出来る。
@@ -91,7 +96,7 @@
 <!-- Session \<scala.slick.jdbc.JdbcBackend@Session:Session\> objects. -->
 <h3 id="Automatically+closing+Session+scope">Automatically closing Session scope<a href="#Automatically+closing+Session+scope" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><p><a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend@Database:Database">Database</a>オブジェクトの<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseDef@withSession[T]((Session)=&gt;T):T">withSession</a>)関数は、関数を引数に、実行後に接続の閉じる<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend@Session:Session">Session</a>を作る。もしコネクションプールを用いたのならば、<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend@Session:Session">Session</a>を閉じるとコネクションはプールへと返却される。
 </p><!-- The Database \<scala.slick.jdbc.JdbcBackend@Database:Database\> object's -->
-<!-- withSession \<scala.slick.jdbc.JdbcBackend\$DatabaseDef@withSession[T]((Session)=>T):T\> -->
+<!-- withSession \<scala.slick.jdbc.JdbcBackend$DatabaseDef@withSession[T]((Session)=>T):T\> -->
 <!-- method creates a -->
 <!-- Session \<scala.slick.jdbc.JdbcBackend@Session:Session\>, passes it to a -->
 <!-- given function and closes it afterwards. If you use a connection pool, -->
@@ -104,7 +109,7 @@ val result = db.withSession {
 }
 </code></pre><p><a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseDef@withSession[T](Session)=&gt;T):T">withSession</a>のスコープの外側で定義されたクエリが使われている事を上の例から確認出来る。データベースに対してクエリを実行する関数は<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend@Session:Session">Session</a>を必要とする。先ほどの例では<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.Invoker@list(P)(SessionDef):List[R]">list</a>関数を用いてクエリを実行し、<a href="http://www.scala-lang.org/api/2.10.0/#scala.collection.immutable.List">List</a>として結果を取得している。(クエリを実行する関数は暗黙的な変換を通して作られる)
 </p><!-- You can see how we are able to already define the query outside of the -->
-<!-- withSession \<scala.slick.jdbc.JdbcBackend\$DatabaseDef@withSession[T]((Session)=>T):T\> -->
+<!-- withSession \<scala.slick.jdbc.JdbcBackend$DatabaseDef@withSession[T]((Session)=>T):T\> -->
 <!-- scope. Only the methods actually executing the query in the database -->
 <!-- require a Session \<scala.slick.jdbc.JdbcBackend@Session:Session\>. Here -->
 <!-- we use the list \<scala.slick.jdbc.Invoker@list(P)(SessionDef):List[R]\> -->
@@ -114,22 +119,22 @@ val result = db.withSession {
 <p>ただし、デフォルトの設定ではデータベースセッションは<em>auto-commit</em>モードになっている。<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.driver.JdbcInvokerComponent$BaseInsertInvoker@insert(U)(SessionDef):SingleInsertResult">insert</a>や<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.driver.JdbcInvokerComponent$BaseInsertInvoker@insertAll(U*)(SessionDef):MultiInsertResult">insertAll</a>のようなデータベースへの呼び出しは原子的(必ず成功するか失敗するかのいずれかが保証されている)に実行される。いくつかの状態を包括するには<a href="http://slick.typesafe.com/doc/2.0.0/connection.html#transactions">Transactions</a>を用いる。
 </p><!-- Note that by default a database session is in **auto-commit** mode. Each -->
 <!-- call to the database like -->
-<!-- insert \<scala.slick.driver.JdbcInvokerComponent\$BaseInsertInvoker@insert(U)(SessionDef):SingleInsertResult\> -->
+<!-- insert \<scala.slick.driver.JdbcInvokerComponent$BaseInsertInvoker@insert(U)(SessionDef):SingleInsertResult\> -->
 <!-- or -->
-<!-- insertAll \<scala.slick.driver.JdbcInvokerComponent\$BaseInsertInvoker@insertAll(U\*)(SessionDef):MultiInsertResult\> -->
+<!-- insertAll \<scala.slick.driver.JdbcInvokerComponent$BaseInsertInvoker@insertAll(U\*)(SessionDef):MultiInsertResult\> -->
 <!-- executes atomically (i.e. it succeeds or fails completely). To bundle -->
 <!-- several statements use transactions. -->
 <p><strong>注意:</strong> もし<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend@Session:Session">Session</a>オブジェクトが<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseDef@withSession[T](Session)=&gt;T):T)">withSession</a>のスコープ以外で用いられていたのなら、その接続は既に閉じられており、妥当な利用法にはなっていない。利用を避けるべきではあるば、このような状態を避ける方法がいくつかあり、例としてクロージャを用いる(<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseDef@withSession[T](Session)=&gt;T):T)">withSession</a>スコープ内にて<a href="http://www.scala-lang.org/api/2.10.0/#scala.concurrent.package@Future[T](=&gt;T)(ExecutionContext):Future[T]">Future</a>を用いるなど)、varへセッションを割り当てる、withSessionスコープの返り値としてセッションを返却するといった方法がある。
 </p><!-- **Be careful:** If the -->
 <!-- Session \<scala.slick.jdbc.JdbcBackend@Session:Session\> object escapes -->
 <!-- the -->
-<!-- withSession \<scala.slick.jdbc.JdbcBackend\$DatabaseDef@withSession[T]((Session)=>T):T\> -->
+<!-- withSession \<scala.slick.jdbc.JdbcBackend$DatabaseDef@withSession[T]((Session)=>T):T\> -->
 <!-- scope, it has already been closed and is invalid. It can escape in -->
 <!-- several ways, which should be avoided, e.g. as state of a closure (if -->
 <!-- you use a -->
 <!-- Future \<scala.concurrent.package@Future[T](=>T)(ExecutionContext):Future[T]\> -->
 <!-- inside a -->
-<!-- withSession \<scala.slick.jdbc.JdbcBackend\$DatabaseDef@withSession[T]((Session)=>T):T\> -->
+<!-- withSession \<scala.slick.jdbc.JdbcBackend$DatabaseDef@withSession[T]((Session)=>T):T\> -->
 <!-- scope for example), by assigning the session to a var, by returning the -->
 <!-- session as the return value of the withSession scope or else. -->
 <h3 id="Implicit+Session">Implicit Session<a href="#Implicit+Session" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><p><a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend@Session:Session">Session</a>を暗黙的なものとしてマークすると、データベースに対する呼び出しを行う関数に対して明示的にSessionを渡す必要がなくなる。
@@ -148,12 +153,12 @@ val result = db.withSession {
 <h3 id="Transactions">Transactions<a href="#Transactions" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><p><a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend@Session:Session">Session</a>オブジェクトの<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$SessionDef@withTransaction[T](=&gt;T):T">withTransaction</a>関数をトランザクションを作成するために使う事が出来る。そのブロックにおいて、1つのトランザクション処理が実行されることになる。もし例外が発生したのなら、Slickはトランザクションをブロックの終了箇所までロールバックさせる。ブロック内のどこからでも<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$SessionDef@rollback():Unit">rollback</a>関数を呼び出すことでブロックの末尾までロールバックを強制して起こさせる事も出来る。注意して欲しいのは、Slickはデータベースのオペレーションとしてのロールバックを行うのであり、他のScalaコードの影響を引き起こさない。
 </p><!-- You can use the Session \<scala.slick.jdbc.JdbcBackend@Session:Session\> -->
 <!-- object's -->
-<!-- withTransaction \<scala.slick.jdbc.JdbcBackend\$SessionDef@withTransaction[T](=>T):T\> -->
+<!-- withTransaction \<scala.slick.jdbc.JdbcBackend$SessionDef@withTransaction[T](=>T):T\> -->
 <!-- method to create a transaction when you need one. The block passed to it -->
 <!-- is executed in a single transaction. If an exception is thrown, Slick -->
 <!-- rolls back the transaction at the end of the block. You can force the -->
 <!-- rollback at the end by calling -->
-<!-- rollback \<scala.slick.jdbc.JdbcBackend\$SessionDef@rollback():Unit\> -->
+<!-- rollback \<scala.slick.jdbc.JdbcBackend$SessionDef@rollback():Unit\> -->
 <!-- anywhere within the block. Be aware that Slick only rolls back database -->
 <!-- operations, not the effects of other Scala code. -->
 <pre><code class="prettyprint lang-scala">session.withTransaction {
@@ -166,7 +171,7 @@ val result = db.withSession {
 </p><!-- If you don't have a -->
 <!-- Session \<scala.slick.jdbc.JdbcBackend@Session:Session\> yet you can use -->
 <!-- the Database \<scala.slick.jdbc.JdbcBackend@Database:Database\> object's -->
-<!-- withTransaction \<scala.slick.jdbc.JdbcBackend\$DatabaseDef@withTransaction[T]((Session)=>T):T\> -->
+<!-- withTransaction \<scala.slick.jdbc.JdbcBackend$DatabaseDef@withTransaction[T]((Session)=>T):T\> -->
 <!-- method as a shortcut. -->
 <pre><code class="prettyprint lang-scala">db.withTransaction{
   implicit session =&gt;
@@ -213,26 +218,26 @@ db.withSession {
 <!-- scope without a session argument. -->
 <pre><code class="prettyprint lang-scala">import Database.dynamicSession // &lt;- implicit def dynamicSession : Session
 </code></pre><p>現在のコールスタック内のどこかで<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseDef@withDynSession[T](=&gt;T):T">withDynSession</a>か<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseDef@withDynTransaction[T](=&gt;T):T">withDynTransaction</a>スコープが開かれていた場合において、<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseFactoryDef@dynamicSession:Session">dynamicSession</a>は適切な<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend@Session:Session">Session</a>を返却する暗黙的な関数となる。
-</p><!-- dynamicSession \<scala.slick.jdbc.JdbcBackend\$DatabaseFactoryDef@dynamicSession:Session\> -->
+</p><!-- dynamicSession \<scala.slick.jdbc.JdbcBackend$DatabaseFactoryDef@dynamicSession:Session\> -->
 <!-- is an implicit def that returns a valid -->
 <!-- Session \<scala.slick.jdbc.JdbcBackend@Session:Session\> if a -->
-<!-- withDynSession \<scala.slick.jdbc.JdbcBackend\$DatabaseDef@withDynSession[T](=>T):T\> -->
+<!-- withDynSession \<scala.slick.jdbc.JdbcBackend$DatabaseDef@withDynSession[T](=>T):T\> -->
 <!-- or -->
-<!-- withDynTransaction :\<scala.slick.jdbc.JdbcBackend\$DatabaseDef@withDynTransaction[T](=>T):T\> -->
+<!-- withDynTransaction :\<scala.slick.jdbc.JdbcBackend$DatabaseDef@withDynTransaction[T](=>T):T\> -->
 <!-- scope is open somewhere on the current call stack. -->
 <pre><code class="prettyprint lang-scala">db.withDynSession {
   // your queries go here
 }
 </code></pre><p>注意して欲しいのは、もし<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseFactoryDef@dynamicSession:Session">dynamicSession</a>がインポートさあれ、<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseDef@withDynSession[T](=&gt;T):T">withDynSession</a>や<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseDef@withDynTransaction[T](=&gt;T):T">withDynTransaction</a>スコープの外側でクエリが実行されようとしているのならば、実行時例外を吐いてしまう事である。つまり、静的な安全性を犠牲にしているのである。<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.jdbc.JdbcBackend$DatabaseFactoryDef@dynamicSession:Session">dynamicSession</a>は内部的に<a href="http://www.scala-lang.org/api/2.10.0/#scala.util.DynamicVariable">DynamicVariable</a>を用いる。これは動的にスコープのある変数を作成し、Javaの<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/InheritableThreadLocal.html">InheritableThreadLocal</a>を順々に用いるものである。静的であることの安全性とスレッドの安全性に配慮して欲しい。
 </p><!-- Be careful, if you import -->
-<!-- dynamicSession \<scala.slick.jdbc.JdbcBackend\$DatabaseFactoryDef@dynamicSession:Session\> -->
+<!-- dynamicSession \<scala.slick.jdbc.JdbcBackend$DatabaseFactoryDef@dynamicSession:Session\> -->
 <!-- and try to execute a query outside of a -->
-<!-- withDynSession \<scala.slick.jdbc.JdbcBackend\$DatabaseDef@withDynSession[T](=>T):T\> -->
+<!-- withDynSession \<scala.slick.jdbc.JdbcBackend$DatabaseDef@withDynSession[T](=>T):T\> -->
 <!-- or -->
-<!-- withDynTransaction \<scala.slick.jdbc.JdbcBackend\$DatabaseDef@withDynTransaction[T](=>T):T\> -->
+<!-- withDynTransaction \<scala.slick.jdbc.JdbcBackend$DatabaseDef@withDynTransaction[T](=>T):T\> -->
 <!-- scope, you will get a runtime exception. So you sacrifice some static -->
 <!-- safety for less boilerplate. -->
-<!-- dynamicSession \<scala.slick.jdbc.JdbcBackend\$DatabaseFactoryDef@dynamicSession:Session\> -->
+<!-- dynamicSession \<scala.slick.jdbc.JdbcBackend$DatabaseFactoryDef@dynamicSession:Session\> -->
 <!-- internally uses scala.util.DynamicVariable, which implements dynamically -->
 <!-- scoped variables and in turn uses Java's -->
 <!-- InheritableThreadLocal \<java/lang/InheritableThreadLocal\>. Be aware of -->
@@ -261,7 +266,27 @@ db.withSession {
       <div><a href="slick-doc-ja+2.0.html">slick-doc-ja 2.0</a></div><ol class="toc"> <li><div><a href="%E5%B0%8E%E5%85%A5.html">導入</a></div></li><li><div><a href="%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86.html">始めよう</a></div></li><li><div><a href="Slick+v2.0+Migration+Guide.html">Slick v2.0 Migration Guide</a></div></li><li><div class="current">Connections / Transactions</div></li><li><div><a href="Schema+code+generation.html">Schema code generation</a></div></li><li><div><a href="Schemas.html">Schemas</a></div></li><li><div><a href="Queries.html">Queries</a></div></li><li><div><a href="User-Defined+Features.html">User-Defined Features</a></div></li><li><div><a href="Plain+SQL+Queries.html">Plain SQL Queries</a></div></li><li><div><a href="Slick+Extensions.html">Slick Extensions</a></div></li><li><div><a href="Direct+Embedding+%28Experimental+Feature%29.html">Direct Embedding (Experimental Feature)</a></div></li><li><div><a href="Slick+TestKit.html">Slick TestKit</a></div></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
           </div>
         </div>
-        
-        
+        <div class="header">
+          <div class="container">
+        <div class="span-16 prepend-1 append-1">
+          <div class="span-16 top nav">
+            <div class="span-16 title">
+              <span>slick-doc-ja 2.0</span> — Connections / Transactions
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        <a href="http://github.com/krrrr38/slick-doc-ja" class="fork nav"><img src="img/fork.png" alt="Fork me on GitHub"/></a>
+        <div class="highlight-outer">
+              <div class="highlight-menu">
+                <ul>
+                  <li><button id="highlight-button-twitter"><img src="img/twitter-bird-dark-bgs.png"/></button></li>
+                </ul>
+              </div>
+            </div>
       </body>
     </html>

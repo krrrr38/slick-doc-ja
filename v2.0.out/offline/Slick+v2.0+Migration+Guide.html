@@ -1,6 +1,8 @@
 <!DOCTYPE html SYSTEM "about:legacy-compat">
 <html manifest="pamflet.manifest">
       <head>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
         <title>slick-doc-ja 2.0 — Slick v2.0 Migration Guide</title>
         
         <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
@@ -15,6 +17,7 @@
         <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
         <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
         <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamfletheight_2em_2em.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
         <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
         <script type="text/javascript" src="js/jquery.collapse.js"></script>
         <script type="text/javascript" src="js/pamflet.js"></script>
@@ -24,28 +27,30 @@
         <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
         window.onload=function() { prettyPrint(); };
       --></script>
-        
-        <meta charset="utf-8"/>
-        <meta content="width=device-width, initial-scale=1" name="viewport"></meta>
-        
-        
+        <link rel="stylesheet" href="css/layout.css" type="text/css" media="screen, projection"/>
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-37666832-7']);
+            _gaq.push(['_trackPageview']);
+            (function() {
+              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+            </script>
+        <script type="text/javascript">
+              Pamflet.twitter = '#slick';
+            </script>
       </head>
       <body class="color_scheme-redmond">
         <a class="page prev nav" href="%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86.html">
             <span class="space">&nbsp;</span>
-            <span class="flip">❧</span>
+            <span class="flip arrow">❧</span>
           </a><a class="page next nav" href="Connections+%2F+Transactions.html">
             <span class="space">&nbsp;</span>
-            <span>❧</span>
+            <span class="arrow">❧</span>
           </a>
-        <div class="container">
-          <div class="span-16 prepend-1 append-1">
-            <div class="span-16 top nav">
-              <div class="span-16 title">
-                <span>slick-doc-ja 2.0</span> — Slick v2.0 Migration Guide
-              </div>
-            </div>
-          </div>
+        <div class="container contentswrapper">
           <div class="span-16 prepend-1 append-1 contents">
             <p>Slick 2.0.0 documentation - 03 v2.0 移行ガイド
 </p><p><a href="http://slick.typesafe.com/doc/2.0.0/migration.html">Permalink to Migration Guide from Slick 1.0 to 2.0 — Slick 2.0.0 documentation</a>
@@ -72,7 +77,7 @@ object Suppliers extends Table[(Int, String, String)](&quot;SUPPLIERS&quot;) {
   def street = column[String](&quot;STREET&quot;)
   def * = id ~ name ~ street
 }
-</code></pre><p>Slick2.0では<code>Tag</code>を引数にテーブルクラスの定義を行い、実際のデータベーステーブルを表す<code>TableQuery</code>のインスタンスを定義します。射影<code>*</code>では基本的なタプルを用いて定義を行うことが出来る。
+</code></pre><p>Slick2.0では<code>Tag</code>を引数にテーブルクラスの定義を行い、実際のデータベーステーブルを表す<code>TableQuery</code>のインスタンスを定義する。射影<code>*</code>に対し、基本的なタプルを用いて定義を行うことも出来る。
 </p><!-- In Slick 2.0 you need to define your table as a class that takes an -->
 <!-- extra `Tag` argument (the *table row class*) plus an instance of a -->
 <!-- `TableQuery` of that class (representing the actual database table). -->
@@ -85,7 +90,7 @@ object Suppliers extends Table[(Int, String, String)](&quot;SUPPLIERS&quot;) {
 }
 val suppliers = TableQuery[Suppliers]
 </code></pre><p>以前に用いていた<code>~</code>シンタックスをそのまま使いたい場合には、<a href="http://slick.typesafe.com/doc/2.0.0/api/#scala.slick.util.TupleMethods$">TupleMethod._</a>をインポートすれば良い。<code>TableQuery[T]</code>を用いると、内部的には<code>new TableQuery(new T(_))</code>のような処理が行われ、適切なTableQueryインスタンスが作成される。Slick1.0では共通処理に関して、静的メソッドでテーブルオブジェクトに定義がなされていた。2.0においても以下のようにカスタムされた<code>TableQuery</code>オブジェクトを用いて、同様の事が出来る。
-</p><!-- You can import TupleMethods \<scala.slick.util.TupleMethods\$\>.\_ to -->
+</p><!-- You can import TupleMethods \<scala.slick.util.TupleMethods$\>.\_ to -->
 <!-- get support for the old \~ syntax. The simple `TableQuery[T]` syntax is -->
 <!-- a macro which expands to a proper TableQuery instance that calls the -->
 <!-- table's constructor (`new TableQuery(new T(_))`). In Slick 1.0 it was -->
@@ -145,11 +150,11 @@ object Suppliers extends Table[Supplier](&quot;SUPPLIERS&quot;) {
 }
 ...
 Suppliers.forInsert.insert(mySupplier)
-</code></pre><ol><li>0においてこのような冗長な技術は必要無くなる。デフォルトの射影関数を挿入時に用いる事で、自動インクリメントのついた<code>id</code>というカラムをSlickが除外してくれる。
+</code></pre><ol><li>0においてこのような冗長な記述は必要無くなる。デフォルトの射影関数を挿入時に用いる事で、自動インクリメントのついた<code>id</code>というカラムをSlickが除外してくれる。
 </li></ol><!-- This is no longer necessary in 2.0. You can simply insert using the -->
 <!-- default projection and Slick will skip the auto-incrementing `id` -->
 <!-- column: -->
-<p>逆に<code>AutoInc</code>のついたカラムに対し値を挿入したいのならば、新しく出来た<code>forceInsert</code>や<code>forceInsertAll</code>といった関数を用いる事が出来る。
+<p>逆に<code>AutoInc</code>のついたカラムに対し値を挿入したいのならば、新しく出来た<code>forceInsert</code>や<code>forceInsertAll</code>といった関数を用いれば良い。
 </p><!-- If you really want to insert into an `AutoInc` field, you can use the -->
 <!-- new methods `forceInsert` and `forceInsertAll`. -->
 <ol><li>0において双方向マッピングを行っていた<code>&lt;&gt;</code>関数はオーバーロードされ、今やケースクラスの<code>apply</code>関数を直接渡す事が出来る。
@@ -247,7 +252,27 @@ implicit val myIDColumnType =
       <div><a href="slick-doc-ja+2.0.html">slick-doc-ja 2.0</a></div><ol class="toc"> <li><div><a href="%E5%B0%8E%E5%85%A5.html">導入</a></div></li><li><div><a href="%E5%A7%8B%E3%82%81%E3%82%88%E3%81%86.html">始めよう</a></div></li><li><div class="current">Slick v2.0 Migration Guide</div></li><li><div><a href="Connections+%2F+Transactions.html">Connections / Transactions</a></div></li><li><div><a href="Schema+code+generation.html">Schema code generation</a></div></li><li><div><a href="Schemas.html">Schemas</a></div></li><li><div><a href="Queries.html">Queries</a></div></li><li><div><a href="User-Defined+Features.html">User-Defined Features</a></div></li><li><div><a href="Plain+SQL+Queries.html">Plain SQL Queries</a></div></li><li><div><a href="Slick+Extensions.html">Slick Extensions</a></div></li><li><div><a href="Direct+Embedding+%28Experimental+Feature%29.html">Direct Embedding (Experimental Feature)</a></div></li><li><div><a href="Slick+TestKit.html">Slick TestKit</a></div></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
           </div>
         </div>
-        
-        
+        <div class="header">
+          <div class="container">
+        <div class="span-16 prepend-1 append-1">
+          <div class="span-16 top nav">
+            <div class="span-16 title">
+              <span>slick-doc-ja 2.0</span> — Slick v2.0 Migration Guide
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        <a href="http://github.com/krrrr38/slick-doc-ja" class="fork nav"><img src="img/fork.png" alt="Fork me on GitHub"/></a>
+        <div class="highlight-outer">
+              <div class="highlight-menu">
+                <ul>
+                  <li><button id="highlight-button-twitter"><img src="img/twitter-bird-dark-bgs.png"/></button></li>
+                </ul>
+              </div>
+            </div>
       </body>
     </html>
