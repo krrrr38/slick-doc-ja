@@ -11,3 +11,4 @@ slick-doc-ja 1.0
 ---------------------------
 - Slick 1.0 翻訳
 - [Slick 2.0 翻訳](http://krrrr38.github.io/slick-doc-ja/v2.0.out/slick-doc-ja+2.0.html)
+- [Slick 3.0 翻訳](http://krrrr38.github.io/slick-doc-ja/v3.0.out/slick-doc-ja+3.0.html)
