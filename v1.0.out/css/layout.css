@@ -2,3 +2,33 @@ p {
     width: inherit;
 }
 
+h1 {
+    background-color: #ddd;
+    padding: 15px;
+    color: #5e5e5e;
+}
+
+h2 {
+    color: rgba(218, 56, 48, 0.9);
+    border-bottom: 1px solid #3465a4;
+}
+
+.contents {
+    width: 100%;
+}
+
+@media screen and (min-width: 0px) and (max-width: 800px) {
+    .container {
+        width: 90%;
+    }
+}
+
+@media screen and (min-width: 800px) {
+    .container {
+        width: 800px;
+    }
+}
+
+.bottom.nav {
+    float: none;
+}
