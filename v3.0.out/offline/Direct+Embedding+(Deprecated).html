@@ -1,0 +1,143 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html manifest="pamflet.manifest">
+      <head>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
+        <title>slick-doc-ja 3.0 — Direct Embedding (Deprecated)</title>
+        
+        <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/blueprint/grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/> 
+        <!--[if lt IE 8]>
+          <link rel="stylesheet" href={ relativeBase + "css/blueprint/ie.css" } type="text/css" media="screen, projection"/>
+        <![endif]-->
+        <link rel="stylesheet" href="css/pamflet.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamflet-print.css" type="text/css" media="print"/>
+        <link rel="stylesheet" href="css/pamflet-grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamfletheight_2em_2em.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.collapse.js"></script>
+        <script type="text/javascript" src="js/pamflet.js"></script>
+        <script type="text/javascript">
+          Pamflet.page.language = 'en';
+        </script>
+        <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+        <link rel="stylesheet" href="css/layout.css" type="text/css" media="screen, projection"/>
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-37666832-7']);
+            _gaq.push(['_trackPageview']);
+            (function() {
+              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+            </script>
+        <script type="text/javascript">
+              Pamflet.twitter = '#slick';
+            </script>
+      </head>
+      <body class="color_scheme-redmond">
+        <a class="page prev nav" href="Slick+Extensions.html">
+            <span class="space">&nbsp;</span>
+            <span class="flip arrow">❧</span>
+          </a><a class="page next nav" href="Slick+TestKit.html">
+            <span class="space">&nbsp;</span>
+            <span class="arrow">❧</span>
+          </a>
+        <div class="container contentswrapper">
+          <div class="span-16 prepend-1 append-1 contents">
+            <p>Slick 3.0.0 documentation - 15 Direct Embedding (Deprecated)
+</p><p><a href="http://slick.typesafe.com/doc/3.0.0/direct-embedding.html">Permalink to Direct Embedding (Deprecated) — Slick 3.0.0 documentation</a>
+</p><h1 id="Direct+Embedding+%28Deprecated%29">Direct Embedding (Deprecated)<a href="#Direct+Embedding+%28Deprecated%29" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><blockquote><p>DirectEmbeddingはSlick1.0の頃に加えられた、実験的なクエリAPIであったが、バージョン3.0より非推奨となった。この機能はバージョン3.1に削除される予定だ。プロダクション環境などでは、Slickの標準的なクエリAPIを利用して欲しい。
+<!-- Deprecated since version 3.0: The direct embedding is an experimental Query API that was added in Slick 1.0. It is deprecated in 3.0 and will be removed in 3.1. You should only use Slick’s standard Scala query API for any kind of production use. -->
+</p></blockquote><p>（非推奨のAPIについての説明となるため、本章は翻訳していない。）
+</p><p>Unlike the standard API, the direct embedding uses macros instead of operator overloading and implicit conversions for its implementation. For a user the difference in the code is small, but queries using the direct embedding work with ordinary Scala types, which can make error messages easier to understand.
+</p><h2 id="Dependencies">Dependencies<a href="#Dependencies" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>The direct embedding requires access to the Scala compiler at runtime for typechecking. Slick only declares an <em>optional</em> dependency on scala-compiler in order to avoid bringing it (along with all transitive dependencies) into your application if you don’t need it. You must add it explicitly to your own project’s <code>build.sbt</code> file if you want to use the direct embedding:
+</p><pre><code class="prettyprint lang-scala">libraryDependencies &lt;+= (scalaVersion)(&quot;org.scala-lang&quot; % &quot;scala-compiler&quot; % _)
+</code></pre><h2 id="Imports">Imports<a href="#Imports" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><pre><code class="prettyprint lang-scala">import slick.driver.H2Driver
+import H2Driver.api.{Database, DBIO}
+import slick.direct._
+import slick.direct.AnnotationMapper._
+</code></pre><h2 id="Row+class+and+schema">Row class and schema<a href="#Row+class+and+schema" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>The schema description is currently provided as annotations on a case class which is used for holding rows. We will later provide more flexible and customizable means of providing the schema information.
+</p><pre><code class="prettyprint lang-scala">// describe schema for direct embedding
+@table(name=&quot;COFFEES&quot;)
+case class Coffee(
+  @column(name=&quot;NAME&quot;)
+  name : String,
+  @column(name=&quot;PRICE&quot;)
+  price : Double
+)
+</code></pre><h2 id="Query">Query<a href="#Query" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>Queryable takes an annotated case class as its type argument to formulate queries agains the corresponding table.
+</p><p><code>_.price</code> is of type Int here. The underlying, macro-based implementation takes care of that the shown arguments to map and filter are not executed on the JVM but translated to database queries instead.
+</p><pre><code class="prettyprint lang-scala">// query database using direct embedding
+val q1 = Queryable[Coffee]
+val q2 = q1.filter( _.price &gt; 3.0 ).map( _ .name )
+</code></pre><h2 id="Execution">Execution<a href="#Execution" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>To execute the queries we need to create a SlickBackend instance passing in the chosen database backend driver.
+</p><pre><code class="prettyprint lang-scala">val db = Database.forConfig(&quot;h2mem1&quot;)
+try {
+  // execute query using a chosen db backend
+  val backend = new SlickBackend( H2Driver, AnnotationMapper )
+  println( Await.result(db.run(backend.result(q2)), Duration.Inf) )
+  println( Await.result(db.run(backend.result(q2.length)), Duration.Inf) )
+} finally db.close
+</code></pre><h2 id="Alternative+direct+embedding+bound+to+a+driver+and+session">Alternative direct embedding bound to a driver and session<a href="#Alternative+direct+embedding+bound+to+a+driver+and+session" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>Using ImplicitQueryable, a queryable can be bound to a backend and session. The query can be further adapted and easily executed this way.
+</p><pre><code class="prettyprint lang-scala">//
+val iq1 = ImplicitQueryable( q1, backend, db )
+val iq2 = iq1.filter( c =&gt; c.price &gt; 3.0 )
+println( iq2.toSeq ) //  &lt;- triggers execution
+println( iq2.length ) // &lt;- triggers execution
+</code></pre><h2 id="Features">Features<a href="#Features" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>The direct embedding currently only supports database columns, which can be mapped to either <code>String, Int, Double</code>.
+</p><p>Queryable and ImplicitQueryable currently support the following methods:
+</p><p><code>map, flatMap, filter, length</code>
+</p><p>The methods are all immutable meaning they leave the left-hand-side Queryable unmodified, but return a new Queryable incorporating the changes by the method call.
+</p><p>Within the expressions passed to the above methods, the following operators may be used:
+</p><p><code>Any: ==</code>
+</p><p><code>Int, Double: + &lt; &gt;</code>
+</p><p><code>String: +</code>
+</p><p><code>Boolean: || &amp;&amp;</code>
+</p><p>Other operators may type check and compile ok, if they are defined for the corresponding types. They can however currently not be translated to SQL, which makes the query fail at runtime, for example: <code>( coffees.map( c =&gt; c.name.repr ) )</code>. We are evaluating ways to catch those cases at compile time in the future
+</p><p>Queries may result in sequences of arbitrarily nested tuples, which may also contain objects representing complete rows. E.g.
+</p><pre><code class="prettyprint lang-scala">q1.map( c =&gt; (c.name, (c, c.price)) )
+</code></pre><div class="bottom nav span-16">
+                        <em>Next Page</em>
+                        <span class="arrow">❧</span>
+                        <a href="Slick+TestKit.html"> Slick TestKit </a>                        
+                        
+                      </div><div class="tocwrapper show">
+      <a class="tochead nav" style="display: none" href="#toc">❦</a>
+      <a name="toc"></a>
+      <h4 class="toctitle">Contents</h4>
+      <div class="tocbody">
+      <div><a href="slick-doc-ja+3.0.html">slick-doc-ja 3.0</a></div><ol class="toc"> <li><div><a href="Introduction.html">Introduction</a></div></li><li><div><a href="Supported+Databases.html">Supported Databases</a></div></li><li><div><a href="Getting+Started.html">Getting Started</a></div></li><li><div><a href="Database+Configuration.html">Database Configuration</a></div></li><li><div><a href="Database+I%2FO+Actions.html">Database I/O Actions</a></div></li><li><div><a href="Schemas.html">Schemas</a></div></li><li><div><a href="Queries.html">Queries</a></div></li><li><div><a href="Schema+Code+Generation.html">Schema Code Generation</a></div></li><li><div><a href="User-Defined+Features.html">User-Defined Features</a></div></li><li><div><a href="Plain+SQL+Queries.html">Plain SQL Queries</a></div></li><li><div><a href="Coming+from+ORM+to+Slick.html">Coming from ORM to Slick</a></div></li><li><div><a href="Coming+from+SQL+to+Slick.html">Coming from SQL to Slick</a></div></li><li><div><a href="Upgrade+Guides.html">Upgrade Guides</a></div></li><li><div><a href="Slick+Extensions.html">Slick Extensions</a></div></li><li><div class="current">Direct Embedding (Deprecated)</div></li><li><div><a href="Slick+TestKit.html">Slick TestKit</a></div></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
+          </div>
+        </div>
+        <div class="header">
+          <div class="container">
+        <div class="span-16 prepend-1 append-1">
+          <div class="span-16 top nav">
+            <div class="span-16 title">
+              <span>slick-doc-ja 3.0</span> — Direct Embedding (Deprecated)
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        <a href="http://github.com/krrrr38/slick-doc-ja" class="fork nav"><img src="img/fork.png" alt="Fork me on GitHub"/></a>
+        <div class="highlight-outer">
+              <div class="highlight-menu">
+                <ul>
+                  <li><button id="highlight-button-twitter"><img src="img/twitter-bird-dark-bgs.png"/></button></li>
+                </ul>
+              </div>
+            </div>
+      </body>
+    </html>

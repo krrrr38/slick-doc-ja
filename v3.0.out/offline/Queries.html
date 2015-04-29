@@ -1,0 +1,418 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html manifest="pamflet.manifest">
+      <head>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
+        <title>slick-doc-ja 3.0 — Queries</title>
+        
+        <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/blueprint/grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/> 
+        <!--[if lt IE 8]>
+          <link rel="stylesheet" href={ relativeBase + "css/blueprint/ie.css" } type="text/css" media="screen, projection"/>
+        <![endif]-->
+        <link rel="stylesheet" href="css/pamflet.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamflet-print.css" type="text/css" media="print"/>
+        <link rel="stylesheet" href="css/pamflet-grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamfletheight_2em_2em.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.collapse.js"></script>
+        <script type="text/javascript" src="js/pamflet.js"></script>
+        <script type="text/javascript">
+          Pamflet.page.language = 'en';
+        </script>
+        <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+        <link rel="stylesheet" href="css/layout.css" type="text/css" media="screen, projection"/>
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-37666832-7']);
+            _gaq.push(['_trackPageview']);
+            (function() {
+              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+            </script>
+        <script type="text/javascript">
+              Pamflet.twitter = '#slick';
+            </script>
+      </head>
+      <body class="color_scheme-redmond">
+        <a class="page prev nav" href="Schemas.html">
+            <span class="space">&nbsp;</span>
+            <span class="flip arrow">❧</span>
+          </a><a class="page next nav" href="Schema+Code+Generation.html">
+            <span class="space">&nbsp;</span>
+            <span class="arrow">❧</span>
+          </a>
+        <div class="container contentswrapper">
+          <div class="span-16 prepend-1 append-1 contents">
+            <p>Slick 3.0.0 documentation - 07 Queries
+</p><p><a href="http://slick.typesafe.com/doc/3.0.0/queries.html">Permalink to Queries — Slick 3.0.0 documentation</a>
+</p><h1 id="Queries">Queries<a href="#Queries" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><p>本章ではselect, insert, update, deleteといった処理を、SlickのクエリAPIでどのようにして型安全なクエリを記述するのかを説明する。
+<!-- This chapter describes how to write type-safe queries for selecting, inserting, updating and deleting data with Slick's Scala-based query API.  -->
+</p><p>このAPIは <em>Lifted Embedding</em> と呼ばれる。これは、実際にはScalaの基本的な型を操作するのではなく、<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.lifted.Rep">Rep</a>の型コンストラクタへと <em>持ち上げられた型</em> を用いてる事に由来する。以下のように、Scalaのコレクション操作で扱う型と比較すると分かりやすい。
+</p><!-- It is also called the *Lifted Embedding*, due to the fact that you are not working with standard Scala types but with types that are *lifted* into a slick.lifted.Rep type constructor. This becomes clearer when you compare the types of a simple Scala collections example  -->
+<pre><code class="prettyprint lang-scala">case class Coffee(name: String, price: Double)
+val coffees: List[Coffee] = //...
+...
+val l = coffees.filter(_.price &gt; 8.0).map(_.name)
+//                       ^       ^          ^
+//                       Double  Double     String
+</code></pre><p>Slickにおいて似たような記述を行うと、以下のようになる。
+<!-- ... with the types of similar code in Slick: -->
+</p><pre><code class="prettyprint lang-scala">class Coffees(tag: Tag) extends Table[(String, Double)](tag, &quot;COFFEES&quot;) {
+def name = column[String](&quot;COF_NAME&quot;)
+def price = column[Double](&quot;PRICE&quot;)
+def * = (name, price)
+}
+val coffees = TableQuery[Coffees]
+...
+val q = coffees.filter(_.price &gt; 8.0).map(_.name)
+//                       ^       ^          ^
+//               Rep[Double]  Rep[Double]  Rep[String]
+</code></pre><p>全ての基本的な型は<code>Rep</code>へと持ち上げられる。<code>Coffees</code>の列を表す型も<code>Rep[(String, Double)]</code>として扱われるのと等価になる。<code>8.0</code>というリテラルも、暗黙的変換により、<code>Rep[Double]</code>となる。これは<code>&gt;</code>オペレータが<code>Rep[Double]</code>を要求するためである。この持ち上げ操作は、クエリを生成する際のシンタックスツリーを作成するのに必要になる。Scalaの基本的な関数や値はSQLへ変換するのに十分な情報を含んではいない。
+<!-- All plain types are lifted into `Rep`. The same is true for the table row type `Coffees` which is a subtype of `Rep[(String, Double)]`. Even the literal `8.0` is automatically lifted to a `Rep[Double]` by an implicit conversion because that is what the `>` operator on `Rep[Double]` expects for the right-hand side. This lifting is necessary because the lifted types allow us to generate a syntax tree that captures the query computations. Getting plain Scala functions and values would not give us enough information for translating those computations to SQL.  -->
+</p><h2 id="Expressions">Expressions<a href="#Expressions" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>レコードでもコレクションでも無い単純なスカラー値は、暗黙的な<code>TypedType[T]</code>が存在し、<code>Rep[T]</code>により表現される。
+<!-- Scalar (non-record, non-collection) values are represented by type `Rep[T]` for which an implicit `TypedType[T]` exists.  -->
+</p><p>クエリ内で一般的に用いられるオペレータやメソッドは、<code>ExtensionMethodConversions</code>で定義された暗黙的な変換を通して利用される。実際のメソッドは<code>AnyExtensionMethods</code>、<code>ColumnExtensionMethods</code>、<code>NumericColumnExtensionMethods</code>、<code>BooleanColumnExtensionMethods</code>、<code>StringColumnExtensionMethods</code>に存在する。（cf. <a href="https://github.com/slick/slick/blob/3.0.0/src/main/scala/slick/lifted/ExtensionMethods.scala">ExtensionMethods</a>）
+<!-- The operators and other methods which are commonly used in queries are added through implicit conversions defined in `ExtensionMethodConversions`. The actual methods can be found in the classes `AnyExtensionMethods`, `ColumnExtensionMethods`, `NumericColumnExtensionMethods`, `BooleanColumnExtensionMethods` and `StringColumnExtensionMethods` (cf. ExtensionMethods \<src/main/scala/slick/lifted/ExtensionMethods.scala\>).  -->
+</p><blockquote><p><strong>Warning</strong>
+</p><p>Scalaの基本的な比較演算子は、凡そ同じように動作するものの、<code>==</code>と<code>!=</code>に関しては、<code>===</code>と<code>=!=</code>を代わりに用いなくてはならない。これはこれらのメソッドが<code>Any</code>に定義されていることから拡張する事が出来ないためである。
+<!-- **warning** -->
+<!-- Most operators mimic the plain Scala equivalents, but you have to use `===` instead of `==` for comparing two values for equality and `=!=` instead of `!=` for inequality. This is necessary because these operators are already defined (with unsuitable types and semantics) on the base type `Any`, so they cannot be replaced by extension methods.  -->
+</p></blockquote><p>コレクションは<code>Query</code>クラスにより<code>Rep[Seq[T]]</code>のように表現される。ここには<code>flatMap</code>、<code>filter</code>、<code>take</code>、<code>groupBy</code>のような基本的なコレクションメソッドが含まれている。2つの異なる複合型を表すために（持ち上げられたものと、持ち上げられる前のもの e.g. <code>Query[(Rep[Int], Rep[String]), (Int, String), Seq]</code>）、これらのシグネチャはとても複雑なものになっている。ただ意味的には基本的にScalaのコレクションと同じようなものになっていることは確認して欲しい。
+<!-- Collection values are represented by the `Query` class (a `Rep[Seq[T]]`) which contains many standard collection methods like `flatMap`, `filter`, `take` and `groupBy`. Due to the two different component types of a `Query` (lifted and plain, e.g. `Query[(Rep[Int), Rep[String]), (Int, String), Seq]`), the signatures for these methods are very complex but the semantics are essentially the same as for Scala collections.  -->
+</p><p><code>SingleColumnQueryExtensionMethods</code>への暗黙的変換により、クエリやスカラー値のためのメソッドが多く宣言されている。
+<!-- Additional methods for queries of scalar values are added via an implicit conversion to `SingleColumnQueryExtensionMethods`.  -->
+</p><h2 id="Sorting+and+Filtering">Sorting and Filtering<a href="#Sorting+and+Filtering" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>並び替えや選択を行うための様々なメソッドが存在する。これらは、<code>Query</code>から新しい<code>Query</code>を生成して返す。
+<!-- There are various methods with sorting/filtering semantics (i.e. they take a `Query` and return a new `Query` of the same type), for example:  -->
+</p><pre><code class="prettyprint lang-scala">val q1 = coffees.filter(_.supID === 101)
+// compiles to SQL (simplified):
+//   select &quot;COF_NAME&quot;, &quot;SUP_ID&quot;, &quot;PRICE&quot;, &quot;SALES&quot;, &quot;TOTAL&quot;
+//     from &quot;COFFEES&quot;
+//     where &quot;SUP_ID&quot; = 101
+...
+val q2 = coffees.drop(10).take(5)
+// compiles to SQL (simplified):
+//   select &quot;COF_NAME&quot;, &quot;SUP_ID&quot;, &quot;PRICE&quot;, &quot;SALES&quot;, &quot;TOTAL&quot;
+//     from &quot;COFFEES&quot;
+//     limit 5 offset 10
+...
+val q3 = coffees.sortBy(_.name.desc.nullsFirst)
+// compiles to SQL (simplified):
+//   select &quot;COF_NAME&quot;, &quot;SUP_ID&quot;, &quot;PRICE&quot;, &quot;SALES&quot;, &quot;TOTAL&quot;
+//     from &quot;COFFEES&quot;
+//     order by &quot;COF_NAME&quot; desc nulls first
+...
+// building criteria using a &quot;dynamic filter&quot; e.g. from a webform.
+val criteriaColombian = Option(&quot;Colombian&quot;)
+val criteriaEspresso = Option(&quot;Espresso&quot;)
+val criteriaRoast:Option[String] = None
+...
+val q4 = coffees.filter { coffee =&gt;
+  List(
+    criteriaColombian.map(coffee.name === _),
+    criteriaEspresso.map(coffee.name === _),
+    criteriaRoast.map(coffee.name === _) // not a condition as `criteriaRoast` evaluates to `None`
+  ).collect({case Some(criteria)  =&gt; criteria}).reduceLeftOption(_ || _).getOrElse(true: Column[Boolean])
+}
+// compiles to SQL (simplified):
+//   select &quot;COF_NAME&quot;, &quot;SUP_ID&quot;, &quot;PRICE&quot;, &quot;SALES&quot;, &quot;TOTAL&quot;
+//     from &quot;COFFEES&quot;
+//     where (&quot;COF_NAME&quot; = 'Colombian' or &quot;COF_NAME&quot; = 'Espresso')
+</code></pre><h2 id="Joining+and+Zipping">Joining and Zipping<a href="#Joining+and+Zipping" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>joinは2つの異なるテーブルやクエリに対して、1つのクエリを適用するのに用いられる。<em>Applicative</em>と<em>Monadic</em>の2種類のjoinの書き方が存在する。
+<!-- Joins are used to combine two different tables or queries into a single query. There are two different ways of writing joins: *Applicative* and *monadic*.  -->
+</p><h3 id="Applicative+joins">Applicative joins<a href="#Applicative+joins" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><p><em>Applicative</em>なjoinはそれぞれの結果を取得するクエリへ2つのクエリを結合するメソッドを呼ぶ事で実行出来る。SQLにおけるjoinと同様の制約がかかり、右側は左側に依存しなかったりする。これはScalaのスコープにおけるルールを通して自然に強制される。
+<!-- *Applicative* joins are performed by calling a method that joins two queries into a single query of a tuple of the individual results. They have the same restrictions as joins in SQL, i.e. the right-hand side may not depend on the left-hand side. This is enforced naturally through Scala's scoping rules.  -->
+</p><pre><code class="prettyprint lang-scala">val crossJoin = for {
+  (c, s) &lt;- coffees join suppliers
+} yield (c.name, s.name)
+// compiles to SQL (simplified):
+//   select x2.&quot;COF_NAME&quot;, x3.&quot;SUP_NAME&quot; from &quot;COFFEES&quot; x2
+//     inner join &quot;SUPPLIERS&quot; x3
+...
+val innerJoin = for {
+  (c, s) &lt;- coffees join suppliers on (_.supID === _.id)
+} yield (c.name, s.name)
+// compiles to SQL (simplified):
+//   select x2.&quot;COF_NAME&quot;, x3.&quot;SUP_NAME&quot; from &quot;COFFEES&quot; x2
+//     inner join &quot;SUPPLIERS&quot; x3
+//     on x2.&quot;SUP_ID&quot; = x3.&quot;SUP_ID&quot;
+...
+val leftOuterJoin = for {
+  (c, s) &lt;- coffees joinLeft suppliers on (_.supID === _.id)
+} yield (c.name, s.map(_.name))
+// compiles to SQL (simplified):
+//   select x2.&quot;COF_NAME&quot;, x3.&quot;SUP_NAME&quot; from &quot;COFFEES&quot; x2
+//     left outer join &quot;SUPPLIERS&quot; x3
+//     on x2.&quot;SUP_ID&quot; = x3.&quot;SUP_ID&quot;
+...
+val rightOuterJoin = for {
+  (c, s) &lt;- coffees joinRight suppliers on (_.supID === _.id)
+} yield (c.map(_.name), s.name)
+// compiles to SQL (simplified):
+//   select x2.&quot;COF_NAME&quot;, x3.&quot;SUP_NAME&quot; from &quot;COFFEES&quot; x2
+//     right outer join &quot;SUPPLIERS&quot; x3
+//     on x2.&quot;SUP_ID&quot; = x3.&quot;SUP_ID&quot;
+...
+val fullOuterJoin = for {
+  (c, s) &lt;- coffees joinFull suppliers on (_.supID === _.id)
+} yield (c.map(_.name), s.map(_.name))
+// compiles to SQL (simplified):
+//   select x2.&quot;COF_NAME&quot;, x3.&quot;SUP_NAME&quot; from &quot;COFFEES&quot; x2
+//     full outer join &quot;SUPPLIERS&quot; x3
+//     on x2.&quot;SUP_ID&quot; = x3.&quot;SUP_ID&quot;
+</code></pre><p>outer joinの節では、<code>yield</code>の中で<code>map</code>している。これらのjoinにおいては追加でNULLになるようなカラムが生じ、結果のカラム型が<code>Option</code>に包まって返却されるためである（<code>None</code>になるのは、対応する列がなかった時など）。
+<!-- Note the use of `map` in the `yield` clauses of the outer joins. Since these joins can introduce additional NULL values (on the right-hand side for a left outer join, on the left-hand sides for a right outer join, and on both sides for a full outer join), the respective sides of the join are wrapped in an `Option` (with `None` representing a row that was not matched).  -->
+</p><h3 id="Monadic+joins">Monadic joins<a href="#Monadic+joins" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><p><em>Monadic</em>なjoinは<code>flatMap</code>を利用する事で自動的に生成される。右辺が左辺に依存するため、理論上<em>Monadic</em>なjoinは<em>Applicative</em>なジョインより強力なものとなる。一方で、これは通常のSQLに適したものとはならない。そのため、Slickは<em>Monadic</em>なjoinを<em>Applicative</em>なjoinへと変換している。もし<em>Monadic</em>なjoinを適切な形に変換出来なければ、実行時に失敗する事になるだろう。
+<!-- *Monadic* joins are created with `flatMap`. They are theoretically more powerful than applicative joins because the right-hand side may depend on the left-hand side. However, this is not possible in standard SQL, so Slick has to compile them down to applicative joins, which is possible in many useful cases but not in all of them (and there are cases where it is possible in theory but Slick cannot perform the required transformation yet). If a monadic join cannot be properly translated, it will fail at runtime.  -->
+</p><p><em>cross-join</em>は<code>Query</code>の<code>flatMap</code>により作成される。1つ以上のジェネレータを用いる際には、for式が役立つ。
+<!-- A *cross-join* is created with a `flatMap` operation on a `Query` (i.e. by introducing more than one generator in a for-comprehension):  -->
+</p><pre><code class="prettyprint lang-scala">val monadicCrossJoin = for {
+  c &lt;- coffees
+  s &lt;- suppliers
+} yield (c.name, s.name)
+// compiles to SQL:
+//   select x2.&quot;COF_NAME&quot;, x3.&quot;SUP_NAME&quot;
+//     from &quot;COFFEES&quot; x2, &quot;SUPPLIERS&quot; x3
+</code></pre><p>もし何かしらの絞込を行うのなら、それは<em>inner join</em>となる。
+<!-- If you add a filter expression, it becomes an *inner join*:  -->
+</p><pre><code class="prettyprint lang-scala">val monadicInnerJoin = for {
+  c &lt;- coffees
+  s &lt;- suppliers if c.supID === s.id
+} yield (c.name, s.name)
+// compiles to SQL:
+//   select x2.&quot;COF_NAME&quot;, x3.&quot;SUP_NAME&quot;
+//     from &quot;COFFEES&quot; x2, &quot;SUPPLIERS&quot; x3
+//     where x2.&quot;SUP_ID&quot; = x3.&quot;SUP_ID&quot;
+</code></pre><p>この<em>Monadic</em>なjoinはScalaコレクションの<code>flatMap</code>を利用した時と同じ意味を持つ。
+<!-- The semantics of these monadic joins are the same as when you are using `flatMap` on Scala collections.  -->
+</p><blockquote><p><strong>Note</strong>
+</p><p>Slickは<em>Monadic</em>なjoinに対し暗黙的なjoin（<code>select ... from a, b where ...</code>）を、<em>Applicative</em>なjoinに対し明示的なjoin（<code>select ... from a join b on ...</code>）を生成する。これについては、将来のバージョンで変更があるかもしれない。
+<!-- **note** Slick currently generates *implicit* joins in SQL (`select ... from a, b where ...`) for monadic joins, and *explicit* joins (`select ... from a join b on ...`) for applicative joins. This is subject to change in future versions.  -->
+</p></blockquote><h3 id="Zip+joins">Zip joins<a href="#Zip+joins" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><p>関係でデータベースによってサポートされている一般的な<em>Applicative</em> joinに加えて、Slickは2つのクエリのペアを作成する<em>zip join</em>を提供している。これは<code>zip</code>や<code>zipWith</code>メソッドを用いれば利用でき、Scalaコレクションで利用するものと同じような挙動をするものである。
+<!-- In addition to the usual applicative join operators supported by relational databases (which are based off a cross join or outer join), Slick also has *zip joins* which create a pairwise join of two queries. The semantics are again the same as for Scala collections, using the `zip` and `zipWith` methods:  -->
+</p><pre><code class="prettyprint lang-scala">val zipJoinQuery = for {
+  (c, s) &lt;- coffees zip suppliers
+} yield (c.name, s.name)
+...
+val zipWithJoin = for {
+  res &lt;- coffees.zipWith(suppliers, (c: Coffees, s: Suppliers) =&gt; (c.name, s.name))
+} yield res
+</code></pre><p>また別のzip joinとして、<code>zipWithIndex</code>というものも存在する。これは0から始まる無限数列をクエリ結果と結合してくれるものである。この数列はSQLデータベースによって提供されたものではなく、Slickがサポートしているものでもない。ただの数字を吐く関数とSQLの結果を統合したものとして、<code>zipWithIndex</code>がプリミティブなオペレータとして提供されているのである。
+<!-- A particular kind of zip join is provided by `zipWithIndex`. It zips a query result with an infinite sequence starting at 0. Such a sequence cannot be represented by an SQL database and Slick does not currently support it, either. The resulting zipped query, however, can be represented in SQL with the use of a *row number* function, so `zipWithIndex` is supported as a primitive operator:  -->
+</p><pre><code class="prettyprint lang-scala">val zipWithIndexJoin = for {
+  (c, idx) &lt;- coffees.zipWithIndex
+} yield (c.name, idx)
+</code></pre><h2 id="Unions">Unions<a href="#Unions" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>互換性のある2つのクエリは<code>++</code>（もしくは<code>unionAll</code>）や<code>union</code>で結合することが出来る。
+<!-- Two queries can be concatenated with the `++` (or `unionAll`) and `union` operators if they have compatible types:  -->
+</p><pre><code class="prettyprint lang-scala">val q1 = coffees.filter(_.price &lt; 8.0)
+val q2 = coffees.filter(_.price &gt; 9.0)
+...
+val unionQuery = q1 union q2
+// compiles to SQL (simplified):
+//   select x8.&quot;COF_NAME&quot;, x8.&quot;SUP_ID&quot;, x8.&quot;PRICE&quot;, x8.&quot;SALES&quot;, x8.&quot;TOTAL&quot;
+//     from &quot;COFFEES&quot; x8
+//     where x8.&quot;PRICE&quot; &lt; 8.0
+//   union select x9.&quot;COF_NAME&quot;, x9.&quot;SUP_ID&quot;, x9.&quot;PRICE&quot;, x9.&quot;SALES&quot;, x9.&quot;TOTAL&quot;
+//     from &quot;COFFEES&quot; x9
+//     where x9.&quot;PRICE&quot; &gt; 9.0
+...
+val unionAllQuery = q1 ++ q2
+// compiles to SQL (simplified):
+//   select x8.&quot;COF_NAME&quot;, x8.&quot;SUP_ID&quot;, x8.&quot;PRICE&quot;, x8.&quot;SALES&quot;, x8.&quot;TOTAL&quot;
+//     from &quot;COFFEES&quot; x8
+//     where x8.&quot;PRICE&quot; &lt; 8.0
+//   union all select x9.&quot;COF_NAME&quot;, x9.&quot;SUP_ID&quot;, x9.&quot;PRICE&quot;, x9.&quot;SALES&quot;, x9.&quot;TOTAL&quot;
+//     from &quot;COFFEES&quot; x9
+//     where x9.&quot;PRICE&quot; &gt; 9.0
+</code></pre><p><code>union</code>は重複する値については省いてしまうのに対し、<code>++</code>は個々のクエリ結果を単純に、より効率的に繋げるものとなっている。
+<!-- Unlike `union` which filters out duplicate values, `++` simply concatenates the results of the individual queries, which is usually more efficient.  -->
+</p><h2 id="Aggregation">Aggregation<a href="#Aggregation" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>集約関数はQueryから単一の値、主に計算された数値を返すものである。
+<!-- The simplest form of aggregation consists of computing a primitive value from a Query that returns a single column, usually with a numeric type, e.g.:  -->
+</p><pre><code class="prettyprint lang-scala">val q = coffees.map(_.price)
+...
+val q1 = q.min
+// compiles to SQL (simplified):
+...
+val q2 = q.max
+// compiles to SQL (simplified):
+//   select max(x4.&quot;PRICE&quot;) from &quot;COFFEES&quot; x4
+...
+val q3 = q.sum
+// compiles to SQL (simplified):
+//   select sum(x4.&quot;PRICE&quot;) from &quot;COFFEES&quot; x4
+...
+val q4 = q.avg
+// compiles to SQL (simplified):
+//   select avg(x4.&quot;PRICE&quot;) from &quot;COFFEES&quot; x4
+</code></pre><p>集約クエリはコレクションではなく、スカラー値を返却する。いくつかの集約関数は以下のような恣意的なクエリで定義されている。
+<!-- Note that these aggregate queries return a scalar result, not a collection. Some aggregation functions are defined for arbitrary queries (of more than one column):  -->
+</p><pre><code class="prettyprint lang-scala">val q1 = coffees.length
+// compiles to SQL (simplified):
+//   select count(1) from &quot;COFFEES&quot;
+...
+val q2 = coffees.exists
+// compiles to SQL (simplified):
+//   select exists(select * from &quot;COFFEES&quot;)
+</code></pre><p>グループ化は<code>groupBy</code>メソッドにより処理出来る。これはScalaのコレクションでの操作と同じような意味を持つ。
+<!-- Grouping is done with the `groupBy` method. It has the same semantics as for Scala collections:  -->
+</p><pre><code class="prettyprint lang-scala">val q = (for {
+  c &lt;- coffees
+  s &lt;- c.supplier
+} yield (c, s)).groupBy(_._1.supID)
+val q2 = q.map { case (supID, css) =&gt;
+  (supID, css.length, css.map(_._1.price).avg)
+}
+// compiles to SQL:
+//   select x2.&quot;SUP_ID&quot;, count(1), avg(x2.&quot;PRICE&quot;)
+//     from &quot;COFFEES&quot; x2, &quot;SUPPLIERS&quot; x3
+//     where x3.&quot;SUP_ID&quot; = x2.&quot;SUP_ID&quot;
+//     group by x2.&quot;SUP_ID&quot;
+</code></pre><p>中間クエリである<code>q</code>はネストされた<code>Query</code>の値を持っている。クエリを実行した際に、ネストしたコレクションが返却される。それゆえ、<code>q2</code>においては、集約関数を用いてネストを解消している。
+<!-- The intermediate query `q` contains nested values of type `Query`. These would turn into nested collections when executing the query, which is not supported at the moment. Therefore it is necessary to flatten the nested queries immediately by aggregating their values (or individual columns) as done in `q2`.  -->
+</p><h2 id="Querying">Querying<a href="#Querying" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>Queryは<code>result</code>メソッドを呼ぶことで<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.dbio.DBIOAction">Action</a>へ変換される。Actionはストリーム、個々の分割された方法、もしくは他のアクションを混在したものとして直接<a href="http://slick.typesafe.com/doc/3.0.0/dbio.html#executing-actions">実行される</a>。
+<!-- A Query can be converted into an Action \<slick.dbio.DBIOAction\> by calling its `result` method. The Action can then be executed \<executing-actions\> directly in a streaming or fully materialized way, or composed further with other Actions:  -->
+</p><pre><code class="prettyprint lang-scala">val q = coffees.map(_.price)
+val action = q.result
+val result: Future[Seq[Double]] = db.run(action)
+val sql = action.statements.head
+</code></pre><p>もし結果を1つのみ受け取りたいのなら、<code>head</code>か<code>headOption</code>を用いれば良い。
+<!-- If you only want a single result value, you can call `head` or `headOption` on the `result` Action.  -->
+</p><h2 id="Deleting">Deleting<a href="#Deleting" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>削除はクエリの場合と同じように動作する。はじめに削除したい行をクエリで選択した上で、<code>delete</code>メソッドを呼ぶことで削除を行うActionが得られる。
+<!-- Deleting works very similarly to querying. You write a query which selects the rows to delete and then get an Action by calling the `delete` method on it:  -->
+</p><pre><code class="prettyprint lang-scala">val q = coffees.filter(_.supID === 15)
+val action = q.delete
+val affectedRowsCount: Future[Int] = db.run(action)
+val sql = action.statements.head
+</code></pre><p>削除を行うクエリは、1つのテーブルのみを指定しなくてはならない。どんな射影も無視され、行はまるまる削除される。
+<!-- A query for deleting must only select from a single table. Any projection is ignored (it always deletes full rows).  -->
+</p><h2 id="Inserting">Inserting<a href="#Inserting" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>挿入は1つのテーブルから特定のカラムを射影したものに対して実行する。テーブルを直接用いた場合には、挿入は<code>*</code>射影に対して実行される。挿入時にいくつかのカラムを省略した場合には、テーブル定義にあるデフォルト値が用いられるか、明示的なデフォルト値が無い場合には型に応じたデフォルト値が挿入される。挿入Actionに関する全てのメソッドは、<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.driver.JdbcActionComponent@CountingInsertActionComposer[U]:JdbcDriver.CountingInsertActionComposer[U]">CountingInsertActionComposer</a>か<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.driver.JdbcActionComponent@ReturningInsertActionComposer[U,RU]:JdbcDriver.ReturningInsertActionComposer[U,RU]">ReturningInsertActionComposer</a>に定義されている。
+<!-- Inserts are done based on a projection of columns from a single table. When you use the table directly, the insert is performed against its `*` projection. Omitting some of a table's columns when inserting causes the database to use the default values specified in the table definition, or a type-specific default in case no explicit default was given. All methods for building insert Actions are defined in CountingInsertActionComposer \<slick.driver.JdbcActionComponent@CountingInsertActionComposer[U]:JdbcDriver.CountingInsertActionComposer[U]\> and ReturningInsertActionComposer \<slick.driver.JdbcActionComponent@ReturningInsertActionComposer[U,RU]:JdbcDriver.ReturningInsertActionComposer[U,RU]\>.  -->
+</p><pre><code class="prettyprint lang-scala">val insertActions = DBIO.seq(
+  coffees += (&quot;Colombian&quot;, 101, 7.99, 0, 0),
+  coffees ++= Seq(
+    (&quot;French_Roast&quot;, 49, 8.99, 0, 0),
+    (&quot;Espresso&quot;,    150, 9.99, 0, 0)
+  ),
+  // &quot;sales&quot; と &quot;total&quot; にはデフォルト値として0が入る
+  coffees.map(c =&gt; (c.name, c.supID, c.price)) += (&quot;Colombian_Decaf&quot;, 101, 8.99)
+)
+// insertを行うsqlのステートメントを取得
+val sql = coffees.insertStatement
+// compiles to SQL:
+//   INSERT INTO &quot;COFFEES&quot; (&quot;COF_NAME&quot;,&quot;SUP_ID&quot;,&quot;PRICE&quot;,&quot;SALES&quot;,&quot;TOTAL&quot;) VALUES (?,?,?,?,?)
+</code></pre><p><code>AutoInc</code>がついたカラムが挿入された際には、データベースが適切な値を生成した値が挿入される。大抵の場合、自動で生成された主キーの値などを取得したいと考えるだろう。デフォルトでは<code>+=</code>は影響を与えた行の数を返却する（普通は成功時に1が返る）。<code>++=</code>は<code>Option</code>に包まれた結果数を返す。<code>None</code>になるのはデータベースシステムが影響を与えた数を返さない時である。これらの返り値は<code>returning</code>メソッドを用いることで、好きな値が返るように変更出来る。この場合、<code>+=</code>に対して単一の値やタプルを返すように設定すると、<code>++=</code>にはその値の<code>Seq</code>が返却されることになる。以下の様な記述で、<code>AutoInc</code>で生成された主キーを返すことが出来る。
+<!-- When you include an `AutoInc` column in an insert operation, it is silently ignored, so that the database can generate the proper value. In this case you usually want to get back the auto-generated primary key column. By default, `+=` gives you a count of the number of affected rows (which will usually be 1) and `++=` gives you an accumulated count in an `Option` (which can be `None` if the database system does not provide counts for all rows). This can be changed with the `returning` method where you specify the columns to be returned (as a single value or tuple from `+=` and a `Seq` of such values from `++=`):  -->
+</p><pre><code class="prettyprint lang-scala">val userId =
+  (users returning users.map(_.id)) += User(None, &quot;Stefan&quot;, &quot;Zeiger&quot;)
+</code></pre><blockquote><p><strong>Note</strong>
+</p><p>多くのデータベースでは、1つのテーブルのAutoIncrementな主キーのみを返却することを許可している。もし他のカラムについても同様の事をしようとしたならば、データベースがサポートしていない時には<code>SlickException</code>が投げられる。
+<!-- **note** Many database systems only allow a single column to be returned which must be the table's auto-incrementing primary key. If you ask for other columns a `SlickException` is thrown at runtime (unless the database actually supports it).  -->
+</p></blockquote><p><code>returning</code>に<code>into</code>を続けて用いると、挿入された値と自動生成された値をもとに返り値を変更する事ができる。得られた<code>id</code>を用いて更新されたオブジェクトを返却する例は以下の通りとなる。
+<!-- You can follow the `returning` method with the `into` method to map the inserted values and the generated keys (specified in returning) to a desired value. Here is an example of using this feature to return an object with an updated id:  -->
+</p><pre><code class="prettyprint lang-scala">val userWithId =
+  (users returning users.map(_.id)
+         into ((user,id) =&gt; user.copy(id=Some(id)))
+  ) += User(None, &quot;Stefan&quot;, &quot;Zeiger&quot;)
+</code></pre><p>クライアント側でデータを挿入する以外にも、データベースサーバ側で実行されるスカラー表現や<code>Query</code>を作る事でデータを挿入することも出来る。
+<!-- Instead of inserting data from the client side you can also insert data created by a `Query` or a scalar expression that is executed in the database server:  -->
+</p><pre><code class="prettyprint lang-scala">class Users2(tag: Tag) extends Table[(Int, String)](tag, &quot;users2&quot;) {
+  def id = column[Int](&quot;id&quot;, O.PrimaryKey)
+  def name = column[String](&quot;name&quot;)
+  def * = (id, name)
+}
+val users2 = TableQuery[Users2]
+val actions = DBIO.seq(
+  users2.schema.create,
+  users2 forceInsertQuery (users.map { u =&gt; (u.id, u.first ++ &quot; &quot; ++ u.last) }),
+  users2 forceInsertExpr (users.length + 1, &quot;admin&quot;)
+)
+</code></pre><p>この場合、<code>AutoInc</code>なカラムは <em>無視されない</em> 。
+<!-- In these cases, `AutoInc` columns are *not* ignored.  -->
+</p><h2 id="Updating">Updating<a href="#Updating" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>更新は更新を行いたいデータを選択してから、新しいデータで置き換える事で実行される。更新時の返り値は計算された値ではなく、1つのテーブルから取得された生のカラムをそのまま返却しなくてはならない。更新に関連するメソッドは、<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.driver.JdbcActionComponent@UpdateActionExtensionMethodsImpl[T]:JdbcDriver.UpdateActionExtensionMethodsImpl[T]">UpdateExtensionMethods</a>で定義されている。
+<!-- Updates are performed by writing a query that selects the data to update and then replacing it with new data. The query must only return raw columns (no computed values) selected from a single table. The relevant methods for updating are defined in UpdateExtensionMethods \<slick.driver.JdbcActionComponent@UpdateActionExtensionMethodsImpl[T]:JdbcDriver.UpdateActionExtensionMethodsImpl[T]\>.  -->
+</p><pre><code class="prettyprint lang-scala">val q = for { c &lt;- coffees if c.name === &quot;Espresso&quot; } yield c.price
+val updateAction = q.update(10.49)
+// 値を更新することなくステートメントを取得する
+val sql = q.updateStatement
+// compiles to SQL:
+//   update &quot;COFFEES&quot; set &quot;PRICE&quot; = ? where &quot;COFFEES&quot;.&quot;COF_NAME&quot; = 'Espresso'
+</code></pre><p>現時点では、データベースにある更新用の変換表現等を利用したりすることは出来ない。
+<!-- There is currently no way to use scalar expressions or transformations of the existing data in the database for updates.  -->
+</p><h2 id="Compiled+Queries">Compiled Queries<a href="#Compiled+Queries" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>通常、データベースクエリはいくつかのパラメータに依存している（IDは一致する列を取得するために用いられるなど）。パラメータ化された<code>Query</code>オブジェクトを実行の度に作ることも出来るが、これはSlickが毎度クエリをコンパイルするコストが高くついてしまう（パラメータに値を代入しない場合など特に）。パラメータ化されたクエリ関数を事前にSlick側でコンパイルする、より効率的な方法が存在する。
+<!-- Database queries typically depend on some parameters, e.g. an ID for which you want to retrieve a matching database row. You can write a regular Scala function to create a parameterized `Query` object each time you need to execute that query but this will incur the cost of recompiling the query in Slick (and possibly also on the database if you don't use bind variables for all parameters). It is more efficient to pre-compile such parameterized query functions:  -->
+</p><pre><code class="prettyprint lang-scala">def userNameByIDRange(min: Rep[Int], max: Rep[Int]) =
+for {
+  u &lt;- users if u.id &gt;= min &amp;&amp; u.id &lt; max
+} yield u.first
+val userNameByIDRangeCompiled = Compiled(userNameByIDRange _)
+// このクエリは1度しかコンパイルされない
+val namesAction1 = userNameByIDRangeCompiled(2, 5).result
+val namesAction2 = userNameByIDRangeCompiled(1, 3).result
+// .insert にも .update にも .delete にも使える
+</code></pre><p>これは個々のカラムやカラムの<a href="http://slick.typesafe.com/doc/3.0.0/userdefined.html#record-types">records</a>をパラメータに取る全てのメソッドに対し上手く機能し、<code>Query</code>オブジェクトなどを返却する。<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.lifted.Compiled">Compiled</a>のAPIドキュメントを見て、そのサブクラスなど、コンパイルされたクエリの詳細について学んで欲しい。
+<!-- This works for all functions that take parameters consisting only of individual columns or or records \<record-types\> of columns and return a `Query` object or a scalar query. See the API documentation for slick.lifted.Compiled and its subclasses for details on composing compiled queries.  -->
+</p><p><code>ConstColumn[Long]</code>をパラメータ似とる<code>take</code>や<code>drop</code>を使う場合には気をつけて欲しい。クエリによって計算された他の値に取って代わられる<code>Rep[Long]</code>と異なり、<code>ConstColumn</code>はリテラル値かコンパイルされたクエリのパラメータのみを要求する。これは、クエリがSlickによって実行される前までに実際の値を知っておかなくてはならないため、必要になる。
+<!-- Be aware that `take` and `drop` take `ConstColumn[Long]` parameters. Unlike `Rep[Long]]`, which could be substituted by another value computed by a query, a ConstColumn can only be literal value or a parameter of a compiled query. This is necessary because the actual value has to be known by the time the query is prepared for execution by Slick.  -->
+</p><pre><code class="prettyprint lang-scala">val userPaged = Compiled((d: ConstColumn[Long], t: ConstColumn[Long]) =&gt; users.drop(d).take(t))
+...
+val usersAction1 = userPaged(2, 1).result
+val usersAction2 = userPaged(1, 3).result
+</code></pre><p>データの選択、挿入、更新、削除において、コンパイルされたクエリを用いる事ができる。Slick1.0への後方互換用に、<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.lifted.Parameters">Parameters</a>オブジェクトに<code>flatMap</code>を呼ぶ事で、コンパイルされたクエリを作成する事も可能である。大抵の場合、これはコンパイルされたクエリを1つのfor式で書くのに役立つだろう。
+<!-- You can use a compiled query for querying, inserting, updating and deleting data. For backwards-compatibility with Slick 1.0 you can still create a compiled query by calling `flatMap` on a slick.lifted.Parameters object. In many cases this enables you to write a single *for comprehension* for a compiled query:  -->
+</p><pre><code class="prettyprint lang-scala">val userNameByID = for {
+  id &lt;- Parameters[Int]
+  u &lt;- users if u.id === id
+} yield u.first
+...
+val nameAction = userNameByID(2).result.head
+...
+val userNameByIDRange = for {
+  (min, max) &lt;- Parameters[(Int, Int)]
+  u &lt;- users if u.id &gt;= min &amp;&amp; u.id &lt; max
+} yield u.first
+val namesAction = userNameByIDRange(2, 5).result
+</code></pre><div class="bottom nav span-16">
+                        <em>Next Page</em>
+                        <span class="arrow">❧</span>
+                        <a href="Schema+Code+Generation.html"> Schema Code Generation </a>                        
+                        
+                      </div><div class="tocwrapper show">
+      <a class="tochead nav" style="display: none" href="#toc">❦</a>
+      <a name="toc"></a>
+      <h4 class="toctitle">Contents</h4>
+      <div class="tocbody">
+      <div><a href="slick-doc-ja+3.0.html">slick-doc-ja 3.0</a></div><ol class="toc"> <li><div><a href="Introduction.html">Introduction</a></div></li><li><div><a href="Supported+Databases.html">Supported Databases</a></div></li><li><div><a href="Getting+Started.html">Getting Started</a></div></li><li><div><a href="Database+Configuration.html">Database Configuration</a></div></li><li><div><a href="Database+I%2FO+Actions.html">Database I/O Actions</a></div></li><li><div><a href="Schemas.html">Schemas</a></div></li><li><div class="current">Queries</div></li><li><div><a href="Schema+Code+Generation.html">Schema Code Generation</a></div></li><li><div><a href="User-Defined+Features.html">User-Defined Features</a></div></li><li><div><a href="Plain+SQL+Queries.html">Plain SQL Queries</a></div></li><li><div><a href="Coming+from+ORM+to+Slick.html">Coming from ORM to Slick</a></div></li><li><div><a href="Coming+from+SQL+to+Slick.html">Coming from SQL to Slick</a></div></li><li><div><a href="Upgrade+Guides.html">Upgrade Guides</a></div></li><li><div><a href="Slick+Extensions.html">Slick Extensions</a></div></li><li><div><a href="Direct+Embedding+%28Deprecated%29.html">Direct Embedding (Deprecated)</a></div></li><li><div><a href="Slick+TestKit.html">Slick TestKit</a></div></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
+          </div>
+        </div>
+        <div class="header">
+          <div class="container">
+        <div class="span-16 prepend-1 append-1">
+          <div class="span-16 top nav">
+            <div class="span-16 title">
+              <span>slick-doc-ja 3.0</span> — Queries
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        <a href="http://github.com/krrrr38/slick-doc-ja" class="fork nav"><img src="img/fork.png" alt="Fork me on GitHub"/></a>
+        <div class="highlight-outer">
+              <div class="highlight-menu">
+                <ul>
+                  <li><button id="highlight-button-twitter"><img src="img/twitter-bird-dark-bgs.png"/></button></li>
+                </ul>
+              </div>
+            </div>
+      </body>
+    </html>

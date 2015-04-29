@@ -1,0 +1,102 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html>
+      <head>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
+        <title>slick-doc-ja 3.0 — Slick Extensions</title>
+        
+        <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/blueprint/grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/> 
+        <!--[if lt IE 8]>
+          <link rel="stylesheet" href={ relativeBase + "css/blueprint/ie.css" } type="text/css" media="screen, projection"/>
+        <![endif]-->
+        <link rel="stylesheet" href="css/pamflet.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamflet-print.css" type="text/css" media="print"/>
+        <link rel="stylesheet" href="css/pamflet-grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamfletheight_2em_2em.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.collapse.js"></script>
+        <script type="text/javascript" src="js/pamflet.js"></script>
+        <script type="text/javascript">
+          Pamflet.page.language = 'en';
+        </script>
+        <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+        <link rel="stylesheet" href="css/layout.css" type="text/css" media="screen, projection"/>
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-37666832-7']);
+            _gaq.push(['_trackPageview']);
+            (function() {
+              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+            </script>
+        <script type="text/javascript">
+              Pamflet.twitter = '#slick';
+            </script>
+      </head>
+      <body class="color_scheme-redmond">
+        <a class="page prev nav" href="Upgrade+Guides.html">
+            <span class="space">&nbsp;</span>
+            <span class="flip arrow">❧</span>
+          </a><a class="page next nav" href="Direct+Embedding+%28Deprecated%29.html">
+            <span class="space">&nbsp;</span>
+            <span class="arrow">❧</span>
+          </a>
+        <div class="container contentswrapper">
+          <div class="span-16 prepend-1 append-1 contents">
+            <p>Slick 3.0.0 documentation - 14 Slick Extensions
+</p><p><a href="http://slick.typesafe.com/doc/3.0.0/extensions.html">Permalink to Slick Extensions — Slick 3.0.0 documentation</a>
+</p><h1 id="Slick+Extensions">Slick Extensions<a href="#Slick+Extensions" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><!-- Slick Extensions, a closed-source package with commercial support provided by Typesafe, Inc contains Slick drivers for:  -->
+<ul><li>Oracle (<code>com.typesafe.slick.driver.oracle.OracleDriver</code>)
+</li><li>IBM DB2 (<code>com.typesafe.slick.driver.db2.DB2Driver</code>)
+</li><li>Microsoft SQL Server
+(<code>com.typesafe.slick.driver.ms.SQLServerDriver</code>)
+</li></ul><!-- **note** You may use it for development and testing purposes under the terms and conditions of the Typesafe Subscription Agreement\_ (PDF). Production use requires a Typesafe Subscription\_.  -->
+<!-- If you are using sbt\_, you can add *slick-extensions* and the Typesafe repository (which contains the required artifacts) to your build definition like this:  -->
+<pre><code class="prettyprint lang-scala">libraryDependencies += &quot;com.typesafe.slick&quot; %% &quot;slick-extensions&quot; % &quot;3.0.0&quot;
+resolvers += &quot;Typesafe Releases&quot; at &quot;&lt;http://repo.typesafe.com/typesafe/maven-releases/&gt;&quot;
+</code></pre><div class="bottom nav span-16">
+                        <em>Next Page</em>
+                        <span class="arrow">❧</span>
+                        <a href="Direct+Embedding+%28Deprecated%29.html"> Direct Embedding (Deprecated) </a>                        
+                        
+                      </div><div class="tocwrapper show">
+      <a class="tochead nav" style="display: none" href="#toc">❦</a>
+      <a name="toc"></a>
+      <h4 class="toctitle">Contents</h4>
+      <div class="tocbody">
+      <div><a href="slick-doc-ja+3.0.html">slick-doc-ja 3.0</a></div><ol class="toc"> <li><div><a href="Introduction.html">Introduction</a></div></li><li><div><a href="Supported+Databases.html">Supported Databases</a></div></li><li><div><a href="Getting+Started.html">Getting Started</a></div></li><li><div><a href="Database+Configuration.html">Database Configuration</a></div></li><li><div><a href="Database+I%2FO+Actions.html">Database I/O Actions</a></div></li><li><div><a href="Schemas.html">Schemas</a></div></li><li><div><a href="Queries.html">Queries</a></div></li><li><div><a href="Schema+Code+Generation.html">Schema Code Generation</a></div></li><li><div><a href="User-Defined+Features.html">User-Defined Features</a></div></li><li><div><a href="Plain+SQL+Queries.html">Plain SQL Queries</a></div></li><li><div><a href="Coming+from+ORM+to+Slick.html">Coming from ORM to Slick</a></div></li><li><div><a href="Coming+from+SQL+to+Slick.html">Coming from SQL to Slick</a></div></li><li><div><a href="Upgrade+Guides.html">Upgrade Guides</a></div></li><li><div class="current">Slick Extensions</div></li><li><div><a href="Direct+Embedding+%28Deprecated%29.html">Direct Embedding (Deprecated)</a></div></li><li><div><a href="Slick+TestKit.html">Slick TestKit</a></div></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
+          </div>
+        </div>
+        <div class="header">
+          <div class="container">
+        <div class="span-16 prepend-1 append-1">
+          <div class="span-16 top nav">
+            <div class="span-16 title">
+              <span>slick-doc-ja 3.0</span> — Slick Extensions
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        <a href="http://github.com/krrrr38/slick-doc-ja" class="fork nav"><img src="img/fork.png" alt="Fork me on GitHub"/></a>
+        <div class="highlight-outer">
+              <div class="highlight-menu">
+                <ul>
+                  <li><button id="highlight-button-twitter"><img src="img/twitter-bird-dark-bgs.png"/></button></li>
+                </ul>
+              </div>
+            </div>
+      </body>
+    </html>

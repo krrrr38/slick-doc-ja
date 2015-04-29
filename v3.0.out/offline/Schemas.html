@@ -1,0 +1,224 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html manifest="pamflet.manifest">
+      <head>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
+        <title>slick-doc-ja 3.0 — Schemas</title>
+        
+        <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/blueprint/grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/> 
+        <!--[if lt IE 8]>
+          <link rel="stylesheet" href={ relativeBase + "css/blueprint/ie.css" } type="text/css" media="screen, projection"/>
+        <![endif]-->
+        <link rel="stylesheet" href="css/pamflet.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamflet-print.css" type="text/css" media="print"/>
+        <link rel="stylesheet" href="css/pamflet-grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamfletheight_2em_2em.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.collapse.js"></script>
+        <script type="text/javascript" src="js/pamflet.js"></script>
+        <script type="text/javascript">
+          Pamflet.page.language = 'en';
+        </script>
+        <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+        <link rel="stylesheet" href="css/layout.css" type="text/css" media="screen, projection"/>
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-37666832-7']);
+            _gaq.push(['_trackPageview']);
+            (function() {
+              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+            </script>
+        <script type="text/javascript">
+              Pamflet.twitter = '#slick';
+            </script>
+      </head>
+      <body class="color_scheme-redmond">
+        <a class="page prev nav" href="Database+I%2FO+Actions.html">
+            <span class="space">&nbsp;</span>
+            <span class="flip arrow">❧</span>
+          </a><a class="page next nav" href="Queries.html">
+            <span class="space">&nbsp;</span>
+            <span class="arrow">❧</span>
+          </a>
+        <div class="container contentswrapper">
+          <div class="span-16 prepend-1 append-1 contents">
+            <p>Slick 3.0.0 documentation - 06 Schemas
+</p><p><a href="http://slick.typesafe.com/doc/3.0.0/schemas.html">Permalink to Schemas — Slick 3.0.0 documentation</a>
+</p><h1 id="Schemas">Schemas<a href="#Schemas" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><p>この章では、既存のデータベースを持たない新しいアプリケーションを作る際に役立つものとして、Scalaのコードでどのようにしてデータベースのスキーマを手で記述するのかを説明する。もしデータベースのスキーマを既に持っているのなら、<a href="http://slick.typesafe.com/doc/3.0.0/code-generation.html">code generator</a>を利用することで、手で書く手間は省ける。
+<!-- This chapter describes how to work with database schemas in Scala code, in particular how to write them manually, which is useful when you start writing an application without a pre-existing database. If you already have a schema in the database, you can also use the code generator \<code-generation\> to take this work off your hands. -->
+</p><h2 id="Table+Rows">Table Rows<a href="#Table+Rows" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>型安全なクエリにするためのScalaのAPIを利用するため、データベーススキーマに応じた<code>Table</code>クラスを定義する必要がある。これは、テーブルの構造を表現するものである。
+<!-- In order to use the Scala API for type-safe queries, you need to define `Table` row classes for your database schema. These describe the structure of the tables: -->
+</p><pre><code class="prettyprint lang-scala">class Coffees(tag: Tag) extends Table[(String, Int, Double, Int, Int)](tag, &quot;COFFEES&quot;) {
+  def name = column[String](&quot;COF_NAME&quot;, O.PrimaryKey)
+  def supID = column[Int](&quot;SUP_ID&quot;)
+  def price = column[Double](&quot;PRICE&quot;)
+  def sales = column[Int](&quot;SALES&quot;, O.Default(0))
+  def total = column[Int](&quot;TOTAL&quot;, O.Default(0))
+  def * = (name, supID, price, sales, total)
+}
+</code></pre><p>全てのカラムは、<code>column</code>メソッドを通して定義される。どのカラムもScalaの型と、データベースで利用されるカラム名を持つ（カラム名は一般的には大文字）。以下のプリミティブな型は、<code>JdbcProfile</code>においてJDBCベースなデータベースのためのサポートがなされている（個々のデータベースドライバーによっていくつかの制限が存在するが）。
+<!-- All columns are defined through the `column` method. Each column has a Scala type and a column name for the database (usually in upper-case). The following primitive types are supported out of the box for JDBC-based databases in `JdbcProfile` (with certain limitations imposed by the individual database drivers):  -->
+</p><ul><li><em>数値型</em>: Byte, Short, Int, Long, BigDecimal, Float, Double
+</li><li><em>LOB型</em>: java.sql.Blob, java.sql.Clob, Array[Byte]
+</li><li><em>Date型</em>: java.sql.Date, java.sql.Time, java.sql.Timestamp
+</li><li>Boolean
+</li><li>String
+</li><li>Unit
+</li><li>java.util.UUID
+</li></ul><p>Nullになりえるカラムについては、<code>T</code>がプリミティブ型でサポートされている場合、<code>Option[T]</code>で表現することが出来る。
+<!-- Nullable columns are represented by `Option[T]` where `T` is one of the supported primitive types. -->
+</p><blockquote><p><strong>Note</strong>
+</p><p>このOptionに対する全ての操作は、ScalaのOption操作と異なり、データベースのnullプロパゲーションセマンティクスを用いてしまう事に注意して欲しい。特に、<code>None === None</code>という式は<code>None</code>になる。これはSlickのメジャーリリースで将来的に変更されるかもしれない。
+</p></blockquote><!-- **note** Currently all operations on Option values use the database's null propagation semantics which may differ from Scala's Option semantics. In particular, `None === None` evaluates to `None`. This behaviour may change in a future major release of Slick. -->
+<p>カラム名のうしろには、<code>column</code>の定義につけるオプションを付与する事ができる。適用可能なオプションは、テーブルの<code>O</code>オブジェクトを通して利用出来る。以下のオプションが、<code>JdbcProfile</code>用に定義されている。
+<!-- After the column name, you can add optional column options to a `column` definition. The applicable options are available through the table's `O` object. The following ones are defined for `JdbcProfile`:  -->
+</p><ul><li><p><code>PrimaryKey</code>
+</p><ul><li>DDLステートメントを作成する際に、このカラムが主キーであることをマークする
+</li></ul></li></ul><!-- :   Mark the column as a (non-compound) primary key when creating the     DDL statements.  -->
+<ul><li><p><code>Default[T](defaultValue: T)</code>
+</p><ul><li>カラムの値を設定せずにテーブルにデータを挿入するする際のデフォルト値を設定する。この情報は、DDLステートメントを作成する時のみに利用される。
+</li></ul></li></ul><!-- :   Specify a default value for inserting data into the table without     this column. This information is only used for creating DDL     statements so that the database can fill in the missing information. -->
+<ul><li><p><code>DBType(dbType: String)</code>
+</p><ul><li>DDBステートメントのために、データベースの型を明示する際に利用する。例として、<code>String</code>型のカラムに対して、<code>DBType(&quot;VARCHAR(20)&quot;)</code>を明示して指定したりする。
+</li></ul></li></ul><!-- :   Use a non-standard database-specific type for the DDL statements     (e.g. `DBType("VARCHAR(20)")` for a `String` column). -->
+<ul><li><p><code>AutoInc</code>
+</p><ul><li>DDBステートメントを作成する際に、このカラムがAutoIncrementさせるカラムであることを指定させる。他のカラムオプションと異なりこれはDDL作成時以外にも利用される。多くのデータベースがAutoIncなカラムでないものが値を返すのを許容していないため、Slickは値を返すカラムが適切にAutoIncなカラムになっているかをチェックしている。
+</li></ul></li></ul><!-- :   Mark the column as an auto-incrementing key when creating the DDL     statements. Unlike the other column options, this one also has a     meaning outside of DDL creation: Many databases do not allow     non-AutoInc columns to be returned when inserting data (often     silently ignoring other columns), so Slick will check if the return     column is properly marked as AutoInc where needed.  -->
+<ul><li><p><code>NotNull</code>, <code>Nullable</code>
+</p><ul><li>テーブルのDDLステートメントを作成する際に、nullを許容するか・しないかを明示して指定する。<code>Option</code>かそうでないかでnullを許容するかを指定出来るため、一般的にはこのオプションは用いられない。
+</li></ul></li></ul><!-- :   Explicitly mark the column as nullable or non-nullable when creating     the DDL statements for the table. Nullability is otherwise     determined from the type (Option or non-Option). There is usually no     reason to specify these options.  -->
+<p>全てのテーブルはデフォルトの射影として<code>*</code>メソッドを定義している。これは、クエリの結果として列を返す際に、あなたがどんな情報を求めているのかを説明するためのものである。Slickの<code>*</code>射影は、データベース内のものと一致している必要は無い。何かしらの計算結果を追加したり、いくつかのカラムを省いて使っても良い。<code>*</code>射影の結果は、<code>Table</code>の型引数と一致する必要があり、これはマッピングされた何かしらのクラスか、カラムが用いられることになるだろう。
+</p><!-- Every table requires a `*` method containing a default projection. This describes what you get back when you return rows (in the form of a table row object) from a query. Slick's `*` projection does not have to match the one in the database. You can add new columns (e.g. with computed values) or omit some columns as you like. The non-lifted type corresponding to the `*` projection is given as a type parameter to `Table`. For simple, non-mapped tables, this will be a single column type or a tuple of column types.  -->
+<p>もしデータベースが <em>schema names</em> を必要とするなら、テーブル名の前にその名前を明示して欲しい。
+<!-- If your database layout requires *schema names*, you can specify the schema name for a table in front of the table name, wrapped in `Some()`:  -->
+</p><pre><code class="prettyprint lang-scala">class Coffees(tag: Tag)
+  extends Table[(String, Int, Double, Int, Int)](tag, Some(&quot;MYSCHEMA&quot;), &quot;COFFEES&quot;) {
+  //...
+}
+</code></pre><h2 id="Table+Query">Table Query<a href="#Table+Query" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p><code>Table</code>のクラスに対して、実際のデータベーステーブルを表す<code>TableQuery</code>も必要になるだろう。
+<!-- Alongside the `Table` row class you also need a `TableQuery` value which represents the actual database table:  -->
+</p><pre><code class="prettyprint lang-scala">val coffees = TableQuery[Coffees]
+</code></pre><p><code>TableQuery[T]</code>というシンプルなシンタックスはマクロであり、これは<code>new TableQuery(new T(_))</code>のようなテーブルのコンストラクタを呼び出すTableQueryのインスタンスとなる。
+<!-- The simple `TableQuery[T]` syntax is a macro which expands to a proper TableQuery instance that calls the table's constructor (`new TableQuery(new T(_))`).  -->
+</p><p>テーブルに関連する追加機能を提供するために、<code>TableQuery</code>を継承しても良いだろう。
+<!-- You can also extend `TableQuery` to use it as a convenient namespace for additional functionality associated with the table:  -->
+</p><pre><code class="prettyprint lang-scala">object coffees extends TableQuery(new Coffees(_)) {
+  val findByName = this.findBy(_.name)
+}
+</code></pre><h2 id="Mapped+Tables">Mapped Tables<a href="#Mapped+Tables" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p><code>*</code>射影の結果を独自の型にマッピングしたいのなら、<code>&lt;&gt;</code>オペレータを利用して双方向マッピングを定義してあげると良い。
+<!-- It is possible to define a mapped table that uses a custom type for its `*` projection by adding a bi-directional mapping with the `<>` operator:  -->
+</p><pre><code class="prettyprint lang-scala">case class User(id: Option[Int], first: String, last: String)
+class Users(tag: Tag) extends Table[User](tag, &quot;users&quot;) {
+  def id = column[Int](&quot;id&quot;, O.PrimaryKey, O.AutoInc)
+  def first = column[String](&quot;first&quot;)
+  def last = column[String](&quot;last&quot;)
+  def * = (id.?, first, last) &lt;&gt; (User.tupled, User.unapply)
+}
+val users = TableQuery[Users]
+</code></pre><p>これは<code>apply</code>と<code>unapply</code>を持つケースクラス用に最適化されているが、任意のマッピングを行う事も可能である。適切に型を推測してくれるタプルを生成してくれる<code>.shaped</code>という便利なメソッドもある。任意のマッピングを行う場合には、マッピング用の型アノテーションを適宜書いて欲しい。
+<!-- It is optimized for case classes (with a simple `apply` method and an `unapply` method that wraps its result in an `Option`) but it can also be used with arbitrary mapping functions. In these cases it can be useful to call `.shaped` on a tuple on the left-hand side in order to get its type inferred properly. Otherwise you may have to add full type annotations to the mapping functions.  -->
+</p><p>ケースクラスのコンパニオのブジェクとを手で書いている場合には、Scalaの機能に合うように実装が行われている場合にのみ、<code>.tupled</code>は上手く動作する。他にも<code>(User.apply _).tupled</code>などを使ったりも出来るだろう。 <a href="https://issues.scala-lang.org/browse/SI-3664">SI-3664</a>や<a href="https://issues.scala-lang.org/browse/SI-4808">SI-4808</a>も目を通しておいて欲しい。
+<!-- For case classes with hand-written companion objects, `.tupled` only works if you manually extend the correct Scala function type. Alternatively you can use `(User.apply _).tupled`. See [SI-3664](https://issues.scala-lang.org/browse/SI-3664) and [SI-4808](https://issues.scala-lang.org/browse/SI-4808).  -->
+</p><h2 id="Constraints">Constraints<a href="#Constraints" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>外部キーは、Tableの<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.profile.RelationalTableComponent$Table@foreignKey[P,PU,TT&lt;:AbstractTable[_],U](String,P,TableQuery[TT])((TT)">foreignKey</a>によって定義される。第一引数には、制約名、関連カラム、関連テーブルの3つを渡す。続く第二引数は、関連テーブルの紐付けるカラムに加えて、<code>OnUpdate</code>や<code>OnDelete</code>のような<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.model.ForeignKeyAction$">ForeignKeyAction</a>に関するものを指定できる。<code>ForeignKeyAction</code>のデフォルト値は<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.model.ForeignKeyAction$$NoAction$">NoAction</a>となっている。テーブルのDDLステートメントが作成された時に、宣言された外部キーが定義される。
+<!-- A foreign key constraint can be defined with a Table's foreignKey \<slick.profile.RelationalTableComponent$Table@foreignKey[P,PU,TT\<:AbstractTable[\_],U](String,P,TableQuery[TT])((TT)⇒P,ForeignKeyAction,ForeignKeyAction)(Shape[\_\<:FlatShapeLevel,TT,U,\_],Shape[\_\<:FlatShapeLevel,P,PU,\_]):ForeignKeyQuery[TT,U]\> method. It first takes a name for the constraint, the referencing column(s) and the referenced table. The second argument list takes a function from the referenced table to its referenced column(s) as well as ForeignKeyAction \<slick.model.ForeignKeyAction$\> for `onUpdate` and `onDelete`, which are optional and default to NoAction \<slick.model.ForeignKeyAction$$NoAction$\>. When creating the DDL statements for the table, the foreign key definition is added to it.  -->
+</p><pre><code class="prettyprint lang-scala">class Suppliers(tag: Tag) extends Table[(Int, String, String, String, String, String)](tag, &quot;SUPPLIERS&quot;) {
+  def id = column[Int](&quot;SUP_ID&quot;, O.PrimaryKey)
+  //...
+}
+val suppliers = TableQuery[Suppliers]
+</code></pre><pre><code class="prettyprint lang-scala">class Coffees(tag: Tag) extends Table[(String, Int, Double, Int, Int)](tag, &quot;COFFEES&quot;) {
+  def supID = column[Int](&quot;SUP_ID&quot;)
+  //...
+  def supplier = foreignKey(&quot;SUP_FK&quot;, supID, suppliers)(_.id, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.Cascade)
+  // compiles to SQL:
+  //   alter table &quot;COFFEES&quot; add constraint &quot;SUP_FK&quot; foreign key(&quot;SUP_ID&quot;)
+  //     references &quot;SUPPLIERS&quot;(&quot;SUP_ID&quot;)
+  //     on update RESTRICT on delete CASCADE
+}
+val coffees = TableQuery[Coffees]
+</code></pre><p>データベースに定義された制約とは別に、<em>join</em>時に利用出来る外部キーを用意する事もできる。この外部キーは、他のテーブルから関連を取得する便利メソッドとして利用することが出来る。
+<!-- Independent of the actual constraint defined in the database, such a foreign key can be used to navigate to the referenced data with a *join*. For this purpose, it behaves the same as a manually defined utility method for finding the joined data:  -->
+</p><pre><code class="prettyprint lang-scala">def supplier = foreignKey(&quot;SUP_FK&quot;, supID, suppliers)(_.id, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.Cascade)
+def supplier2 = suppliers.filter(_.id === supID)
+</code></pre><p>主キー制約は<code>primaryKey</code>というメソッドを用いる事で同様に定義出来る。これは<code>O.PrimaryKey</code>を使う時とは異なり、複合主キーを定義する際に役立つ。
+<!-- A primary key constraint can be defined in a similar fashion by adding a method that calls `primaryKey`. This is useful for defining compound primary keys (which cannot be done with the `O.PrimaryKey` column option):  -->
+</p><pre><code class="prettyprint lang-scala">class A(tag: Tag) extends Table[(Int, Int)](tag, &quot;a&quot;) {
+  def k1 = column[Int](&quot;k1&quot;)
+  def k2 = column[Int](&quot;k2&quot;)
+  def * = (k1, k2)
+  def pk = primaryKey(&quot;pk_a&quot;, (k1, k2))
+  // compiles to SQL:
+  //   alter table &quot;a&quot; add constraint &quot;pk_a&quot; primary key(&quot;k1&quot;,&quot;k2&quot;)
+}
+</code></pre><p>インデックスについても、<code>index</code>メソッドを用いる事で同様に定義出来る。これらはデフォルトではユニーク制約はつかず、もし必要な場合には<code>unique</code>パラメータに値をセットして欲しい。
+<!-- Other indexes are defined in a similar way with the `index` method. They are non-unique by default unless you set the `unique` parameter:  -->
+</p><pre><code class="prettyprint lang-scala">class A(tag: Tag) extends Table[(Int, Int)](tag, &quot;a&quot;) {
+  def k1 = column[Int](&quot;k1&quot;)
+  def k2 = column[Int](&quot;k2&quot;)
+  def * = (k1, k2)
+  def idx = index(&quot;idx_a&quot;, (k1, k2), unique = true)
+  // compiles to SQL:
+  //   create unique index &quot;idx_a&quot; on &quot;a&quot; (&quot;k1&quot;,&quot;k2&quot;)
+}
+</code></pre><p>全ての制約は、テーブルに定義された適切な返り値と共に、メソッドが都度探索される。この挙動は<code>tableConstraints</code>メソッドをオーバーライドする事でカスタマイズ可能だ。
+<!-- All constraints are discovered reflectively by searching for methods with the appropriate return types which are defined in the table. This behavior can be customized by overriding the `tableConstraints` method.  -->
+</p><h2 id="Data+Definition+Language">Data Definition Language<a href="#Data+Definition+Language" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>テーブルのDDLステートメントはそのテーブルの<code>TableQuery</code>の<code>schema</code>メソッドを基に作成される。複数の<code>DDL</code>オブジェクトは<code>++</code>メソッドにより1つの<code>DDL</code>オブジェクトに統合される。これはcreate時もdrop時も全ての制約に対し、たとえ循環依存がテーブル間に存在したとしても、正しい挙動をするように実行されるものとなる。<code>create</code>や<code>drop</code>メソッドはDDLステートメントを実行するActionを生成する。
+<!-- DDL statements for a table can be created with its `TableQuery`'s `schema` method. Multiple `DDL` objects can be concatenated with `++` to get a compound `DDL` object which can create and drop all entities in the correct order, even in the presence of cyclic dependencies between tables. The `create` and `drop` methods produce the Actions for executing the DDL statements:  -->
+</p><pre><code class="prettyprint lang-scala">val schema = coffees.schema ++ suppliers.schema
+db.run(DBIO.seq(
+  schema.create,
+  //...
+  schema.drop
+))
+</code></pre><p><code>statemens</code>メソッドを用いる事で、SQLのコードを取得出来る。スキーマのActionは、1つ以上のステートメントを生成するようになっている。
+<!-- You can use the the `statements` method to get the SQL code, like for most other SQL-based Actions. Schema Actions are currently the only Actions that can produce more than one statement.  -->
+</p><pre><code class="prettyprint lang-scala">schema.create.statements.foreach(println)
+schema.drop.statements.foreach(println)
+</code></pre><p>⇒P,ForeignKeyAction,ForeignKeyAction)(Shape[<em>&lt;:FlatShapeLevel,TT,U,</em>],Shape[<em>&lt;:FlatShapeLevel,P,PU,</em>]):ForeignKeyQuery[TT,U]
+</p><div class="bottom nav span-16">
+                        <em>Next Page</em>
+                        <span class="arrow">❧</span>
+                        <a href="Queries.html"> Queries </a>                        
+                        
+                      </div><div class="tocwrapper show">
+      <a class="tochead nav" style="display: none" href="#toc">❦</a>
+      <a name="toc"></a>
+      <h4 class="toctitle">Contents</h4>
+      <div class="tocbody">
+      <div><a href="slick-doc-ja+3.0.html">slick-doc-ja 3.0</a></div><ol class="toc"> <li><div><a href="Introduction.html">Introduction</a></div></li><li><div><a href="Supported+Databases.html">Supported Databases</a></div></li><li><div><a href="Getting+Started.html">Getting Started</a></div></li><li><div><a href="Database+Configuration.html">Database Configuration</a></div></li><li><div><a href="Database+I%2FO+Actions.html">Database I/O Actions</a></div></li><li><div class="current">Schemas</div></li><li><div><a href="Queries.html">Queries</a></div></li><li><div><a href="Schema+Code+Generation.html">Schema Code Generation</a></div></li><li><div><a href="User-Defined+Features.html">User-Defined Features</a></div></li><li><div><a href="Plain+SQL+Queries.html">Plain SQL Queries</a></div></li><li><div><a href="Coming+from+ORM+to+Slick.html">Coming from ORM to Slick</a></div></li><li><div><a href="Coming+from+SQL+to+Slick.html">Coming from SQL to Slick</a></div></li><li><div><a href="Upgrade+Guides.html">Upgrade Guides</a></div></li><li><div><a href="Slick+Extensions.html">Slick Extensions</a></div></li><li><div><a href="Direct+Embedding+%28Deprecated%29.html">Direct Embedding (Deprecated)</a></div></li><li><div><a href="Slick+TestKit.html">Slick TestKit</a></div></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
+          </div>
+        </div>
+        <div class="header">
+          <div class="container">
+        <div class="span-16 prepend-1 append-1">
+          <div class="span-16 top nav">
+            <div class="span-16 title">
+              <span>slick-doc-ja 3.0</span> — Schemas
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        <a href="http://github.com/krrrr38/slick-doc-ja" class="fork nav"><img src="img/fork.png" alt="Fork me on GitHub"/></a>
+        <div class="highlight-outer">
+              <div class="highlight-menu">
+                <ul>
+                  <li><button id="highlight-button-twitter"><img src="img/twitter-bird-dark-bgs.png"/></button></li>
+                </ul>
+              </div>
+            </div>
+      </body>
+    </html>

@@ -1,0 +1,315 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html>
+      <head>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
+        <title>slick-doc-ja 3.0 — Coming from SQL to Slick</title>
+        
+        <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/blueprint/grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/> 
+        <!--[if lt IE 8]>
+          <link rel="stylesheet" href={ relativeBase + "css/blueprint/ie.css" } type="text/css" media="screen, projection"/>
+        <![endif]-->
+        <link rel="stylesheet" href="css/pamflet.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamflet-print.css" type="text/css" media="print"/>
+        <link rel="stylesheet" href="css/pamflet-grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamfletheight_2em_2em.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.collapse.js"></script>
+        <script type="text/javascript" src="js/pamflet.js"></script>
+        <script type="text/javascript">
+          Pamflet.page.language = 'en';
+        </script>
+        <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+        <link rel="stylesheet" href="css/layout.css" type="text/css" media="screen, projection"/>
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-37666832-7']);
+            _gaq.push(['_trackPageview']);
+            (function() {
+              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+            </script>
+        <script type="text/javascript">
+              Pamflet.twitter = '#slick';
+            </script>
+      </head>
+      <body class="color_scheme-redmond">
+        <a class="page prev nav" href="Coming+from+ORM+to+Slick.html">
+            <span class="space">&nbsp;</span>
+            <span class="flip arrow">❧</span>
+          </a><a class="page next nav" href="Upgrade+Guides.html">
+            <span class="space">&nbsp;</span>
+            <span class="arrow">❧</span>
+          </a>
+        <div class="container contentswrapper">
+          <div class="span-16 prepend-1 append-1 contents">
+            <p>Slick 3.0.0 documentation - 12 Coming from SQL to Slick
+</p><p><a href="http://slick.typesafe.com/doc/3.0.0/sql-to-slick.html">Permalink to Coming from SQL to Slick — Slick 3.0.0 documentation</a>
+</p><h1 id="Coming+from+SQL+to+Slick">Coming from SQL to Slick<a href="#Coming+from+SQL+to+Slick" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><!-- Coming from JDBC/SQL to Slick is pretty straight forward in many ways. Slick can be considered as a drop-in replacement with a nicer API for handling connections, fetching results and using a query language, which is integrated more nicely into Scala than writing queries as Strings. The main obstacle for developers coming from SQL to Slick seems to be the semantic differences of seemingly similar operations between SQL and Scala's collections API which Slick's API imitates. The following sections give a quick overview over the differences. They start with conceptual differences and then list examples of many SQL operators and their Slick equivalents \<sql-to-slick-operators\>. For a more detailed explanations of Slick's API please refer to chapter queries \<queries\> and the equivalent methods in the the Scala collections API \<scala.collection.immutable.Seq\>.  -->
+<h2 id="Schema">Schema<a href="#Schema" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><!-- The later examples use the following database schema -->
+<p><img src="http://slick.typesafe.com/doc/3.0.0/_images/from-sql-to-slick.person-address.png" alt="image"/>
+</p><!-- mapped to Slick using the following code: -->
+<pre><code class="prettyprint lang-scala">type Person = (Int,String,Int,Int)
+class People(tag: Tag) extends Table[Person](tag, &quot;PERSON&quot;) {
+  def id = column[Int](&quot;ID&quot;, O.PrimaryKey, O.AutoInc)
+  def name = column[String](&quot;NAME&quot;)
+  def age = column[Int](&quot;AGE&quot;)
+  def addressId = column[Int](&quot;ADDRESS_ID&quot;)
+  def * = (id,name,age,addressId)
+  def address = foreignKey(&quot;ADDRESS&quot;,addressId,addresses)(_.id)
+}
+lazy val people = TableQuery[People]
+...
+type Address = (Int,String,String)
+class Addresses(tag: Tag) extends Table[Address](tag, &quot;ADDRESS&quot;) {
+  def id = column[Int](&quot;ID&quot;, O.PrimaryKey, O.AutoInc)
+  def street = column[String](&quot;STREET&quot;)
+  def city = column[String](&quot;CITY&quot;)
+  def * = (id,street,city)
+}
+lazy val addresses = TableQuery[Addresses]
+</code></pre><!-- Tables can alternatively be mapped to case classes. Similar code can be auto-generated \<code-generation\> or hand-written \<schemas\>.  -->
+<h2 id="Queries+in+comparison">Queries in comparison<a href="#Queries+in+comparison" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><h3 id="JDBC+Query">JDBC Query<a href="#JDBC+Query" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><!-- A JDBC query with error handling could look like this: -->
+<pre><code class="prettyprint lang-scala">import java.sql._
+Class.forName(&quot;org.h2.Driver&quot;)
+val conn = DriverManager.getConnection(&quot;jdbc:h2:mem:test1&quot;)
+val people = new scala.collection.mutable.MutableList[(Int,String,Int)]()
+try{
+  val stmt = conn.createStatement()
+  try{
+    val rs = stmt.executeQuery(&quot;select ID, NAME, AGE from PERSON&quot;)
+    try{
+      while(rs.next()){
+        people += ((rs.getInt(1), rs.getString(2), rs.getInt(3)))
+      }
+    }finally{
+      rs.close()
+    }
+  }finally{
+    stmt.close()
+  }
+}finally{
+  conn.close()
+}
+</code></pre><!-- Slick gives us two choices how to write queries. One is SQL strings just like JDBC. The other are type-safe, composable queries.  -->
+<h3 id="Slick+Plain+SQL+queries">Slick Plain SQL queries<a href="#Slick+Plain+SQL+queries" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><!-- This is useful if you either want to continue writing queries in SQL or if you need a feature not (yet) supported by Slick otherwise. Executing the same query using Slick Plain SQL, which has built-in error-handling and resource management optimized for asynchronous execution, looks like this:  -->
+<pre><code class="prettyprint lang-scala">import slick.driver.H2Driver.api._
+...
+val db = Database.forConfig(&quot;h2mem1&quot;)
+...
+val action = sql&quot;select ID, NAME, AGE from PERSON&quot;.as[(Int,String,Int)]
+db.run(action)
+</code></pre><!-- `.list` returns a list of results. `.first` a single result. `.foreach` can be used to iterate over the results without ever materializing all results at once.  -->
+<h3 id="Slick+type-safe%2C+composable+queries">Slick type-safe, composable queries<a href="#Slick+type-safe%2C+composable+queries" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><!-- Slick's key feature are type-safe, composable queries. Slick comes with a Scala-to-SQL compiler, which allows a (purely functional) sub-set of the Scala language to be compiled to SQL queries. Also available are a subset of the standard library and some extensions, e.g. for joins. The familiarity allows Scala developers to instantly write many queries against all supported relational databases with little learning required and without knowing SQL or remembering the particular dialect. Such Slick queries are composable, which means that you can write and re-use fragments and functions to avoid repetitive code like join conditions in a much more practical way than concatenating SQL strings. The fact that such queries are type-safe not only catches many mistakes early at compile time, but also eliminates the risk of SQL injection vulnerabilities.  -->
+<!-- The same query written as a type-safe Slick query looks like this: -->
+<pre><code class="prettyprint lang-scala">import slick.driver.H2Driver.api._
+...
+val db = Database.forConfig(&quot;h2mem1&quot;)
+...
+val query = people.map(p =&gt; (p.id,p.name,p.age))
+db.run(query.result)
+</code></pre><!-- `.run` automatically returns a Seq for collection-like queries and a single value for scalar queries. `.list`, `.first` and `.foreach` are also available.  -->
+<!-- A key benefit compared to SQL strings is, that you can easily transform the query by calling more methods on it. E.g. `query.filter(_.age > 18)` returns transformed query which further restricts the results. This allows to build libraries of queries, which re-use each other become much more maintainable. You can abstract over join conditions, pagination, filters, etc. -->
+<!-- It is important to note that Slick needs the type-information to type-check these queries. This type information closely corresponds to the database schema and is provided to Slick in the form of Table sub classes and TableQuery values shown above.  -->
+<h2 id="Main+obstacle%3A+Semantic+API+differences">Main obstacle: Semantic API differences<a href="#Main+obstacle%3A+Semantic+API+differences" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><!-- Some methods of the Scala collections work a bit differently than their SQL counter parts. This seems to be one of the main causes of confusion for people newly coming from SQL to Slick. Especially groupBy\_ seems to be tricky.  -->
+<!-- The best approach to write queries using Slick's type-safe api is thinking in terms of Scala collections. What would the code be if you had a Seq of tuples or case classes instead of a Slick TableQuery object. Use that exact code. If needed adapt it with workarounds where a Scala library feature is currently not supported by Slick or if Slick is slightly different. Some operations are more strongly typed in Slick than in Scala for example. Arithmetic operation in different types require explicit casts using `.asColumnOf[T]`. Also Slick uses 3-valued logic for Option inference.  -->
+<h2 id="Scala-to-SQL+compilation+during+runtime">Scala-to-SQL compilation during runtime<a href="#Scala-to-SQL+compilation+during+runtime" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><!-- Slick runs a Scala-to-SQL compiler to implement its type-safe query feature. The compiler runs at Scala run-time and it does take its time which can even go up to second or longer for complex queries. It can be very useful to run the compiler only once per defined query and upfront, e.g. at app startup instead of each execution over and over. Compiled queries \<compiled-queries\> allow you to cache the generated SQL for re-use.  -->
+<h2 id="Limitations">Limitations<a href="#Limitations" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><!-- When you use Slick extensively you will run into cases, where Slick's type-safe query language does not support a query operator or JDBC feature you may desire to use or produces non-optimal SQL code. There are several ways to deal with that.  -->
+<h3 id="Missing+query+operators">Missing query operators<a href="#Missing+query+operators" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><!-- Slick is extensible to some degree, which means you can add some kinds of missing operators yourself.  -->
+<h4 id="Definition+in+terms+of+others">Definition in terms of others<a href="#Definition+in+terms+of+others" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><!-- If the operator you desire is expressible using existing Slick operations you can simply write a Scala function or implicit class that implements the operator as a method in terms of existing operators. Here we implement `squared` using multiplication.  -->
+<pre><code class="prettyprint lang-scala">implicit class MyStringColumnExtensions(i: Rep[Int]){
+  def squared = i * i
+}
+...
+// usage:
+people.map(p =&gt; p.age.squared)
+</code></pre><h4 id="Definition+using+a+database+function">Definition using a database function<a href="#Definition+using+a+database+function" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><!-- If you need a fundamental operator, which is not supported out-of-the-box you can add it yourself if it operates on scalar values. For example Slick currently does not have a `power` method out of the box. Here we are mapping it to a database function.  -->
+<pre><code class="prettyprint lang-scala">val power = SimpleFunction.binary[Int,Int,Int](&quot;POWER&quot;)
+...
+// usage:
+people.map(p =&gt; power(p.age,2))
+</code></pre><!-- More information can be found in the chapter about Scalar database functions \<scalar-db-functions\>.  -->
+<!-- You can however not add operators operating on queries using database functions. The Slick Scala-to-SQL compiler requires knowledge about the structure of the query in order to compile it to the most simple SQL query it can produce. It currently couldn't handle custom query operators in that context. (There are some ideas how this restriction can be somewhat lifted in the future, but it needs more investigation). An example for such operator is a MySQL index hint, which is not supported by Slick's type-safe api and it cannot be added by users. If you require such an operator you have to write your whole query using Plain SQL. If the operator does not change the return type of the query you could alternatively use the workaround described in the following section.  -->
+<h3 id="Non-optimal+SQL+code">Non-optimal SQL code<a href="#Non-optimal+SQL+code" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><!-- Slick generates SQL code and tries to make it as simple as possible. The algorithm doing that is not perfect and under continuous improvement. There are cases where the generated queries are more complicated than someone would write them by hand. This can lead to bad performance for certain queries with some optimizers and DBMS. For example, Slick occasionally generates unnecessary sub-queries. In MySQL \<= 5.5 this easily leads to unnecessary table scans or indices not being used. The Slick team is working towards generating code better factored to what the query optimizers can currently optimize, but that doesn't help you now. To work around it you have to write the more optimal SQL code by hand. You can either run it as a Slick Plain SQL query or you can [use a hack](https://gist.github.com/cvogt/d9049c63fc395654c4b4), which allows you to simply swap out the SQL code Slick uses for a type-safe query.  -->
+<pre><code class="prettyprint lang-scala">people.map(p =&gt; (p.id,p.name,p.age))
+      .result
+      // inject hand-written SQL, see https://gist.github.com/cvogt/d9049c63fc395654c4b4
+      .overrideSql(&quot;SELECT id, name, age FROM Person&quot;)
+</code></pre><h2 id="SQL+vs.+Slick+examples">SQL vs. Slick examples<a href="#SQL+vs.+Slick+examples" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><!-- This section shows an overview over the most important types of SQL queries and a corresponding type-safe Slick query.  -->
+<h3 id="SELECT+%5C*">SELECT *<a href="#SELECT+%5C*" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><h4 id="SQL">SQL<a href="#SQL" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><pre><code class="prettyprint lang-scala">sql&quot;select * from PERSON&quot;.as[Person]
+</code></pre><h4 id="Slick">Slick<a href="#Slick" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><!-- The Slick equivalent of `SELECT *` is the `result` of the plain TableQuery:  -->
+<pre><code class="prettyprint lang-scala">people.result
+</code></pre><h3 id="SELECT">SELECT<a href="#SELECT" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><h4 id="SQL">SQL<a href="#SQL" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><pre><code class="prettyprint lang-scala">sql&quot;&quot;&quot;
+  select AGE, concat(concat(concat(NAME,' ('),ID),')')
+  from PERSON
+&quot;&quot;&quot;.as[(Int,String)]
+</code></pre><h4 id="Slick">Slick<a href="#Slick" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><!-- Scala's equivalent for `SELECT` is `map`. Columns can be referenced similarly and functions operating on columns can be accessed using their Scala eqivalents (but allowing only `++` for String concatenation, not `+`).  -->
+<pre><code class="prettyprint lang-scala">people.map(p =&gt; (p.age, p.name ++ &quot; (&quot; ++ p.id.asColumnOf[String] ++ &quot;)&quot;)).result
+</code></pre><h3 id="WHERE">WHERE<a href="#WHERE" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><h4 id="SQL">SQL<a href="#SQL" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><pre><code class="prettyprint lang-scala">sql&quot;select * from PERSON where AGE &gt;= 18 AND NAME = 'C. Vogt'&quot;.as[Person]
+</code></pre><h4 id="Slick">Slick<a href="#Slick" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><!-- Scala's equivalent for `WHERE` is `filter`. Make sure to use `===` instead of `==` for comparison.  -->
+<pre><code class="prettyprint lang-scala">people.filter(p =&gt; p.age &gt;= 18 &amp;&amp; p.name === &quot;C. Vogt&quot;).result
+</code></pre><h3 id="ORDER+BY">ORDER BY<a href="#ORDER+BY" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><h4 id="SQL">SQL<a href="#SQL" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><pre><code class="prettyprint lang-scala">sql&quot;select * from PERSON order by AGE asc, NAME&quot;.as[Person]
+</code></pre><h4 id="Slick">Slick<a href="#Slick" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><!-- Scala's equivalent for `ORDER BY` is `sortBy`. Provide a tuple to sort by multiple columns. Slick's `.asc` and `.desc` methods allow to affect the ordering. Be aware that a single `ORDER BY` with multiple columns is not equivalent to multiple `.sortBy` calls but to a single `.sortBy` call passing a tuple.  -->
+<pre><code class="prettyprint lang-scala">people.sortBy(p =&gt; (p.age.asc, p.name)).result
+</code></pre><h3 id="Aggregations+%28max%2C+etc.%29">Aggregations (max, etc.)<a href="#Aggregations+%28max%2C+etc.%29" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><h4 id="SQL">SQL<a href="#SQL" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><pre><code class="prettyprint lang-scala">sql&quot;select max(AGE) from PERSON&quot;.as[Option[Int]].head
+</code></pre><h4 id="Slick">Slick<a href="#Slick" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><!-- Aggregations are collection methods in Scala. In SQL they are called on a column, but in Slick they are called on a collection-like value e.g. a complete query, which people coming from SQL easily trip over. They return a scalar value, which can be run individually. Aggregation methods such as `max` that can return `NULL` return Options in Slick.  -->
+<pre><code class="prettyprint lang-scala">people.map(_.age).max.result
+</code></pre><h3 id="GROUP+BY">GROUP BY<a href="#GROUP+BY" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><!-- People coming from SQL often seem to have trouble understanding Scala's and Slick's `groupBy`, because of the different signatures involved. SQL's `GROUP BY` can be seen as an operation that turns all columns that weren't part of the grouping key into collections of all the elements in a group. SQL requires the use of it's aggregation operations like `avg` to compute single values out of these collections.  -->
+<h4 id="SQL">SQL<a href="#SQL" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><pre><code class="prettyprint lang-scala">sql&quot;&quot;&quot;
+  select ADDRESS_ID, AVG(AGE)
+  from PERSON
+  group by ADDRESS_ID
+&quot;&quot;&quot;.as[(Int,Option[Int])]
+</code></pre><h4 id="Slick">Slick<a href="#Slick" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><!-- Scala's groupBy returns a Map of grouping keys to Lists of the rows for each group. There is no automatic conversion of individual columns into collections. This has to be done explicitly in Scala, by mapping from the group to the desired column, which then allows SQL-like aggregation.  -->
+<pre><code class="prettyprint lang-scala">people.groupBy(p =&gt; p.addressId)
+       .map{ case (addressId, group) =&gt; (addressId, group.map(_.age).avg) }
+       .result
+</code></pre><!-- SQL requires to aggregate grouped values. We require the same in Slick for now. This means a `groupBy` call must be followed by a `map` call or will fail with an Exception. This makes Slick's grouping syntax a bit more complicated than SQL's.  -->
+<h3 id="HAVING">HAVING<a href="#HAVING" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><h4 id="SQL">SQL<a href="#SQL" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><pre><code class="prettyprint lang-scala">sql&quot;&quot;&quot;
+  select ADDRESS_ID
+  from PERSON
+  group by ADDRESS_ID
+  having avg(AGE) &gt; 50
+&quot;&quot;&quot;.as[Int]
+</code></pre><h4 id="Slick">Slick<a href="#Slick" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><!-- Slick does not have different methods for `WHERE` and `HAVING`. For achieving semantics equivalent to `HAVING`, just use `filter` after `groupBy` and the following `map`.  -->
+<pre><code class="prettyprint lang-scala">people.groupBy(p =&gt; p.addressId)
+       .map{ case (addressId, group) =&gt; (addressId, group.map(_.age).avg) }
+       .filter{ case (addressId, avgAge) =&gt; avgAge &gt; 50 }
+       .map(_._1)
+       .result
+</code></pre><h3 id="Implicit+inner+joins">Implicit inner joins<a href="#Implicit+inner+joins" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><h4 id="SQL">SQL<a href="#SQL" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><pre><code class="prettyprint lang-scala">sql&quot;&quot;&quot;
+  select P.NAME, A.CITY
+  from PERSON P, ADDRESS A
+  where P.ADDRESS_ID = a.id
+&quot;&quot;&quot;.as[(String,String)]
+</code></pre><h4 id="Slick">Slick<a href="#Slick" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><!-- Slick generates SQL using implicit joins for `flatMap` and `map` or the corresponding for-expression syntax.  -->
+<pre><code class="prettyprint lang-scala">people.flatMap(p =&gt;
+  addresses.filter(a =&gt; p.addressId === a.id)
+           .map(a =&gt; (p.name, a.city))
+).result
+...
+// or equivalent for-expression:
+(for(p &lt;- people;
+    a &lt;- addresses if p.addressId === a.id
+  ) yield (p.name, a.city)
+).result
+</code></pre><h3 id="Explicit+inner+joins">Explicit inner joins<a href="#Explicit+inner+joins" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><h4 id="SQL">SQL<a href="#SQL" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><pre><code class="prettyprint lang-scala">sql&quot;&quot;&quot;
+  select P.NAME, A.CITY
+  from PERSON P
+  join ADDRESS A on P.ADDRESS_ID = a.id
+&quot;&quot;&quot;.as[(String,String)]
+</code></pre><h4 id="Slick">Slick<a href="#Slick" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><!-- Slick offers a small DSL for explicit joins. -->
+<pre><code class="prettyprint lang-scala">(people join addresses on (_.addressId === _.id))
+  .map{ case (p, a) =&gt; (p.name, a.city) }.result
+</code></pre><h3 id="Outer+joins+%28left%2Fright%2Ffull%29">Outer joins (left/right/full)<a href="#Outer+joins+%28left%2Fright%2Ffull%29" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><h4 id="SQL">SQL<a href="#SQL" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><pre><code class="prettyprint lang-scala">sql&quot;&quot;&quot;
+  select P.NAME,A.CITY
+  from ADDRESS A
+  left join PERSON P on P.ADDRESS_ID = a.id
+&quot;&quot;&quot;.as[(Option[String],String)]
+</code></pre><h4 id="Slick">Slick<a href="#Slick" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><!-- Outer joins are done using Slick's explicit join DSL. Be aware that in case of an outer join SQL changes the type of outer joined, non-nullable columns into nullable columns. In order to represent this in a clean way even in the presence of mapped types, Slick lifts the whole side of the join into an `Option`. This goes a bit further than the SQL semantics because it allows you to distinguish a row which was not matched in the join from a row that was matched but already contained nothign but NULL values.  -->
+<pre><code class="prettyprint lang-scala">(addresses joinLeft people on (_.id === _.addressId))
+  .map{ case (a, p) =&gt; (p.map(_.name), a.city) }.result
+</code></pre><h3 id="Subquery">Subquery<a href="#Subquery" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><h4 id="SQL">SQL<a href="#SQL" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><pre><code class="prettyprint lang-scala">sql&quot;&quot;&quot;
+  select *
+  from PERSON P
+  where P.ID in (select ID
+                 from ADDRESS
+                 where CITY = 'New York City')
+&quot;&quot;&quot;.as[Person]
+</code></pre><h4 id="Slick">Slick<a href="#Slick" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><!-- Slick queries are composable. Subqueries can be simply composed, where the types work out, just like any other Scala code.  -->
+<pre><code class="prettyprint lang-scala">val address_ids = addresses.filter(_.city === &quot;New York City&quot;).map(_.id)
+people.filter(_.id in address_ids).result // &lt;- run as one query
+</code></pre><!-- The method `.in` expects a sub query. For an in-memory Scala collection, the method `.inSet` can be used instead.  -->
+<h3 id="Scalar+value+subquery+%2F+custom+function">Scalar value subquery / custom function<a href="#Scalar+value+subquery+%2F+custom+function" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><h4 id="SQL">SQL<a href="#SQL" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><pre><code class="prettyprint lang-scala">sql&quot;&quot;&quot;
+  select * from PERSON P,
+                     (select rand() * MAX(ID) as ID from PERSON) RAND_ID
+  where P.ID &gt;= RAND_ID.ID
+  order by P.ID asc
+  limit 1
+&quot;&quot;&quot;.as[Person].head
+</code></pre><h4 id="Slick">Slick<a href="#Slick" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><!-- This code shows a subquery computing a single value in combination with a user-defined database function \<userdefined\>.  -->
+<pre><code class="prettyprint lang-scala">val rand = SimpleFunction.nullary[Double](&quot;RAND&quot;)
+...
+val rndId = (people.map(_.id).max.asColumnOf[Double] * rand).asColumnOf[Int]
+...
+people.filter(_.id &gt;= rndId)
+      .sortBy(_.id)
+      .result.head
+</code></pre><h3 id="insert">insert<a href="#insert" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><h4 id="SQL">SQL<a href="#SQL" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><pre><code class="prettyprint lang-scala">sqlu&quot;&quot;&quot;
+insert into PERSON (NAME, AGE, ADDRESS_ID) values ('M Odersky', 12345, 1)
+&quot;&quot;&quot;
+</code></pre><h4 id="Slick">Slick<a href="#Slick" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><!-- Inserts can be a bit surprising at first, when coming from SQL, because unlike SQL, Slick re-uses the same syntax that is used for querying to select which columns should be inserted into. So basically, you first write a query and instead of creating an Action that gets the result of this query, you call `+=` on with value to be inserted, which gives you an Action that performs the insert. `++=` allows insertion of a Seq of rows at once. Columns that are auto-incremented are automatically ignored, so inserting into them has no effect. Using `forceInsert` allows actual insertion into auto-incremented columns.  -->
+<pre><code class="prettyprint lang-scala">people.map(p =&gt; (p.name, p.age, p.addressId)) += (&quot;M Odersky&quot;,12345,1)
+</code></pre><h3 id="update">update<a href="#update" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><h4 id="SQL">SQL<a href="#SQL" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><pre><code class="prettyprint lang-scala">sqlu&quot;&quot;&quot;
+update PERSON set NAME='M. Odersky', AGE=54321 where NAME='M Odersky'
+&quot;&quot;&quot;
+</code></pre><h4 id="Slick">Slick<a href="#Slick" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><!-- Just like inserts, updates are based on queries that select and filter what should be updated and instead of running the query and fetching the data `.update` is used to replace it.  -->
+<pre><code class="prettyprint lang-scala">people.filter(_.name === &quot;M Odersky&quot;)
+      .map(p =&gt; (p.name,p.age))
+      .update((&quot;M. Odersky&quot;,54321))
+</code></pre><h3 id="delete">delete<a href="#delete" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><h4 id="SQL">SQL<a href="#SQL" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><pre><code class="prettyprint lang-scala">sqlu&quot;&quot;&quot;
+delete PERSON where NAME='M. Odersky'
+&quot;&quot;&quot;
+</code></pre><h4 id="Slick">Slick<a href="#Slick" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><!-- Just like inserts, deletes are based on queries that filter what should be deleted. Instead of getting the query result of the query, `.delete` is used to obtain an Action that deletes the selected rows.  -->
+<pre><code class="prettyprint lang-scala">people.filter(p =&gt; p.name === &quot;M. Odersky&quot;)
+      .delete
+</code></pre><h3 id="CASE">CASE<a href="#CASE" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><h4 id="SQL">SQL<a href="#SQL" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><pre><code class="prettyprint lang-scala">sql&quot;&quot;&quot;
+  select
+    case
+      when ADDRESS_ID = 1 then 'A'
+      when ADDRESS_ID = 2 then 'B'
+    end
+  from PERSON P
+&quot;&quot;&quot;.as[Option[String]]
+</code></pre><h4 id="Slick">Slick<a href="#Slick" class="header-link"><span class="header-link-content">&nbsp;</span></a></h4><!-- Slick uses a small DSL \<slick.lifted.Case$\> to allow `CASE` like case distinctions.  -->
+<pre><code class="prettyprint lang-scala">people.map(p =&gt;
+  Case
+    If(p.addressId === 1) Then &quot;A&quot;
+    If(p.addressId === 2) Then &quot;B&quot;
+).result
+</code></pre><div class="bottom nav span-16">
+                        <em>Next Page</em>
+                        <span class="arrow">❧</span>
+                        <a href="Upgrade+Guides.html"> Upgrade Guides </a>                        
+                        
+                      </div><div class="tocwrapper show">
+      <a class="tochead nav" style="display: none" href="#toc">❦</a>
+      <a name="toc"></a>
+      <h4 class="toctitle">Contents</h4>
+      <div class="tocbody">
+      <div><a href="slick-doc-ja+3.0.html">slick-doc-ja 3.0</a></div><ol class="toc"> <li><div><a href="Introduction.html">Introduction</a></div></li><li><div><a href="Supported+Databases.html">Supported Databases</a></div></li><li><div><a href="Getting+Started.html">Getting Started</a></div></li><li><div><a href="Database+Configuration.html">Database Configuration</a></div></li><li><div><a href="Database+I%2FO+Actions.html">Database I/O Actions</a></div></li><li><div><a href="Schemas.html">Schemas</a></div></li><li><div><a href="Queries.html">Queries</a></div></li><li><div><a href="Schema+Code+Generation.html">Schema Code Generation</a></div></li><li><div><a href="User-Defined+Features.html">User-Defined Features</a></div></li><li><div><a href="Plain+SQL+Queries.html">Plain SQL Queries</a></div></li><li><div><a href="Coming+from+ORM+to+Slick.html">Coming from ORM to Slick</a></div></li><li><div class="current">Coming from SQL to Slick</div></li><li><div><a href="Upgrade+Guides.html">Upgrade Guides</a></div></li><li><div><a href="Slick+Extensions.html">Slick Extensions</a></div></li><li><div><a href="Direct+Embedding+%28Deprecated%29.html">Direct Embedding (Deprecated)</a></div></li><li><div><a href="Slick+TestKit.html">Slick TestKit</a></div></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
+          </div>
+        </div>
+        <div class="header">
+          <div class="container">
+        <div class="span-16 prepend-1 append-1">
+          <div class="span-16 top nav">
+            <div class="span-16 title">
+              <span>slick-doc-ja 3.0</span> — Coming from SQL to Slick
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        <a href="http://github.com/krrrr38/slick-doc-ja" class="fork nav"><img src="img/fork.png" alt="Fork me on GitHub"/></a>
+        <div class="highlight-outer">
+              <div class="highlight-menu">
+                <ul>
+                  <li><button id="highlight-button-twitter"><img src="img/twitter-bird-dark-bgs.png"/></button></li>
+                </ul>
+              </div>
+            </div>
+      </body>
+    </html>

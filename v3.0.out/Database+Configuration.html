@@ -1,0 +1,142 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html>
+      <head>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
+        <title>slick-doc-ja 3.0 — Database Configuration</title>
+        
+        <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/blueprint/grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/> 
+        <!--[if lt IE 8]>
+          <link rel="stylesheet" href={ relativeBase + "css/blueprint/ie.css" } type="text/css" media="screen, projection"/>
+        <![endif]-->
+        <link rel="stylesheet" href="css/pamflet.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamflet-print.css" type="text/css" media="print"/>
+        <link rel="stylesheet" href="css/pamflet-grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamfletheight_2em_2em.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.collapse.js"></script>
+        <script type="text/javascript" src="js/pamflet.js"></script>
+        <script type="text/javascript">
+          Pamflet.page.language = 'en';
+        </script>
+        <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+        <link rel="stylesheet" href="css/layout.css" type="text/css" media="screen, projection"/>
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-37666832-7']);
+            _gaq.push(['_trackPageview']);
+            (function() {
+              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+            </script>
+        <script type="text/javascript">
+              Pamflet.twitter = '#slick';
+            </script>
+      </head>
+      <body class="color_scheme-redmond">
+        <a class="page prev nav" href="Getting+Started.html">
+            <span class="space">&nbsp;</span>
+            <span class="flip arrow">❧</span>
+          </a><a class="page next nav" href="Database+I%2FO+Actions.html">
+            <span class="space">&nbsp;</span>
+            <span class="arrow">❧</span>
+          </a>
+        <div class="container contentswrapper">
+          <div class="span-16 prepend-1 append-1 contents">
+            <p>Slick 3.0.0 documentation - 04 Database Configuration
+</p><p><a href="http://slick.typesafe.com/doc/3.0.0/database.html">Permalink to Database Configuration — Slick 3.0.0 documentation</a>
+</p><h1 id="Database+Configuration">Database Configuration<a href="#Database+Configuration" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><p>どのようにしてデータベースへ接続するかを、<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.jdbc.JdbcBackend@Database:Database">Database</a>オブジェクトを作成する際に情報を内包して、Slickに教えてあげなくてはならない。<em>slick.jdbc.JdbcBackend.Database</em> のためのいくつかの<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.jdbc.JdbcBackend$DatabaseFactoryDef">factory methods</a>が存在する。
+<!-- You can tell Slick how to connect to the JDBC database of your choice by creating a Database <slick.jdbc.JdbcBackend@Database:Database> object, which encapsulates the information. There are several factory methods <slick.jdbc.JdbcBackend$DatabaseFactoryDef> on slick.jdbc.JdbcBackend.Database that you can use depending on what connection data you have available. -->
+</p><h2 id="Using+Typesafe+Config">Using Typesafe Config<a href="#Using+Typesafe+Config" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p><a href="https://playframework.com/">Play</a>や<a href="http://akka.io/">Akka</a>で使われてる<code>application.conf</code>に、<a href="https://github.com/typesafehub/config">Typesafe Config</a>でデータベースに接続する設定を記述するのを推奨する。
+<!-- The prefered way to configure database connections is through Typesafe Config\_ in your `application.conf`, which is also used by Play\_ and Akka\_ for their configuration. -->
+</p><pre><code class="prettyprint lang-scala">mydb = {
+  dataSourceClass = &quot;org.postgresql.ds.PGSimpleDataSource&quot;
+  properties = {
+    databaseName = &quot;mydb&quot;
+    user = &quot;myuser&quot;
+    password = &quot;secret&quot;
+  }
+  numThreads = 10
+}
+</code></pre><p><em>Database.forConfig</em> を用いて、設定を読み込むことができる。引数などの詳細については<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.jdbc.JdbcBackend$DatabaseFactoryDef@forConfig(String,Config,Driver):Database">API documentation</a>を見て欲しい。
+<!-- Such a configuration can be loaded with Database.forConfig (see the API documentation <slick.jdbc.JdbcBackend$DatabaseFactoryDef@forConfig(String,Config,Driver):Database> of this method for details on the configuration parameters). -->
+</p><pre><code class="prettyprint lang-scala">val db = Database.forConfig(&quot;mydb&quot;)
+</code></pre><h2 id="Using+a+JDBC+URL">Using a JDBC URL<a href="#Using+a+JDBC+URL" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>JDBC URLは<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.jdbc.JdbcBackend$DatabaseFactoryDef@forURL(String,String,String,Properties,String,AsyncExecutor,Boolean):DatabaseDef">forURL</a>に渡してあげる（URLについては各種利用するデータベースのJDBCドライバーのドキュメントを読んで欲しい）。
+<!-- You can pass a JDBC URL to forURL <slick.jdbc.JdbcBackend$DatabaseFactoryDef@forURL(String,String,String,Properties,String,AsyncExecutor,Boolean):DatabaseDef>. (see your database's JDBC driver's documentation for the correct URL syntax). -->
+</p><pre><code class="prettyprint lang-scala">val db = Database.forURL(&quot;jdbc:h2:mem:test1;DB_CLOSE_DELAY=-1&quot;, driver=&quot;org.h2.Driver&quot;)
+</code></pre><p>ここでは、JVMが終了するまで使うことの出来る<code>test1</code>という名前の、新しい空のインメモリH2データベースへの情報を記述し、接続を作っている（<code>DB_CLOSE_DELAY=-1</code>ってのはH2データベース特有の設定だ）。
+<!-- Here we are connecting to a new, empty, in-memory H2 database called `test1` and keep it resident until the JVM ends (`DB_CLOSE_DELAY=-1`, which is H2 specific). -->
+</p><h2 id="Using+a+DataSource">Using a DataSource<a href="#Using+a+DataSource" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p><a href="http://docs.oracle.com/javase/7/docs/api/javax/sql/DataSource.html">DataSource</a>は、<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.jdbc.JdbcBackend$DatabaseFactoryDef@forDataSource(DataSource,AsyncExecutor):DatabaseDef">forDataSource</a>に渡してあげる。これは、アプリケーションフレームワークのコネクションプールから得られたものを、Slickのプールへと繋げている。
+<!-- You can pass a DataSource <javax/sql/DataSource> object to forDataSource <slick.jdbc.JdbcBackend$DatabaseFactoryDef@forDataSource(DataSource,AsyncExecutor):DatabaseDef>. If you got it from the connection pool of your application framework, this plugs the pool into Slick. -->
+</p><pre><code class="prettyprint lang-scala">val db = Database.forDataSource(dataSource: javax.sql.DataSource)
+</code></pre><h2 id="Using+a+JNDI+Name">Using a JNDI Name<a href="#Using+a+JNDI+Name" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>もし<a href="http://en.wikipedia.org/wiki/JNDI">JNDI</a>を使っているのならば、<a href="http://docs.oracle.com/javase/7/docs/api/javax/sql/DataSource.html">DataSource</a>オブジェクトを見つけられるように、JNDIの名前を<a href="forName">forName</a>へ渡してあげたら良い。
+<!-- If you are using JNDI you can pass a JNDI name to forName <slick.jdbc.JdbcBackend$DatabaseFactoryDef@forName(String,AsyncExecutor):DatabaseDef> under which a DataSource <javax/sql/DataSource> object can be looked up. -->
+</p><pre><code class="prettyprint lang-scala">val db = Database.forName(jndiName: String)
+</code></pre><h2 id="Database+thread+pool">Database thread pool<a href="#Database+thread+pool" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>どの<code>Database</code>も、データベースのI/O Actionを非同期に実行するためのスレッドプールを管理する<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.util.AsyncExecutor">AsyncExecutor</a>を保持している。そのサイズは、<code>Database</code>オブジェクトが最も良いパフォーマンスを出せるように調整されたものとなる。昔からある同期的なアプリケーションなどにおいては、コネクションプール数を調整すべきだ（<a href="http://brettwooldridge.github.io/HikariCP/">HikariCP</a>の<a href="https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing">About Pool Sizing</a>などのドキュメントも参考にして欲しい）。<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.jdbc.JdbcBackend$DatabaseFactoryDef@forConfig(String,Config,Driver):Database">Database.forConfig</a>を用いると、スレッドプールは、直接外部の設定からコネクションパラメータなどと一緒に設定する事が出来る。もし<code>Database</code>を取得するのに、その他のファクトリーメソッドを用いているのなら、デフォルトの設定をそのまま用いるか、<code>AsyncExecutor</code>をカスタマイズして利用して欲しい。
+<!-- Every `Database` contains an slick.util.AsyncExecutor that manages the thread pool for asynchronous execution of Database I/O Actions. Its size is the main parameter to tune for the best performance of the `Database` object. It should be set to the value that you would use for the size of the *connection pool* in a traditional, blocking application (see About Pool Sizing\_ in the HikariCP\_ documentation for further information). When using Database.forConfig <slick.jdbc.JdbcBackend$DatabaseFactoryDef@forConfig(String,Config,Driver):Database>, the thread pool is configured directly in the external configuration file together with the connection parameters. If you use any other factory method to get a `Database`, you can either use a default configuration or specify a custom AsyncExecutor: -->
+</p><pre><code class="prettyprint lang-scala">val db = Database.forURL(&quot;jdbc:h2:mem:test1;DB_CLOSE_DELAY=-1&quot;, driver=&quot;org.h2.Driver&quot;,
+  executor = AsyncExecutor(&quot;test1&quot;, numThreads=10, queueSize=1000))
+</code></pre><h2 id="Connection+pools">Connection pools<a href="#Connection+pools" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>コネクションプールを用いているのなら（プロダクション環境などでは利用していると思うが…）、コネクションプール数の最小値は少なくとも同じ数分だけ設定すべきである。（<code>When using a connection pool the minimum size of the connection pool should also be set to at least the same size.</code>）コネクションプール数の最大値については、同期的なアプリケーションにおいて利用される数より多めの値を設定するのが良い。スレッドプール数を超えるコネクションは、データベースセッションをオープンし続けるために他のコネクションが要求された際に用いられる事になる（例として、トランザクション中の非同期的な計算結果を待っている時など）。
+<!-- When using a connection pool (which is always recommended in production environments) the *minimum* size of the *connection pool* should also be set to at least the same size. The *maximum* size of the *connection pool* can be set much higher than in a blocking application. Any connections beyond the size of the *thread pool* will only be used when other connections are required to keep a database session open (e.g. while waiting for the result from an asynchronous computation in the middle of a transaction) but are not actively doing any work on the database. -->
+</p><p>ちなみに、<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.jdbc.JdbcBackend$DatabaseFactoryDef@forConfig(String,Config,Driver):Database">Database.forConfig</a>を利用した際には、スレッドプール数をもとに系あsんされたコネクションプール数がデフォルト値として提供される。
+<!-- Note that reasonable defaults for the connection pool sizes are calculated from the thread pool size when using Database.forConfig <slick.jdbc.JdbcBackend$DatabaseFactoryDef@forConfig(String,Config,Driver):Database>. -->
+</p><p>Slickはプリペアドステートメントを利用可能な場所では利用しているものの、Slick側でそれらをキャッシュしていない。それゆえ、あなた自身でコネクションプールの設定時にプリペアドステートメントのキャッシュを有効化して欲しい。
+<!-- Slick uses *prepared* statements wherever possible but it does not cache them on its own. You should therefore enable prepared statement caching in the connection pool's configuration. -->
+</p><h2 id="DatabaseConfig">DatabaseConfig<a href="#DatabaseConfig" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p><code>Database</code>の設定のトップにおいて、<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.backend.DatabaseConfig">DatabaseConfig</a>のフォーム内にSlickドライバーに合う<code>Database</code>を追加する設定も置くことが出来る。これを利用すると、異なるデータベースを利用する上で、簡単に設定ファイルを変更出来るようにするための抽象化が簡単に行える。
+<!-- On top of the configuration syntax for `Database`, there is another layer in the form of slick.backend.DatabaseConfig which allows you to configure a Slick driver plus a matching `Database` together. This makes it easy to abstract over different kinds of database systems by simply changing a configuration file. -->
+</p><p><code>driver</code>にSlickのドライバーを、<code>db</code>にデータベースの設定を記述した<code>DatabaseConfig</code>の例は次のようになる。
+<!-- Here is a typical `DatabaseConfig` with a Slick driver object in `driver` and the database configuration in `db`: -->
+</p><pre><code class="">tsql {
+  driver = &quot;slick.driver.H2Driver$&quot;
+  db {
+    connectionPool = disabled
+    driver = &quot;org.h2.Driver&quot;
+    url = &quot;jdbc:h2:mem:tsql1;INIT=runscript from 'src/main/resources/create-schema.sql'&quot;
+  }
+}
+</code></pre><div class="bottom nav span-16">
+                        <em>Next Page</em>
+                        <span class="arrow">❧</span>
+                        <a href="Database+I%2FO+Actions.html"> Database I/O Actions </a>                        
+                        
+                      </div><div class="tocwrapper show">
+      <a class="tochead nav" style="display: none" href="#toc">❦</a>
+      <a name="toc"></a>
+      <h4 class="toctitle">Contents</h4>
+      <div class="tocbody">
+      <div><a href="slick-doc-ja+3.0.html">slick-doc-ja 3.0</a></div><ol class="toc"> <li><div><a href="Introduction.html">Introduction</a></div></li><li><div><a href="Supported+Databases.html">Supported Databases</a></div></li><li><div><a href="Getting+Started.html">Getting Started</a></div></li><li><div class="current">Database Configuration</div></li><li><div><a href="Database+I%2FO+Actions.html">Database I/O Actions</a></div></li><li><div><a href="Schemas.html">Schemas</a></div></li><li><div><a href="Queries.html">Queries</a></div></li><li><div><a href="Schema+Code+Generation.html">Schema Code Generation</a></div></li><li><div><a href="User-Defined+Features.html">User-Defined Features</a></div></li><li><div><a href="Plain+SQL+Queries.html">Plain SQL Queries</a></div></li><li><div><a href="Coming+from+ORM+to+Slick.html">Coming from ORM to Slick</a></div></li><li><div><a href="Coming+from+SQL+to+Slick.html">Coming from SQL to Slick</a></div></li><li><div><a href="Upgrade+Guides.html">Upgrade Guides</a></div></li><li><div><a href="Slick+Extensions.html">Slick Extensions</a></div></li><li><div><a href="Direct+Embedding+%28Deprecated%29.html">Direct Embedding (Deprecated)</a></div></li><li><div><a href="Slick+TestKit.html">Slick TestKit</a></div></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
+          </div>
+        </div>
+        <div class="header">
+          <div class="container">
+        <div class="span-16 prepend-1 append-1">
+          <div class="span-16 top nav">
+            <div class="span-16 title">
+              <span>slick-doc-ja 3.0</span> — Database Configuration
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        <a href="http://github.com/krrrr38/slick-doc-ja" class="fork nav"><img src="img/fork.png" alt="Fork me on GitHub"/></a>
+        <div class="highlight-outer">
+              <div class="highlight-menu">
+                <ul>
+                  <li><button id="highlight-button-twitter"><img src="img/twitter-bird-dark-bgs.png"/></button></li>
+                </ul>
+              </div>
+            </div>
+      </body>
+    </html>

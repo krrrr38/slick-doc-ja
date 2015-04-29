@@ -1,0 +1,180 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html manifest="pamflet.manifest">
+      <head>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
+        <title>slick-doc-ja 3.0 — Introduction</title>
+        
+        <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/blueprint/grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/> 
+        <!--[if lt IE 8]>
+          <link rel="stylesheet" href={ relativeBase + "css/blueprint/ie.css" } type="text/css" media="screen, projection"/>
+        <![endif]-->
+        <link rel="stylesheet" href="css/pamflet.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamflet-print.css" type="text/css" media="print"/>
+        <link rel="stylesheet" href="css/pamflet-grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamfletheight_2em_2em.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.collapse.js"></script>
+        <script type="text/javascript" src="js/pamflet.js"></script>
+        <script type="text/javascript">
+          Pamflet.page.language = 'en';
+        </script>
+        <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+        <link rel="stylesheet" href="css/layout.css" type="text/css" media="screen, projection"/>
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-37666832-7']);
+            _gaq.push(['_trackPageview']);
+            (function() {
+              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+            </script>
+        <script type="text/javascript">
+              Pamflet.twitter = '#slick';
+            </script>
+      </head>
+      <body class="color_scheme-redmond">
+        <a class="page prev nav" href="slick-doc-ja+3.0.html">
+            <span class="space">&nbsp;</span>
+            <span class="flip arrow">❧</span>
+          </a><a class="page next nav" href="Supported+Databases.html">
+            <span class="space">&nbsp;</span>
+            <span class="arrow">❧</span>
+          </a>
+        <div class="container contentswrapper">
+          <div class="span-16 prepend-1 append-1 contents">
+            <p>Slick 3.0.0 documentation - 01 Introduction
+</p><p><a href="http://slick.typesafe.com/doc/3.0.0/introduction.html">Permalink to Introduction — Slick 3.0.0 documentation</a>
+</p><h1 id="Introduction">Introduction<a href="#Introduction" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><h2 id="What+is+Slick">What is Slick<a href="#What+is+Slick" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><!-- What is Slick -->
+<p>Slick (“Scala Language-Integrated Connection Kit”)は<a href="http://www.typesafe.com">Typesafe社</a>によってリレーショナルデータベースを簡単に扱うための、ScalaのFRM (Functional Relational Mapping)ライブラリである。まるでScalaのコレクションを扱うかのような操作でデータベースにアクセスし、データを操作出来る。SQLを直接扱うことも可能である。<a href="https://playframework.com/">Play</a>や<a href="http://akka.io/">Akka</a>を基にしたリアクティブアプリケーションに完璧にフィットするよう、データベースへの処理は非同期に実行される。
+</p><!-- Slick ("Scala Language-Integrated Connection Kit") is [Typesafe](http://www.typesafe.com)'s Functional Relational Mapping (FRM) library for Scala that makes it easy to work with relational databases. It allows you to work with stored data almost as if you were using Scala collections while at the same time giving you full control over when a database access happens and which data is transferred. You can also use SQL directly. Execution of database actions is done asynchronously, making Slick a perfect fit for your reactive applications based on Play\_ and Akka\_. -->
+<pre><code class="prettyprint lang-scala">val limit = 10.0
+// クエリはこのように書く事が出来る
+( for( c &lt;- coffees; if c.price &lt; limit ) yield c.name ).result
+// こちらのSQLと等しい: select COF_NAME from COFFEES where PRICE &lt; 10.0
+</code></pre><p>SQLを直接書くのに比べ、Scalaを通してSQLを発行すると、コンパイル時により良いクエリを型安全に提供する事が出来る。Slickは独自のクエリコンパイラを用いてDBに対するクエリを発行する。
+</p><!--When using Scala instead of SQL for your queries you profit from the compile-time safety(何これ) and compositionality. Slick can generate queries for different backends including your own, using its extensible query compiler. -->
+<p>すぐにSlickを試したいのなら、<a href="https://typesafe.com/activator">Typesafe Activator</a>を利用して、<a href="https://typesafe.com/activator/template/hello-slick-3.0">Hello Slick template</a>を試してみると良い。<a href="http://slick.typesafe.com/doc/3.0.0/supported-databases.html">こちら</a>を読むと、Slickがコードを生成したり出来る、サポートされたデータベースの概要が分かる。
+</p><!-- Get started learning Slick in minutes using the Hello Slick template\_ in Typesafe Activator\_. See here \<supported-databases\> for an overview of the supported database systems for which Slick can generate code. -->
+<h2 id="Functional+Relational+Mapping">Functional Relational Mapping<a href="#Functional+Relational+Mapping" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>関数型言語を用いるプログラマは長い間、リレーショナルデータベースを用いる際に、Object-RelationalとObject-Mathのミスマッチに悩まされてきた。Slickの新たなFRMのパラダイムは、Scalaを通して、疎結合で最小限の設定のみで、リレーショナルデータベースへ接続する複雑さを抽象化する事を可能にした。。
+</p><!-- Functional programmers have long suffered Object-Relational and Object-Math impedance mismatches when connecting to relational databases. Slick's new Functional Relational Mapping (FRM) paradigm allows mapping to be completed within Scala, with loose-coupling, minimal configuration requirements, and a number of other major advantages that abstract the complexities away from connecting with relational databases. -->
+<p>我々はリレーショナルモデルと闘おうとはしていない。ただ、関数型のパラダイムを通してリレーショナルモデルを包み込んだのだ。オブジェクトモデルとデータベースモデルのギャップに対してのブリッジを作ることで、Scala側へデータベースモデルを持ち込み、結果としてエンジニアはSQLを書く必要がなくなった。
+</p><!-- We don't try to fight the relational model, we embrace it through a functional paradigm. Instead of trying to bridge the gap between the object model and the database model, we've brought the database model into Scala so developers don't need to write SQL code. -->
+<pre><code class="prettyprint lang-scala">lass Coffees(tag: Tag) extends Table[(String, Double)](tag, &quot;COFFEES&quot;) {
+  def name = column[String](&quot;COF_NAME&quot;, O.PrimaryKey)
+  def price = column[Double](&quot;PRICE&quot;)
+  def * = (name, price)
+}
+val coffees = TableQuery[Coffees]
+</code></pre><p>Slickはデータベースに関する事柄を直接Scala側へと統合させる。そして、メモリ上のデータを操作するのと同じように、従来のScalaのクラスやコレクションを扱うかのように、クエリを発行して外部のデータを操作するのである。
+</p><!-- Slick integrates databases directly into Scala, allowing stored and remote data to be queried and processed in the same way as in-memory data, using ordinary Scala classes and collections. -->
+<pre><code class="prettyprint lang-scala">// nameカラムのみを取り出すクエリ (select NAME from COFFEES)
+coffees.map(_.name)
+...
+// 10.0未満のpriceで絞り込んだクエリ (select * from COFFEES where PRICE &lt; 10.0)
+coffees.filter(_.price &lt; 10.0)
+</code></pre><p>これは、いつデータベースにアクセスしただとか、どのデータが変更されたかなどといったアクションを全てコントロール出来る。SlcikのFRMに含まれる言語に統合されたクエリモデルは、MicrosoftのLINQや、EricssonのMnesiaの早期のコンセプトに影響を受けている。
+</p><!-- This enables full control over when a database is accessed and which data is transferred. The language integrated query model in Slick's FRM is inspired by the LINQ project at Microsoft and leverages concepts tracing all the way back to the early work of Mnesia at Ericsson. -->
+<p>関数型言語のためのSlickのFRMにおけるアプローチは、以下のようないくつかの利点を持っている:
+</p><!-- Some of the key benefits of Slick's FRM approach for functional programming include: -->
+<ul><li>事前最適化による効率化
+<!-- -   Efficiency with Pre-Optimization -->
+</li></ul><p>FRMはORMとは異なり、より効率的にデータベースへ接続を行う。これは、データベースとの接続を最適化する機能を備えているためであり、さらにFRMを用いる事であなたはその仕組みを知らなくても利用が出来る。より高速化されたアプリを作るためには、FRMはORMに比べ役に立つ。
+</p><!-- FRM is more efficient way to connect; unlike ORM it has the ability to pre-optimize its communication with the database - and with FRM you get this out of the box. The road to making an app faster is much shorter with FRM than ORM. -->
+<ul><li>型安全なため、迷惑なトラブルシューティングを行う必要が無い
+<!-- -   No More Tedious Troubleshooting with Type Safety -->
+</li></ul><p>FRMは型安全にデータベースのクエリを作成する事が出来る。今まで型のないただの文字列だけでエラーを探してきたデベロッパーにとっても、今や自動的にコンパイラがエラーを見つけてきてくれるのだ。
+</p><!-- FRM brings type safety to building database queries. Developers are more productive because the compiler finds errors automatically versus the typical tedious troubleshooting required of finding errors in untyped strings. -->
+<p><code>price</code>カラムのタイポがある場合には、コンパイラはこんな感じであなたにエラーを知らせてくれる。
+<!-- Misspelled the column name `price`? The compiler will tell you: -->
+</p><pre><code class="">GettingStartedOverview.scala:89: value prices is not a member of com.typesafe.slick.docs.GettingStartedOverview.Coffees
+        coffees.map(_.prices).result
+                      ^
+</code></pre><p>他にも、こんな型エラーを知らせてくれる。
+<!-- The same goes for type errors: -->
+</p><pre><code class="">GettingStartedOverview.scala:89: type mismatch;
+ found   : slick.driver.H2Driver.StreamingDriverAction[Seq[String],String,slick.dbio.Effect.Read]
+    (which expands to)  slick.profile.FixedSqlStreamingAction[Seq[String],String,slick.dbio.Effect.Read]
+ required: slick.dbio.DBIOAction[Seq[Double],slick.dbio.NoStream,Nothing]
+        coffees.map(_.name).result
+                            ^
+</code></pre><ul><li>クエリを作成するための、より生産性のある組み立てしやすいモデル
+<!-- -   A More Productive, Composable Model for Building Queries -->
+</li></ul><p>FRMはクエリを作成するための組立可能なモデルをサポートしている。これはクエリを作るためにいくつかのピースを組み立てるのに非常に自然なモデルになっているし、コード内で再利用もしやすいようになっている。
+<!-- FRM supports a composable model for building queries. It's a very natural model to compose pieces together to build a query, and then reuse pieces across your code base. -->
+</p><pre><code class="prettyprint lang-scala">// priceが10未満で、name順にソートしたcoffeeの名前のみ取り出すクエリを作る
+coffees.filter(_.price &lt; 10.0).sortBy(_.name).map(_.name)
+// select name from COFFEES where PRICE &lt; 10.0 order by NAME
+</code></pre><h2 id="Reactive+Applications">Reactive Applications<a href="#Reactive+Applications" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>Slickは非同期を中心にデザインされたアプリケーションや、<a href="http://www.reactivemanifesto.org/">Reactive Manifesto</a>に従って作られたアプリケーションにとって非常に使いやすいようになっている。一般的なブロッキングするようなシンプルなデータベースAPIとは異なり、Slickは以下の事をあなたに提供する。
+<!-- Slick is easy to use in asynchronous, non-blocking application designs, and supports building applications according to the Reactive Manifesto\_. Unlike simple wrappers around traditional, blocking database APIs, Slick gives you: -->
+</p><ul><li>I/OとCPUに処理が集中するコードを綺麗に分割している。I/O処理が分離されていることで、バックグラウンドでI/O処理を待っている間にアプリケーションはCPUに処理が集中する処理をメインスレッドで上手く動かす事が出来る。
+</li><li>即応性: データベースがあなたのアプリケーションを支えきれなくなった時、Slickは(状況を悪化させるような)必要以上のスレッドを作ったりはしないし、なんらかのI/O処理をロックしたりもしない。バックプレッシャーはデータベースI/Oアクションのためのキューを通して効率的に管理され、少ないリソースに対してはリクエストを制限し、もし限界に達したならば即座に失敗させる。
+</li><li>非同期ストリーミングのための、<a href="http://www.reactive-streams.org/">Reactive Streams</a>
+</li><li>データベースリソースの効率的な利用: Slickはあなたのデータベースサーバの並列度（同時にアクティブになっているジョブの数）やリソースの利用度（現在停止しているデータベースセッションの数）を簡単に、そして正確に調整させれる。
+<!-- -   Clean separation of I/O and CPU-intensive code: Isolating I/O allows you to keep your main thread pool busy with CPU-intensive parts of the application while waiting for I/O in the background. -->
+<!-- -   Resilience under load: When a database cannot keep up with the load of your application, Slick will not create more and more threads (thus making the situation worse) or lock out all kinds of I/O. Back-pressure is controlled efficiently through a queue (of configurable size) for database I/O actions, allowing a certain number of requests to build up with very little resource usage and failing immediately once this limit has been reached. -->
+<!-- -   Reactive Streams\_ for asynchronous streaming. -->
+<!-- -   Efficient utilization of database resources: Slick can be tuned easily and precisely for the parallelism (number of concurrent active jobs) and resource ussage (number of currently suspended database sessions) of your database server. -->
+</li></ul><h2 id="Plain+SQL+Support">Plain SQL Support<a href="#Plain+SQL+Support" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>SlickのScalaベースなクエリAPIは、Scalaコレクションを扱うかのように、データベースクエリを記述することが出来る。<a href="http://slick.typesafe.com/doc/3.0.0/gettingstarted.html">Getting Started</a>は、このAPIに焦点を当てたマニュアルになっている。
+<!-- The Scala-based query API for Slick allows you to write database queries like queries for Scala collections. Please see gettingstarted for an introduction. Most of this user manual focuses on this API. -->
+</p><p>もし、あなたが独自のSQL文を通常のSlickのクエリと同様に非同期に実行したいと言うのならば、<a href="http://slick.typesafe.com/doc/3.0.0/sql.html">Plain SQL</a> APIを利用する事が出来る。
+<!-- If you want to write your own SQL statements and still execute them asynchronously like a normal Slick queries, you can use the Plain SQL\<sql\> API: -->
+</p><pre><code class="prettyprint lang-scala">val limit = 10.0
+sql&quot;select COF_NAME from COFFEES where PRICE &lt; $limit&quot;.as[String]
+// 変数はSQLインジェクションが無いように自動的に束縛される
+// select COF_NAME from COFFEES where PRICE &lt; ?
+</code></pre><h2 id="License">License<a href="#License" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><blockquote><p>Slick is released under a BSD-Style free and open source software <a href="https://github.com/slick/slick/blob/3.0.0/LICENSE.txt">license</a>. See the chapter on the commercial <a href="http://slick.typesafe.com/doc/3.0.0/extensions.html">Slick Extensions</a> add-on package for details on licensing the Slick drivers for the big commercial database systems.
+</p></blockquote><h2 id="Next+Steps">Next Steps<a href="#Next+Steps" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><ul><li>Slickを使うのが初めてならば、このまま<a href="http://slick.typesafe.com/doc/3.0.0/gettingstarted.html">Getting Started</a>へ
+</li><li>もし古いバージョンのSLickを使っていたならば、<a href="http://slick.typesafe.com/doc/3.0.0/upgrade.html">Upgrade Guides</a>へ
+</li><li>以前にORMを利用していたならば、<a href="http://slick.typesafe.com/doc/3.0.0/orm-to-slick.html">Comming from ORM to Slick</a>へ
+</li><li>もしSQLに詳しいのならば、<a href="http://slick.typesafe.com/doc/3.0.0/sql-to-slick.html">Coming from SQL to Slick</a>
+</li></ul><!-- -   If you are new to Slick, continue to Getting Started \<gettingstarted\> -->
+<!-- -   If you have used an older version of Slick, make sure to read the Upgrade Guides \<upgrade\> -->
+<!-- -   If you have used an ORM before, see Coming from ORM to Slick \<orm-to-slick\> -->
+<!-- -   If you are familiar with SQL, see Coming from SQL to Slick \<sql-to-slick\> -->
+<div class="bottom nav span-16">
+                        <em>Next Page</em>
+                        <span class="arrow">❧</span>
+                        <a href="Supported+Databases.html"> Supported Databases </a>                        
+                        
+                      </div><div class="tocwrapper show">
+      <a class="tochead nav" style="display: none" href="#toc">❦</a>
+      <a name="toc"></a>
+      <h4 class="toctitle">Contents</h4>
+      <div class="tocbody">
+      <div><a href="slick-doc-ja+3.0.html">slick-doc-ja 3.0</a></div><ol class="toc"> <li><div class="current">Introduction</div></li><li><div><a href="Supported+Databases.html">Supported Databases</a></div></li><li><div><a href="Getting+Started.html">Getting Started</a></div></li><li><div><a href="Database+Configuration.html">Database Configuration</a></div></li><li><div><a href="Database+I%2FO+Actions.html">Database I/O Actions</a></div></li><li><div><a href="Schemas.html">Schemas</a></div></li><li><div><a href="Queries.html">Queries</a></div></li><li><div><a href="Schema+Code+Generation.html">Schema Code Generation</a></div></li><li><div><a href="User-Defined+Features.html">User-Defined Features</a></div></li><li><div><a href="Plain+SQL+Queries.html">Plain SQL Queries</a></div></li><li><div><a href="Coming+from+ORM+to+Slick.html">Coming from ORM to Slick</a></div></li><li><div><a href="Coming+from+SQL+to+Slick.html">Coming from SQL to Slick</a></div></li><li><div><a href="Upgrade+Guides.html">Upgrade Guides</a></div></li><li><div><a href="Slick+Extensions.html">Slick Extensions</a></div></li><li><div><a href="Direct+Embedding+%28Deprecated%29.html">Direct Embedding (Deprecated)</a></div></li><li><div><a href="Slick+TestKit.html">Slick TestKit</a></div></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
+          </div>
+        </div>
+        <div class="header">
+          <div class="container">
+        <div class="span-16 prepend-1 append-1">
+          <div class="span-16 top nav">
+            <div class="span-16 title">
+              <span>slick-doc-ja 3.0</span> — Introduction
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        <a href="http://github.com/krrrr38/slick-doc-ja" class="fork nav"><img src="img/fork.png" alt="Fork me on GitHub"/></a>
+        <div class="highlight-outer">
+              <div class="highlight-menu">
+                <ul>
+                  <li><button id="highlight-button-twitter"><img src="img/twitter-bird-dark-bgs.png"/></button></li>
+                </ul>
+              </div>
+            </div>
+      </body>
+    </html>
