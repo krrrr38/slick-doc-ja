@@ -1,16 +1,29 @@
-p {
-    width: inherit;
-}
-
 h1 {
     background-color: #ddd;
     padding: 15px;
     color: #5e5e5e;
 }
 
+body.color_scheme-monokai h1 {
+    color: #000;
+}
+
 h2 {
     color: rgba(218, 56, 48, 0.9);
     border-bottom: 1px solid #3465a4;
+}
+
+body.color_scheme-github h2 {
+    color: rgba(218, 56, 48, 0.9);
+}
+
+p {
+    text-indent: 1em;
+    width: inherit;
+}
+
+p + p {
+    text-indent: 1em;
 }
 
 .contents {
@@ -29,6 +42,11 @@ h2 {
     }
 }
 
+.header .container div {
+    width: 100%;
+}
+
 .bottom.nav {
+    width: 100%;
     float: none;
 }

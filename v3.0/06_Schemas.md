@@ -2,16 +2,16 @@ Slick 3.0.0 documentation - 06 Schemas
 
 [Permalink to Schemas — Slick 3.0.0 documentation](http://slick.typesafe.com/doc/3.0.0/schemas.html)
 
-Schemas
+スキーマ
 =======
 
-この章では、既存のデータベースを持たない新しいアプリケーションを作る際に役立つものとして、Scalaのコードでどのようにしてデータベースのスキーマを手で記述するのかを説明する。もしデータベースのスキーマを既に持っているのなら、[code generator](http://slick.typesafe.com/doc/3.0.0/code-generation.html)を利用することで、手で書く手間は省ける。
+この章では、既存のデータベースを持たない新しいアプリケーションを作る際、どのようにしてScalaのコードでデータベーススキーマを記述するのかを説明する。もしデータベーススキーマを既に持っているのなら、[code generator](http://slick.typesafe.com/doc/3.0.0/code-generation.html)を利用することで、手で書く手間は省ける。
 <!-- This chapter describes how to work with database schemas in Scala code, in particular how to write them manually, which is useful when you start writing an application without a pre-existing database. If you already have a schema in the database, you can also use the code generator \<code-generation\> to take this work off your hands. -->
 
 Table Rows
 ----------
 
-型安全なクエリにするためのScalaのAPIを利用するため、データベーススキーマに応じた`Table`クラスを定義する必要がある。これは、テーブルの構造を表現するものである。
+型安全なクエリをScalaのAPIを通して利用するには、データベーススキーマに応じた`Table`クラスを定義する必要がある。これは、テーブルの構造を表現するものである。
 <!-- In order to use the Scala API for type-safe queries, you need to define `Table` row classes for your database schema. These describe the structure of the tables: -->
 
 ```scala
@@ -25,7 +25,7 @@ class Coffees(tag: Tag) extends Table[(String, Int, Double, Int, Int)](tag, "COF
 }
 ```
 
-全てのカラムは、`column`メソッドを通して定義される。どのカラムもScalaの型と、データベースで利用されるカラム名を持つ（カラム名は一般的には大文字）。以下のプリミティブな型は、`JdbcProfile`においてJDBCベースなデータベースのためのサポートがなされている（個々のデータベースドライバーによっていくつかの制限が存在するが）。
+全てのカラムは、`column`メソッドを通して定義される。どのカラムもScalaの型と、データベースで利用されるカラム名を持つ（カラム名は一般的には大文字）。以下のプリミティブな型は、`JdbcProfile`においてJDBCベースなデータベースのためのサポートがなされている（個々のデータベースドライバによっていくつかの制限が存在するが）。
 <!-- All columns are defined through the `column` method. Each column has a Scala type and a column name for the database (usually in upper-case). The following primitive types are supported out of the box for JDBC-based databases in `JdbcProfile` (with certain limitations imposed by the individual database drivers):  -->
 
 -   *数値型*: Byte, Short, Int, Long, BigDecimal, Float, Double
@@ -41,11 +41,11 @@ Nullになりえるカラムについては、`T`がプリミティブ型でサ�
 
 > **Note**
 >
-> このOptionに対する全ての操作は、ScalaのOption操作と異なり、データベースのnullプロパゲーションセマンティクスを用いてしまう事に注意して欲しい。特に、`None === None`という式は`None`になる。これはSlickのメジャーリリースで将来的に変更されるかもしれない。
+> このOptionに対する全ての操作は、ScalaのOption操作と異なり、データベースのnullプロパゲーションセマンティクスを用いることになる点に注意して欲しい。特に、`None === None`という式は`None`になる。これはSlickのメジャーリリースで将来的に変更されるかもしれない。
 
 <!-- **note** Currently all operations on Option values use the database's null propagation semantics which may differ from Scala's Option semantics. In particular, `None === None` evaluates to `None`. This behaviour may change in a future major release of Slick. -->
 
-カラム名のうしろには、`column`の定義につけるオプションを付与する事ができる。適用可能なオプションは、テーブルの`O`オブジェクトを通して利用出来る。以下のオプションが、`JdbcProfile`用に定義されている。
+カラム名の後ろには、`column`の定義につけるオプションを付与する事ができる。適用可能なオプションは、テーブルの`O`オブジェクトを通して利用出来る。以下のオプションが、`JdbcProfile`用に定義されている。
 <!-- After the column name, you can add optional column options to a `column` definition. The applicable options are available through the table's `O` object. The following ones are defined for `JdbcProfile`:  -->
 
 - `PrimaryKey`
@@ -53,7 +53,7 @@ Nullになりえるカラムについては、`T`がプリミティブ型でサ�
 <!-- :   Mark the column as a (non-compound) primary key when creating the     DDL statements.  -->
 
 - `Default[T](defaultValue: T)`
-	- カラムの値を設定せずにテーブルにデータを挿入するする際のデフォルト値を設定する。この情報は、DDLステートメントを作成する時のみに利用される。
+	- カラムの値を設定せずにテーブルにデータを挿入する際のデフォルト値を設定する。この情報は、DDLステートメントを作成する時のみに利用される。
 
 <!-- :   Specify a default value for inserting data into the table without     this column. This information is only used for creating DDL     statements so that the database can fill in the missing information. -->
 
@@ -62,7 +62,7 @@ Nullになりえるカラムについては、`T`がプリミティブ型でサ�
 <!-- :   Use a non-standard database-specific type for the DDL statements     (e.g. `DBType("VARCHAR(20)")` for a `String` column). -->
 
 - `AutoInc`
-	- DDBステートメントを作成する際に、このカラムがAutoIncrementさせるカラムであることを指定させる。他のカラムオプションと異なりこれはDDL作成時以外にも利用される。多くのデータベースがAutoIncなカラムでないものが値を返すのを許容していないため、Slickは値を返すカラムが適切にAutoIncなカラムになっているかをチェックしている。
+	- DDBステートメントを作成する際に、このカラムがauto incrementさせるカラムであることを指定する。他のカラムオプションと異なりこれはDDL作成時以外にも利用される。多くのデータベースがAutoIncなカラム以外から値を返すのを許容していないため、Slickは値を返すカラムが適切にAutoIncなカラムになっているかをチェックしている。
 
 <!-- :   Mark the column as an auto-incrementing key when creating the DDL     statements. Unlike the other column options, this one also has a     meaning outside of DDL creation: Many databases do not allow     non-AutoInc columns to be returned when inserting data (often     silently ignoring other columns), so Slick will check if the return     column is properly marked as AutoInc where needed.  -->
 
@@ -71,7 +71,7 @@ Nullになりえるカラムについては、`T`がプリミティブ型でサ�
 
 <!-- :   Explicitly mark the column as nullable or non-nullable when creating     the DDL statements for the table. Nullability is otherwise     determined from the type (Option or non-Option). There is usually no     reason to specify these options.  -->
 
-全てのテーブルはデフォルトの射影として`*`メソッドを定義している。これは、クエリの結果として列を返す際に、あなたがどんな情報を求めているのかを説明するためのものである。Slickの`*`射影は、データベース内のものと一致している必要は無い。何かしらの計算結果を追加したり、いくつかのカラムを省いて使っても良い。`*`射影の結果は、`Table`の型引数と一致する必要があり、これはマッピングされた何かしらのクラスか、カラムが用いられることになるだろう。
+全てのテーブルはデフォルトの射影として`*`メソッドを定義している。これは、クエリの結果として列を返す際に、あなたがどんな情報を求めているのかを説明するためのものである。Slickの`*`射影は、データベース内のカラムと一致している必要は無い。何かしらの計算結果を追加したり、いくつかのカラムを省いて使っても良い。`*`射影の結果は、`Table`の型引数と一致する必要があり、これはマッピングされた何かしらのクラスか、カラムが用いられることになるだろう。
 
 <!-- Every table requires a `*` method containing a default projection. This describes what you get back when you return rows (in the form of a table row object) from a query. Slick's `*` projection does not have to match the one in the database. You can add new columns (e.g. with computed values) or omit some columns as you like. The non-lifted type corresponding to the `*` projection is given as a type parameter to `Table`. For simple, non-mapped tables, this will be a single column type or a tuple of column types.  -->
 
@@ -88,7 +88,7 @@ class Coffees(tag: Tag)
 Table Query
 -----------
 
-`Table`のクラスに対して、実際のデータベーステーブルを表す`TableQuery`も必要になるだろう。
+`Table`クラスに対して、実際のデータベーステーブルを表す`TableQuery`も必要になるだろう。
 <!-- Alongside the `Table` row class you also need a `TableQuery` value which represents the actual database table:  -->
 
 ```scala
@@ -127,7 +127,7 @@ val users = TableQuery[Users]
 これは`apply`と`unapply`を持つケースクラス用に最適化されているが、任意のマッピングを行う事も可能である。適切に型を推測してくれるタプルを生成してくれる`.shaped`という便利なメソッドもある。任意のマッピングを行う場合には、マッピング用の型アノテーションを適宜書いて欲しい。
 <!-- It is optimized for case classes (with a simple `apply` method and an `unapply` method that wraps its result in an `Option`) but it can also be used with arbitrary mapping functions. In these cases it can be useful to call `.shaped` on a tuple on the left-hand side in order to get its type inferred properly. Otherwise you may have to add full type annotations to the mapping functions.  -->
 
-ケースクラスのコンパニオのブジェクとを手で書いている場合には、Scalaの機能に合うように実装が行われている場合にのみ、`.tupled`は上手く動作する。他にも`(User.apply _).tupled`などを使ったりも出来るだろう。 [SI-3664](https://issues.scala-lang.org/browse/SI-3664)や[SI-4808](https://issues.scala-lang.org/browse/SI-4808)も目を通しておいて欲しい。
+ケースクラスのコンパニオンオブジェクトを手で書いている場合には、Scalaの機能に合うように実装が行われている場合にのみ、`.tupled`は上手く動作する。他にも`(User.apply _).tupled`などを使ったりも出来るだろう。 [SI-3664](https://issues.scala-lang.org/browse/SI-3664)や[SI-4808](https://issues.scala-lang.org/browse/SI-4808)も目を通しておいて欲しい。
 <!-- For case classes with hand-written companion objects, `.tupled` only works if you manually extend the correct Scala function type. Alternatively you can use `(User.apply _).tupled`. See [SI-3664](https://issues.scala-lang.org/browse/SI-3664) and [SI-4808](https://issues.scala-lang.org/browse/SI-4808).  -->
 
 Constraints
@@ -198,7 +198,7 @@ class A(tag: Tag) extends Table[(Int, Int)](tag, "a") {
 Data Definition Language
 ------------------------
 
-テーブルのDDLステートメントはそのテーブルの`TableQuery`の`schema`メソッドを基に作成される。複数の`DDL`オブジェクトは`++`メソッドにより1つの`DDL`オブジェクトに統合される。これはcreate時もdrop時も全ての制約に対し、たとえ循環依存がテーブル間に存在したとしても、正しい挙動をするように実行されるものとなる。`create`や`drop`メソッドはDDLステートメントを実行するActionを生成する。
+テーブルのDDLステートメントはそのテーブルの`TableQuery`の`schema`メソッドを基に作成される。複数の`DDL`オブジェクトは`++`メソッドにより1つの`DDL`オブジェクトに結合出来る。これはcreate時もdrop時も全ての制約に対し、たとえ循環依存がテーブル間に存在したとしても、正しい挙動をするように実行されるものとなる。`create`や`drop`メソッドはDDLステートメントを実行するActionを生成する。
 <!-- DDL statements for a table can be created with its `TableQuery`'s `schema` method. Multiple `DDL` objects can be concatenated with `++` to get a compound `DDL` object which can create and drop all entities in the correct order, even in the presence of cyclic dependencies between tables. The `create` and `drop` methods produce the Actions for executing the DDL statements:  -->
 
 ```scala
@@ -218,4 +218,4 @@ schema.create.statements.foreach(println)
 schema.drop.statements.foreach(println)
 ```
 
-[foreignKey]: http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.profile.RelationalTableComponent\$Table@foreignKey[P,PU,TT<:AbstractTable[_],U](String,P,TableQuery[TT])((TT)⇒P,ForeignKeyAction,ForeignKeyAction)(Shape[_<:FlatShapeLevel,TT,U,_],Shape[_<:FlatShapeLevel,P,PU,_]):ForeignKeyQuery[TT,U]
+[foreignKey]: http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.profile.RelationalTableComponent\$Table@foreignKey[P,PU,TT<:AbstractTable[_],U](String,P,TableQuery[TT])((TT)%E2%87%92P,ForeignKeyAction,ForeignKeyAction)(Shape[_<:FlatShapeLevel,TT,U,_],Shape[_<:FlatShapeLevel,P,PU,_]):ForeignKeyQuery[TT,U]

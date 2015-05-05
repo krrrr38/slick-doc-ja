@@ -2,10 +2,10 @@ Slick 3.0.0 documentation - 08 Schema Code Generation
 
 [Permalink to Schema Code Generation — Slick 3.0.0 documentation](http://slick.typesafe.com/doc/3.0.0/code-generation.html)
 
-Schema Code Generation
+スキーマコードの生成
 ======================
 
-SLickのコードジェネレータはデータベーススキーマが既に存在している場合に、非常に便利なツールとなる。これはジェネレータ単独で利用する事もできるし、sbtのbuildと組わわせて全ての必要なSlickのコードを生成する事が出来る。
+データベーススキーマが既に存在している場合、Slickのコードジェネレータは非常に便利なツールとなる。これはジェネレータ単独で利用する事もできるし、sbtのbuildと組み合わせて必要な全てのSlickのコードを生成する事が出来る。
 <!-- The Slick code generator is a convenient tool for working with an existing or evolving database schema. It can be run stand-alone or integrated into you sbt build for creating all code Slick needs to work.  -->
 
 Overview
@@ -41,7 +41,7 @@ Mavenプロジェクトには、以下のような`<dependency>`を加えて欲�
 Slickのコードジェネレータはコマンドラインから、もしくはJavaやScalaからAPIを利用して使う事が出来る。単純な例だと、以下のように実行すれば良い。
 <!-- Slick's code generator comes with a default runner that can be used from the command line or from Java/Scala. You can simply execute  -->
 
-```
+```scala
 slick.codegen.SourceCodeGenerator.main(
   Array(slickDriver, jdbcDriver, url, outputFolder, pkg)
 )
@@ -80,30 +80,31 @@ Integrated into sbt
 
 コードジェネレータは[sbt](http://www.scala-sbt.org/)で手で実行したり、コンパイル前に毎度実行したりも出来る。[slick-codegen-example](https://github.com/slick/slick-codegen-example)に例があるから参考にして欲しい。
 <!-- The code generator can be run before every compilation or manually in sbt\_. An example project showing both can be [found here](https://github.com/slick/slick-codegen-example).  -->
+
 （訳注: [tototoshi/sbt-slick-codegen](https://github.com/tototoshi/sbt-slick-codegen)も参考までに）
 
 Generated Code
 --------------
 
-デフォルトでは、生成されたコードは指定されたフォルダー以下に`Tables.scala`という名前のファイルで保存される。このファイルは、良い感じにインポート出来るコードを持つ`object Tables`を含んでいる。Slickドライバーが適切なものになっているのかも確認出来る。このファイルには`trait Tables`も含まれていて、Cakeパターンを用いたい場合にはこちらを利用すると良い。
+デフォルトでは、生成されたコードは指定されたフォルダ以下に`Tables.scala`という名前のファイルで保存される。このファイルは、良い感じにインポート出来るコードを持つ`object Tables`を含んでいる。Slickドライバが適切なものになっているかも確認出来る。このファイルには`trait Tables`も含まれていて、Cakeパターンを用いたい場合にはこちらを利用すると良い。
 <!-- By default, the code generator places a file `Tables.scala` in the given folder in a subfolder corresponding to the package. The file contains an `object Tables` from which the code can be imported for use right away. Make sure you use the same Slick driver. The file also contains a `trait Tables` which can be used in the cake pattern.  -->
 
 > **Warning**
 >
-> 生成されたコードを用いる際には、異なるデータベースドライバを誤って混ぜてしまわないように注意して欲しい。デフォルトの`object Tables`はコード生成の際にドライバを用いる。異なるドライバを一緒に使ってしまうと、ランタイムエラーを引き起こす。生成された`trait Tables`は異なるドライバーにより用いられるが、これは現在テストされておらず非公式な使い方となっている。あなたの環境では上手く動かないかもしれない。将来的にこれらについては公式でサポートする予定だ。
+> 生成されたコードを用いる際には、異なるデータベースドライバを誤って混ぜてしまわないように注意して欲しい。デフォルトの`object Tables`はコード生成の際にドライバを用いる。異なるドライバを一緒に使ってしまうと、ランタイムエラーを引き起こす。生成された`trait Tables`は異なるドライバにより用いられるが、これは現在テストされておらず非公式な使い方となっている。あなたの環境では上手く動かないかもしれない。将来的にこれらについては公式でサポートする予定だ。
 
 <!-- **warning** When using the generated code, be careful **not** to mix different database drivers accidentally. The default `object Tables` uses the driver used during code generation. Using it together with a different driver for queries will lead to runtime errors. The generated `trait Tables` can be used with a different driver, but be aware, that this is currently untested and not officially supported. It may or may not work in your case. We will officially support this at some point in the future.  -->
 
 Customization
 -------------
 
-ジェネレータはデータモデルに対しどんなコードも生成出来るように様々なメソッドをオーバライドして自由にカスタマイズすることが出来る。簡単なカスタマイズから非常に大きなカスタマイズまで、様々なカスタマイズに対応出来ます。[Play](https://playframework.com/)に対応するフレームワークバインディングを行うだとか、そのような例があります。
+ジェネレータはデータモデルに対しどんなコードも生成出来るよう、様々なメソッドをオーバライドして自由にカスタマイズすることが出来る。簡単なカスタマイズから非常に大きなカスタマイズまで、様々なカスタマイズに対応出来る。[Play](https://playframework.com/)に対応するフレームワークバインディングを行うだとか、そのような例がある。
 <!-- The generator can be flexibly customized by overriding methods to programmatically generate any code based on the data model. This can be used for minor customizations as well as heavy, model driven code generation, e.g. for framework bindings in Play\_, other data-related, repetitive sections of applications, etc.  -->
 
-[This example](https://github.com/slick/slick-codegen-customization-example)では、どのようにしてコードジェネレータをカスタマイズするのか、sbtのmulti-projectに対しどのようにセットアップするのか、メインとなるソースに対して、コンパイル前に毎度コードジェネレータをどのようにして実行させるのかを見ることが出来ます。
+[This example](https://github.com/slick/slick-codegen-customization-example)では、どのようにしてコードジェネレータをカスタマイズするのか、sbtのmulti-projectに対しどのようにセットアップするのか、メインとなるソースに対して、コンパイル前に毎度コードジェネレータをどのようにして実行させるのかを見ることが出来る。
 <!-- [This example](https://github.com/slick/slick-codegen-customization-example) shows a customized code-generator and how to setup up a multi-project sbt build, which compiles and runs it before compiling the main sources.  -->
 
-コードジェネレータ、異なるフラグメントに対して最適化された小さなサブジェネレータの階層を構造化して実装されています。サブジェネレータの実装は、個々のファクトリメソッドをオーバーライドすることで、カスタマイズしたものに取り替える事ができる。[SourceCodeGenerator](http://slick.typesafe.com/doc/3.0.0/codegen-api/index.html#slick.codegen.SourceCodeGenerator)は各々のテーブルのためのサブジェネレータを生成するファクトリメソッドを含んでいる。サブジェネレータはTableクラス自体、エンティティとなるケースクラス、カラム、キー、インデックスなど、様々なものを生成するサブジェネレータを含んでいる。カスタマイズされたサブジェネレータも簡単に同様に扱う事ができる。
+コードジェネレータは、異なるフラグメントに対して最適化された小さなサブジェネレータの階層を構造化して実装されている。サブジェネレータの実装は、個々のファクトリメソッドをオーバーライドすることで、カスタマイズしたものに取り替える事ができる。[SourceCodeGenerator](http://slick.typesafe.com/doc/3.0.0/codegen-api/index.html#slick.codegen.SourceCodeGenerator)は各々のテーブルのためのサブジェネレータを生成するファクトリメソッドを含んでいる。サブジェネレータはTableクラス自体、エンティティとなるケースクラス、カラム、キー、インデックスなど、様々なものを生成するサブジェネレータを含んでいる。カスタマイズされたサブジェネレータも簡単に同様に扱う事ができる。
 <!-- The implementation of the code generator is structured into a small hierarchy of sub-generators responsible for different fragments of the complete output. The implementation of each sub-generator can be swapped out for a customized one by overriding the corresponding factory method. SourceCodeGenerator \<slick.codegen.SourceCodeGenerator\> contains a factory method Table, which it uses to generate a sub-generator for each table. The sub-generator Table in turn contains sub-generators for Table classes, entity case classes, columns, key, indices, etc. Custom sub-generators can easily be added as well.  -->
 
 様々なサブジェネレータにおいて、Slickのデータモデルに関連する部分はコード生成を実行させる際にアクセスされる。

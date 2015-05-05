@@ -2,10 +2,10 @@ Slick 3.0.0 documentation - 10 Plain SQL Queries
 
 [Permalink to Plain SQL Queries — Slick 3.0.0 documentation](http://slick.typesafe.com/doc/3.0.0/sql.html)
 
-Plain SQL Queries
+Plain SQLクエリ
 =================
 
-もしかすると、高レベルに抽象化されてサポートされたオペレーションに対し、SQLコードをそのまま書きたいといった要求があるかもしれない。低レベルな[JDBC](http://en.wikipedia.org/wiki/Java_Database_Connectivity)のAPIを用いるのではなく、Slickが提供するScalaベースの _Plain SQL_ を利用して欲しい。
+もしかすると、高レベルに抽象化されてサポートされたオペレーションに対し、SQLコードをそのまま書きたいといった要求があるかもしれない。そのような場合には、低レベルな[JDBC](http://en.wikipedia.org/wiki/Java_Database_Connectivity)のAPIを用いるのではなく、Slickが提供するScalaベースの _Plain SQL_ を利用して欲しい。
 <!-- Sometimes you may need to write your own SQL code for an operation which is not well supported at a higher level of abstraction. Instead of falling back to the low level of JDBC\_, you can use Slick's *Plain SQL* queries with a much nicer Scala-based API.  -->
 
 > **Note**
@@ -16,13 +16,13 @@ Plain SQL Queries
 Scaffolding
 -----------
 
-データベースのコネクションは、[同じように](http://slick.typesafe.com/doc/3.0.0/gettingstarted.html#gettingstarted-dbconnection)開かれる。全ての _Plain SQL_ [DBIOActions](http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.dbio.DBIOAction)内で実行される。これは複数のアクションを組み合わせたものにもなりえる。
+データベースのコネクションは、[いつもと同じように](http://slick.typesafe.com/doc/3.0.0/gettingstarted.html#gettingstarted-dbconnection)開かれる。全ての _Plain SQL_ [DBIOActions](http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.dbio.DBIOAction)内で実行される。これは複数のアクションを組み合わせたものする事も可能である。
 <!-- The database connection is opened in the usual way \<gettingstarted-dbconnection\>. All *Plain SQL* queries result in DBIOActions \<slick.dbio.DBIOAction\> that can be composed and run like any other action.  -->
 
 String Interpolation
 --------------------
 
-Slickの _Plain SQL_ は`sql`、`sqlu`、`tsql`という文字列の補間（string interpolation）を通して組み立てることが出来る。これらはSlickドライバーから`api._`をインポートする事で利用可能となる。
+Slickの _Plain SQL_ は`sql`、`sqlu`、`tsql`という文字列の補間（string interpolation）を通して組み立てることが出来る。これらはSlickドライバから`api._`をインポートする事で利用可能となる。
 <!-- *Plain SQL* queries in Slick are built via string interpolation using the `sql`, `sqlu` and `tsql` interpolators. They are available through the standard `api._` import from a Slick driver:  -->
 
 ```scala
@@ -59,7 +59,7 @@ def insertSuppliers: DBIO[Unit] = DBIO.seq(
 )
 ```
 
-`sqlu`補間子は、結果の代わり列の数を返すDMLステートメントとして用いられる。それゆえ、`sqlu`を用いた場合は返り値の型が`DBIO[Int]`となる。
+`sqlu`補間子は、結果の代わりに列の数を返すDMLステートメントとして用いられる。それゆえ、`sqlu`を用いた場合は返り値の型が`DBIO[Int]`となる。
 <!-- The `sqlu` interpolator is used for DML statements which produce a row count instead of a result set. Therefore they are of type `DBIO[Int]`.  -->
 
 クエリに注入される変数や表現は、クエリ文字列の中でバインド変数などで表される。クエリ文字列に直接変数を入れることはしない。このような対応は、SQLインジェクションをなくすためにある。以下の例を見て欲しい。
@@ -122,13 +122,13 @@ implicit val getSupplierResult = GetResult(r => Supplier(r.nextInt, r.nextString
 implicit val getCoffeeResult = GetResult(r => Coffee(r.<<, r.<<, r.<<, r.<<, r.<<))
 ```
 
-`GetResult[T]`は`PositionedResult => T`という関数の単なるラッパーにすぎない。`Supplier`のための暗黙的な`GetResult`は、列から`Int`か`String`の値を読み出すために明示的な`PositionedResult`を用いている。2個めの`Coffee`の例では、期待する型を自動的に導出しようと試みる`<<`というショートカットメソッドを利用している（コンストラクタの呼び出しに対して明らかに型が導出出来る場合にのみ利用可能）。
+`GetResult[T]`は`PositionedResult => T`という関数の単なるラッパーにすぎない。`Supplier`のための暗黙的な`GetResult`は、列から`Int`か`String`の値を読み出すために、明示的な`PositionedResult`を用いている。2個めの`Coffee`の例では、期待する型を自動的に導出しようと試みる`<<`というショートカットメソッドを利用している（コンストラクタの呼び出しに対して明らかに型が導出出来る場合にのみ利用可能）。
 <!-- `GetResult[T]` is simply a wrapper for a function `PositionedResult => T`. The implicit val for `Supplier` uses the explicit `PositionedResult` methods `getInt` and `getString` to read the next `Int` or `String` value in the current row. The second one uses the shortcut method `<<` which returns a value of whatever type is expected at this place. (Of course you can only use it when the type is actually known like in this constructor call.  -->
 
 Splicing Literal Values
 -----------------------
 
-パラメータはSQLステートメントに対してバインド変数を用いて挿入されるわけだが、動的に生成されたSQLコードを呼び出すために...といった場合など、もしかすると直接ステートメントの中にリテラルを書く必要が生じるかもしれない。このような場合には以下の例のように、全ての補間子の中で`\$`の代わりに`#\$`を用いて変数をバインドしてあげれば良い。
+パラメータはSQLステートメントに対してバインド変数を用いて挿入されるわけだが、動的に生成されたSQLコードを呼び出す際などでは、もしかすると直接ステートメントの中にリテラルを書く必要が生じるかもしれない。このような場合には以下の例のように、全ての補間子の中で`\$`の代わりに`#\$`を用いて変数をバインドしてあげれば良い。
 <!-- While most parameters should be inserted into SQL statements as bind variables, sometimes you need to splice literal values directly into the statement, for example to abstract over table names or to run dynamically generated SQL code. You can use `#\$` instead of `\$` in all interpolators for this purpose, as shown in the following piece of code:  -->
 
 ```scala
@@ -139,7 +139,7 @@ sql"select * from #\$table where name = \$name".as[Coffee].headOption
 Type-Checked SQL Statements
 ---------------------------
 
-今まで見てきた補間子は、SQLステートメントを実行時に構築する。これはステートメントを構築する安全で簡単な方法となっている一方、単なる埋め込み文字列にしか過ぎない。もしステートメントにシンタックスエラーがあったり、データベースとScalaのコードに何かしら型の違いがあったする場合にも、コンパイル時に検出が出来なく、非常に残念である。そこで、`sql`補間子の代わりに`tsql`補間子を使う事を検討してみてはどうだろうか。
+今まで見てきた補間子は、SQLステートメントを実行時に構築する。これはステートメントを構築する安全で簡単な方法となっている一方、単なる埋め込み文字列にしかならない。もしステートメントにシンタックスエラーがあったり、データベースとScalaのコードに何かしら型の違いがあったする場合にも、コンパイル時に検出が出来なく、非常に残念である。そのような場合には、`sql`補間子の代わりに`tsql`補間子を使う事を検討してみて欲しい。
 <!-- The interpolators you have seen so far only construct a SQL statement at runtime. This provides a safe and easy way of building statements but they are still just embedded strings. If you have a syntax error in a statement or the types don't match up between the database and your Scala code, this cannot be detected at compile-time. You can use the `tsql` interpolator instead of `sql` to get just that:  -->
 
 ```scala
@@ -150,7 +150,7 @@ def getSuppliers(id: Int): DBIO[Seq[(Int, String, String, String, String, String
 `tsql`は`.as`を呼び出す必要無しに、直接`DBIOAction`を生成する。
 <!-- Note that `tsql` directly produces a `DBIOAction` of the correct type without requiring a call to `.as`.  -->
 
-コンパイラをデータベースにアクセスさせるために、コンパイル時に解決できる設定を提供してあげる必要がある。これは[StaticDatabaseConfig](http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.backend.StaticDatabaseConfig)アノテーションを利用して明示する。
+`tsql`を利用する際は、SQLコンパイラをデータベースにアクセスさせるために、コンパイル時に解決できる設定を提供してあげる必要がある。これは[StaticDatabaseConfig](http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.backend.StaticDatabaseConfig)アノテーションを利用して明示する。
 <!-- In order to give the compiler access to the database, you have to provide a configuration that can be resolved at compile-time. This is done with the slick.backend.StaticDatabaseConfig annotation:  -->
 
 ```scala

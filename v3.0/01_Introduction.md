@@ -2,7 +2,7 @@ Slick 3.0.0 documentation - 01 Introduction
 
 [Permalink to Introduction — Slick 3.0.0 documentation](http://slick.typesafe.com/doc/3.0.0/introduction.html)
 
-Introduction
+導入
 ============
 
 What is Slick
@@ -20,7 +20,7 @@ val limit = 10.0
 // こちらのSQLと等しい: select COF_NAME from COFFEES where PRICE < 10.0
 ```
 
-SQLを直接書くのに比べ、Scalaを通してSQLを発行すると、コンパイル時により良いクエリを型安全に提供する事が出来る。Slickは独自のクエリコンパイラを用いてDBに対するクエリを発行する。
+SQLを直接書くのに比べ、Scalaを通してSQLを発行すると、コンパイル時により良いクエリを型安全に提供する事が出来る。Slickは独自のクエリコンパイラを用いて、データベースに対するクエリを発行する。
 
 <!--When using Scala instead of SQL for your queries you profit from the compile-time safety(何これ) and compositionality. Slick can generate queries for different backends including your own, using its extensible query compiler. -->
 
@@ -31,16 +31,16 @@ SQLを直接書くのに比べ、Scalaを通してSQLを発行すると、コン
 Functional Relational Mapping
 -----------------------------
 
-関数型言語を用いるプログラマは長い間、リレーショナルデータベースを用いる際に、Object-RelationalとObject-Mathのミスマッチに悩まされてきた。Slickの新たなFRMのパラダイムは、Scalaを通して、疎結合で最小限の設定のみで、リレーショナルデータベースへ接続する複雑さを抽象化する事を可能にした。。
+関数型言語を用いるプログラマは長い間、リレーショナルデータベースを用いる際に、Object-RelationalとObject-Mathのミスマッチに悩まされてきた。Slickの持つ新たなFRMのパラダイムは、Scalaを通して、疎結合で最小限の設定のみで、リレーショナルデータベースへ接続する複雑さを抽象化する事を可能にした。
 
 <!-- Functional programmers have long suffered Object-Relational and Object-Math impedance mismatches when connecting to relational databases. Slick's new Functional Relational Mapping (FRM) paradigm allows mapping to be completed within Scala, with loose-coupling, minimal configuration requirements, and a number of other major advantages that abstract the complexities away from connecting with relational databases. -->
 
-我々はリレーショナルモデルと闘おうとはしていない。ただ、関数型のパラダイムを通してリレーショナルモデルを包み込んだのだ。オブジェクトモデルとデータベースモデルのギャップに対してのブリッジを作ることで、Scala側へデータベースモデルを持ち込み、結果としてエンジニアはSQLを書く必要がなくなった。
+我々はリレーショナルモデルと闘おうとはしていない。ただ、関数型のパラダイムを通してリレーショナルモデルを包み込んだのだ。オブジェクトモデルとデータベースモデルのギャップに対してのブリッジを作ることで、Scala側へデータベースモデルを持ち込み、結果としてエンジニアはSQLを書く必要がなくなったのである。
 
 <!-- We don't try to fight the relational model, we embrace it through a functional paradigm. Instead of trying to bridge the gap between the object model and the database model, we've brought the database model into Scala so developers don't need to write SQL code. -->
 
 ```scala
-lass Coffees(tag: Tag) extends Table[(String, Double)](tag, "COFFEES") {
+class Coffees(tag: Tag) extends Table[(String, Double)](tag, "COFFEES") {
   def name = column[String]("COF_NAME", O.PrimaryKey)
   def price = column[Double]("PRICE")
   def * = (name, price)
@@ -60,22 +60,21 @@ coffees.map(_.name)
 coffees.filter(_.price < 10.0)
 ```
 
-これは、いつデータベースにアクセスしただとか、どのデータが変更されたかなどといったアクションを全てコントロール出来る。SlcikのFRMに含まれる言語に統合されたクエリモデルは、MicrosoftのLINQや、EricssonのMnesiaの早期のコンセプトに影響を受けている。
+これは、いつデータベースにアクセスしただとか、どのデータが変更されたかなどといったアクションを全てコントロール出来る。SlickのFRMに含まれる、言語に統合されたクエリモデルは、MicrosoftのLINQやEricssonのMnesiaの早期のコンセプトに影響を受けている。
 
 <!-- This enables full control over when a database is accessed and which data is transferred. The language integrated query model in Slick's FRM is inspired by the LINQ project at Microsoft and leverages concepts tracing all the way back to the early work of Mnesia at Ericsson. -->
 
-関数型言語のためのSlickのFRMにおけるアプローチは、以下のようないくつかの利点を持っている:
-
+関数型言語に対するSlickのFRMなアプローチには、以下のようなメリットが含まれている。
 <!-- Some of the key benefits of Slick's FRM approach for functional programming include: -->
 
 - 事前最適化による効率化
 <!-- -   Efficiency with Pre-Optimization -->
 
-FRMはORMとは異なり、より効率的にデータベースへ接続を行う。これは、データベースとの接続を最適化する機能を備えているためであり、さらにFRMを用いる事であなたはその仕組みを知らなくても利用が出来る。より高速化されたアプリを作るためには、FRMはORMに比べ役に立つ。
+ORMとは異なりFRMは、より効率的にデータベースへ接続を行う。これは、データベースとの接続を最適化する機能を備えているためであり、さらにFRMを用いる事であなたは柔軟にその機能を利用出来る。より高速化されたアプリを作るためには、FRMはORMに比べ役に立つ。
 
 <!-- FRM is more efficient way to connect; unlike ORM it has the ability to pre-optimize its communication with the database - and with FRM you get this out of the box. The road to making an app faster is much shorter with FRM than ORM. -->
 
-- 型安全なため、迷惑なトラブルシューティングを行う必要が無い
+- 型安全性を用いた、迷惑なトラブルシューティングとの決別
 <!-- -   No More Tedious Troubleshooting with Type Safety -->
 
 FRMは型安全にデータベースのクエリを作成する事が出来る。今まで型のないただの文字列だけでエラーを探してきたデベロッパーにとっても、今や自動的にコンパイラがエラーを見つけてきてくれるのだ。
@@ -85,7 +84,7 @@ FRMは型安全にデータベースのクエリを作成する事が出来る�
 `price`カラムのタイポがある場合には、コンパイラはこんな感じであなたにエラーを知らせてくれる。
 <!-- Misspelled the column name `price`? The compiler will tell you: -->
 
-```
+```scala
 GettingStartedOverview.scala:89: value prices is not a member of com.typesafe.slick.docs.GettingStartedOverview.Coffees
         coffees.map(_.prices).result
                       ^
@@ -94,7 +93,7 @@ GettingStartedOverview.scala:89: value prices is not a member of com.typesafe.sl
 他にも、こんな型エラーを知らせてくれる。
 <!-- The same goes for type errors: -->
 
-```
+```scala
 GettingStartedOverview.scala:89: type mismatch;
  found   : slick.driver.H2Driver.StreamingDriverAction[Seq[String],String,slick.dbio.Effect.Read]
     (which expands to)  slick.profile.FixedSqlStreamingAction[Seq[String],String,slick.dbio.Effect.Read]
@@ -103,10 +102,10 @@ GettingStartedOverview.scala:89: type mismatch;
                             ^
 ```
 
-- クエリを作成するための、より生産性のある組み立てしやすいモデル
+- クエリを作成するための、より生産性のある合成しやすいモデルの提供
 <!-- -   A More Productive, Composable Model for Building Queries -->
 
-FRMはクエリを作成するための組立可能なモデルをサポートしている。これはクエリを作るためにいくつかのピースを組み立てるのに非常に自然なモデルになっているし、コード内で再利用もしやすいようになっている。
+FRMはクエリを作成するための合成可能なモデルをサポートしている。これはクエリを作る際に用いるいくつかのピースを合成するのに、非常に自然なモデルになっている。さらにこのようなモデルは、コード内で再利用もしやすい。
 <!-- FRM supports a composable model for building queries. It's a very natural model to compose pieces together to build a query, and then reuse pieces across your code base. -->
 
 ```scala
@@ -118,11 +117,11 @@ coffees.filter(_.price < 10.0).sortBy(_.name).map(_.name)
 Reactive Applications
 ---------------------
 
-Slickは非同期を中心にデザインされたアプリケーションや、[Reactive Manifesto](http://www.reactivemanifesto.org/)に従って作られたアプリケーションにとって非常に使いやすいようになっている。一般的なブロッキングするようなシンプルなデータベースAPIとは異なり、Slickは以下の事をあなたに提供する。
+非同期を中心にデザインされたアプリケーションや、[Reactive Manifesto](http://www.reactivemanifesto.org/)に従って作られたアプリケーションにとって、Slickは非常に使いやすいようになっている。一般的に用いられている処理をブロックするシンプルなデータベースAPIとは異なり、Slickは以下の事をあなたに提供してくれる。
 <!-- Slick is easy to use in asynchronous, non-blocking application designs, and supports building applications according to the Reactive Manifesto\_. Unlike simple wrappers around traditional, blocking database APIs, Slick gives you: -->
 
-- I/OとCPUに処理が集中するコードを綺麗に分割している。I/O処理が分離されていることで、バックグラウンドでI/O処理を待っている間にアプリケーションはCPUに処理が集中する処理をメインスレッドで上手く動かす事が出来る。
-- 即応性: データベースがあなたのアプリケーションを支えきれなくなった時、Slickは(状況を悪化させるような)必要以上のスレッドを作ったりはしないし、なんらかのI/O処理をロックしたりもしない。バックプレッシャーはデータベースI/Oアクションのためのキューを通して効率的に管理され、少ないリソースに対してはリクエストを制限し、もし限界に達したならば即座に失敗させる。
+- I/OとCPUに処理が集中するコードが綺麗に分割されている: I/O処理が分離されていることで、バックグラウンドでI/O処理を待っている間にアプリケーションはCPUに処理が集中する処理を、メインスレッドで上手く動かす事が出来る。
+- 即応性: データベースがあなたのアプリケーションを支えきれなくなった時、Slickは(状況を悪化させるような)必要以上のスレッドを作ったりはしないし、なんらかのI/O処理をロックしたりもしない。背圧はデータベースI/Oアクションのためのキューを通して効率的に管理され、少ないリソースに対してはリクエストを制限し、もし限界に達したならば即座に失敗させる。
 - 非同期ストリーミングのための、[Reactive Streams](http://www.reactive-streams.org/)
 - データベースリソースの効率的な利用: Slickはあなたのデータベースサーバの並列度（同時にアクティブになっているジョブの数）やリソースの利用度（現在停止しているデータベースセッションの数）を簡単に、そして正確に調整させれる。
 <!-- -   Clean separation of I/O and CPU-intensive code: Isolating I/O allows you to keep your main thread pool busy with CPU-intensive parts of the application while waiting for I/O in the background. -->
@@ -133,7 +132,7 @@ Slickは非同期を中心にデザインされたアプリケーションや、
 Plain SQL Support
 -----------------
 
-SlickのScalaベースなクエリAPIは、Scalaコレクションを扱うかのように、データベースクエリを記述することが出来る。[Getting Started](http://slick.typesafe.com/doc/3.0.0/gettingstarted.html)は、このAPIに焦点を当てたマニュアルになっている。
+SlickのScalaベースなクエリAPIは、Scalaコレクションを扱うかのように、データベースクエリを記述することが出来る。[はじめよう](http://slick.typesafe.com/doc/3.0.0/gettingstarted.html)は、このAPIに焦点を当てたマニュアルになっている。
 <!-- The Scala-based query API for Slick allows you to write database queries like queries for Scala collections. Please see gettingstarted for an introduction. Most of this user manual focuses on this API. -->
 
 もし、あなたが独自のSQL文を通常のSlickのクエリと同様に非同期に実行したいと言うのならば、[Plain SQL](http://slick.typesafe.com/doc/3.0.0/sql.html) APIを利用する事が出来る。
@@ -154,10 +153,10 @@ License
 Next Steps
 ----------
 
-- Slickを使うのが初めてならば、このまま[Getting Started](http://slick.typesafe.com/doc/3.0.0/gettingstarted.html)へ
-- もし古いバージョンのSLickを使っていたならば、[Upgrade Guides](http://slick.typesafe.com/doc/3.0.0/upgrade.html)へ
-- 以前にORMを利用していたならば、[Comming from ORM to Slick](http://slick.typesafe.com/doc/3.0.0/orm-to-slick.html)へ
-- もしSQLに詳しいのならば、[Coming from SQL to Slick](http://slick.typesafe.com/doc/3.0.0/sql-to-slick.html)
+- Slickを使うのが初めてならば、このまま[はじめよう](http://slick.typesafe.com/doc/3.0.0/gettingstarted.html)へ
+- もし古いバージョンのSLickを使っていたならば、[アップグレードガイド](http://slick.typesafe.com/doc/3.0.0/upgrade.html)へ
+- 以前にORMを利用していたならば、[ORMからSlickを利用する人へ](http://slick.typesafe.com/doc/3.0.0/orm-to-slick.html)へ
+- もしSQLに詳しいのならば、[SQLからSlickを利用する人へ](http://slick.typesafe.com/doc/3.0.0/sql-to-slick.html)へ
 
 <!-- -   If you are new to Slick, continue to Getting Started \<gettingstarted\> -->
 <!-- -   If you have used an older version of Slick, make sure to read the Upgrade Guides \<upgrade\> -->

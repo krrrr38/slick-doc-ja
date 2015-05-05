@@ -2,10 +2,10 @@ Slick 3.0.0 documentation - 09 User-Defined Features
 
 [Permalink to User-Defined Features — Slick 3.0.0 documentation](http://slick.typesafe.com/doc/3.0.0/userdefined.html)
 
-User-Defined Features
+ユーザ定義機能
 =====================
 
-本章では、どのようにしてカスタマイズしたデータ型を、SlickのScala APIを通して利用するのかということについて説明する。
+本章では、どのようにしてカスタマイズしたデータ型をSlickのScala APIを通して利用するのか、ということについて説明する。
 <!-- This chapter describes how to use custom data types and database functions with Slick's Scala API.  -->
 
 Scalar Database Functions
@@ -43,13 +43,13 @@ salesPerDay.map(_ => current_date)
 Other Database Functions And Stored Procedures
 ----------------------------------------------
 
-全てのテーブルを返すようなデータベースの関数を利用したり、、ストアドプロシージャを用いたいといった場合には、[Plain SQL Queries](http://slick.typesafe.com/doc/3.0.0/sql.html)を用いて欲しい。
+全てのテーブルを返すようなデータベースの関数を利用したり、ストアドプロシージャを用いたいといった場合には、[Plain SQLクエリ](http://slick.typesafe.com/doc/3.0.0/sql.html)を用いて欲しい。
 <!-- For database functions that return complete tables or stored procedures please use sql. Stored procedures that return multiple result sets are currently not supported.  -->
 
 Using Custom Scalar Types in Queries
 ------------------------------------
 
-もしカラムに対しカスタマイズした型を適用したいのなら、[ColumnType](http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.driver.JdbcProfile@ColumnType[T]:JdbcDriver.ColumnType[T])を実装して欲しい。大抵の場合においてアプリケーション特有の型を、データベースにおいて既にサポートされた型へマッピングする。これを実現するには、[MappedColumnType](http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.driver.JdbcProfile@MappedColumnType:JdbcDriver.MappedJdbcType.type)を用いて、これに対するボイラープレートを実装するだけで済む。これはドライバをimportする中に含まれており、[JdbcDriver](http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.driver.JdbcDriver\$)のシングルトンオブジェクトから別途importしなくて良い。
+もしカラムに対しカスタマイズした型を適用したいのなら、[ColumnType](http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.driver.JdbcProfile@ColumnType[T]:JdbcDriver.ColumnType[T])を実装して欲しい。アプリケーション特有の型を、データベースにおいて既にサポートされた型へマッピングする事はよくある事例だろう。これを実現するには、[MappedColumnType](http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.driver.JdbcProfile@MappedColumnType:JdbcDriver.MappedJdbcType.type)を用いて、これに対するボイラープレートを実装するだけで済む。これはドライバをimportする中に含まれており、[JdbcDriver](http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.driver.JdbcDriver\$)のシングルトンオブジェクトから別途importしなくても良い。
 <!-- If you need a custom column type you can implement ColumnType \<slick.driver.JdbcProfile@ColumnType[T]:JdbcDriver.ColumnType[T]\>. The most common scenario is mapping an application-specific type to an already supported type in the database. This can be done much simpler by using MappedColumnType \<slick.driver.JdbcProfile@MappedColumnType:JdbcDriver.MappedJdbcType.type\> which takes care of all the boilerplate. It comes with the usual import from the driver. Do not import it from the JdbcDriver \<slick.driver.JdbcDriver\$\> singleton object.  -->
 
 ```scala
@@ -70,7 +70,7 @@ implicit val boolColumnType = MappedColumnType.base[Bool, Int](
 [MappedJdbcType](http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.driver.JdbcProfile@MappedJdbcType)を使うと、もっと柔軟なマッピングが行える。
 <!-- You can also subclass MappedJdbcType \<slick.driver.JdbcProfile@MappedJdbcType\> for a bit more flexibility.  -->
 
-もし既にサポートされた型のラッパークラス（ケースクラスやバリュークラスになりえるもの）があるのなら、マクロで生成される暗黙的な`ColumnType`を自由に取得出来る[MappedTo](http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.lifted.MappedTo)を継承したものを利用する。そのようなラッパークラスは一般的に型安全でテーブル特有な主キーの型に対ししばしば用いられる。
+もし既にサポートされた型のラッパークラス（ケースクラスやバリュークラスになりえるもの）があるのなら、マクロで生成される暗黙的な`ColumnType`を自由に取得出来る[MappedTo](http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.lifted.MappedTo)を継承したものを利用する。そのようなラッパークラスは一般的に、型安全でテーブル特有な主キーの型に用いられる。
 <!-- If you have a wrapper class (which can optionally be a case class and/or value class) for an underlying value of some supported type, you can make it extend slick.lifted.MappedTo to get a macro-generated implicit `ColumnType` for free. Such wrapper classes are commonly used for type-safe table-specific primary key types:  -->
 
 ```scala
@@ -88,15 +88,15 @@ class MyTable(tag: Tag) extends Table[(MyID, String)](tag, "MY_TABLE") {
 Using Custom Record Types in Queries
 ------------------------------------
 
-個々に宣言されたいくつかの型を用いてレコード型というのは構成される。SlickはScalaのタプルをサポートしている以外にも、22個より大きい数のカラム数に対応するためにSlick独自に[HList](http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.collection.heterogeneous.HList)というものを用意している。
+レコード型は、個々に宣言された型のコンポーネントをいくつか含んだデータ構造として表される。SlickはScalaのタプルをサポートしている以外にも、22個より大きい数のカラム数に対応するためにSlick独自に[HList](http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.collection.heterogeneous.HList)というものを用意している。
 <!-- Record types are data structures containing a statically known number of components with individually declared types. Out of the box, Slick supports Scala tuples (up to arity 22) and Slick's own slick.collection.heterogeneous.HList implementation. Record types can be nested and mixed arbitrarily.  -->
 
-カスタマイズされたレコード型（ケースクラス、カスタマイズされたHLists、タプルに似た型など...）を用いるために、Slickに対しどのようにしてクエリと結果型をマッピングするのかといいうのを伝える必要がある。これに対しては、[MappedScalaProductShape](http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.lifted.MappedScalaProductShape)を継承した[Shape](http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.lifted.Shape)を用いると良い。
+カスタマイズされたレコード型（ケースクラス、カスタマイズされたHLists、タプルに似た型など...）を用いるために、Slickに対しどのようにしてクエリと結果型をマッピングするのかというのを伝える必要がある。これに対しては、[MappedScalaProductShape](http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.lifted.MappedScalaProductShape)を継承した[Shape](http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.lifted.Shape)を用いると良い。
 <!-- In order to use custom record types (case classes, custom HLists, tuple-like types, etc.) in queries you need to tell Slick how to map them between queries and results. You can do that using a slick.lifted.Shape extending slick.lifted.MappedScalaProductShape.  -->
 
 ### Polymorphic Types (e.g. Custom Tuple Types or HLists)
 
-ポリモーフィックなレコード型の顕著な特徴として、それは要素となる型を抽象化することがあげられる。つまり、持ち上げられた要素の型と生の要素の型の双方で同じレコード型を用いることが出来るのである。カスタマイズしたポリモーフィックなレコード型を利用するには、適切な暗黙的[Shape](http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.lifted.Shape)を用意してあげたら良い。
+ポリモーフィックなレコード型は、は要素となる型を抽象化する。つまりここでは、持ち上げられた要素の型と生の要素の型の双方で同じレコード型を用いることが出来るようになる。カスタマイズしたポリモーフィックなレコード型を利用するには、適切な暗黙的[Shape](http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.lifted.Shape)を用意してあげたら良い。
 <!-- The distinguishing feature of a *polymorphic* record type is that it abstracts over its element types, so you can use the same record type for both, lifted and plain element types. You can add support for custom polymorphic record types using an appropriate implicit slick.lifted.Shape.  -->
 
 `Pair`というクラスを使う例は以下のようになる。
@@ -119,7 +119,7 @@ implicit def pairShape[Level <: ShapeLevel, M1, M2, U1, U2, P1, P2](
 ) = new PairShape[Level, Pair[M1, M2], Pair[U1, U2], Pair[P1, P2]](Seq(s1, s2))
 ```
 
-この例における暗黙的なメソッドである`pairShape`は、個々の要素型のためのShapeをいつでも利用可能な2つの要素型の`Pair`に対し使われるShapeを提供するものである。
+この例における暗黙的なメソッドである`pairShape`は、2つの要素型を持つ`Pair`のためのShapeを提供している（個々の要素型のためのShapeは、いつでも利用可能となる）。
 <!-- The implicit method `pairShape` in this example provides a Shape for a `Pair` of two element types whenever Shapes for the individual element types are available.  -->
 
 これらの定義を用いれば、Slickを利用するどの場所においても`Pair`をレコード型として利用出来る。

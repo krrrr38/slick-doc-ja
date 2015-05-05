@@ -2,10 +2,10 @@ Slick 3.0.0 documentation - 07 Queries
 
 [Permalink to Queries — Slick 3.0.0 documentation](http://slick.typesafe.com/doc/3.0.0/queries.html)
 
-Queries
+クエリ
 =======
 
-本章ではselect, insert, update, deleteといった処理を、SlickのクエリAPIでどのようにして型安全なクエリを記述するのかを説明する。
+本章ではselect, insert, update, deleteといった処理を、SlickのクエリAPIで、どのようにして型安全なクエリを記述するのかを説明する。
 <!-- This chapter describes how to write type-safe queries for selecting, inserting, updating and deleting data with Slick's Scala-based query API.  -->
 
 このAPIは *Lifted Embedding* と呼ばれる。これは、実際にはScalaの基本的な型を操作するのではなく、[Rep](http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.lifted.Rep)の型コンストラクタへと *持ち上げられた型* を用いてる事に由来する。以下のように、Scalaのコレクション操作で扱う型と比較すると分かりやすい。
@@ -58,13 +58,13 @@ Expressions
 コレクションは`Query`クラスにより`Rep[Seq[T]]`のように表現される。ここには`flatMap`、`filter`、`take`、`groupBy`のような基本的なコレクションメソッドが含まれている。2つの異なる複合型を表すために（持ち上げられたものと、持ち上げられる前のもの e.g. `Query[(Rep[Int], Rep[String]), (Int, String), Seq]`）、これらのシグネチャはとても複雑なものになっている。ただ意味的には基本的にScalaのコレクションと同じようなものになっていることは確認して欲しい。
 <!-- Collection values are represented by the `Query` class (a `Rep[Seq[T]]`) which contains many standard collection methods like `flatMap`, `filter`, `take` and `groupBy`. Due to the two different component types of a `Query` (lifted and plain, e.g. `Query[(Rep[Int), Rep[String]), (Int, String), Seq]`), the signatures for these methods are very complex but the semantics are essentially the same as for Scala collections.  -->
 
-`SingleColumnQueryExtensionMethods`への暗黙的変換により、クエリやスカラー値のためのメソッドが多く宣言されている。
+`SingleColumnQueryExtensionMethods`への暗黙的変換により、クエリやスカラー値のためのメソッドが数多く用意されている。
 <!-- Additional methods for queries of scalar values are added via an implicit conversion to `SingleColumnQueryExtensionMethods`.  -->
 
 Sorting and Filtering
 ---------------------
 
-並び替えや選択を行うための様々なメソッドが存在する。これらは、`Query`から新しい`Query`を生成して返す。
+並び替えやフィルタリングを行うための様々なメソッドが存在する。これらは、`Query`から新しい`Query`を生成して返す。
 <!-- There are various methods with sorting/filtering semantics (i.e. they take a `Query` and return a new `Query` of the same type), for example:  -->
 
 ```scala
@@ -112,7 +112,7 @@ joinは2つの異なるテーブルやクエリに対して、1つのクエリ�
 
 ### Applicative joins
 
-*Applicative*なjoinはそれぞれの結果を取得するクエリへ2つのクエリを結合するメソッドを呼ぶ事で実行出来る。SQLにおけるjoinと同様の制約がかかり、右側は左側に依存しなかったりする。これはScalaのスコープにおけるルールを通して自然に強制される。
+*Applicative*なjoinはそれぞれの結果を取得するクエリに対し、2つのクエリを結合するメソッドを呼ぶ事で実行出来る。SQLにおけるjoinと同様の制約がかかり、右側の式は左側の式に依存しなかったりする。これはScalaのスコープにおけるルールを通して自然に強制される。
 <!-- *Applicative* joins are performed by calling a method that joins two queries into a single query of a tuple of the individual results. They have the same restrictions as joins in SQL, i.e. the right-hand side may not depend on the left-hand side. This is enforced naturally through Scala's scoping rules.  -->
 
 ```scala
@@ -161,7 +161,7 @@ outer joinの節では、`yield`の中で`map`している。これらのjoinに
 
 ### Monadic joins
 
-*Monadic*なjoinは`flatMap`を利用する事で自動的に生成される。右辺が左辺に依存するため、理論上*Monadic*なjoinは*Applicative*なジョインより強力なものとなる。一方で、これは通常のSQLに適したものとはならない。そのため、Slickは*Monadic*なjoinを*Applicative*なjoinへと変換している。もし*Monadic*なjoinを適切な形に変換出来なければ、実行時に失敗する事になるだろう。
+*Monadic*なjoinは`flatMap`を利用する事で自動的に生成される。右辺が左辺に依存するため、理論上*Monadic*なjoinは*Applicative*なjoinより強力なものとなる。一方で、これは通常のSQLに適したものとはならない。そのため、Slickは*Monadic*なjoinを*Applicative*なjoinへと変換している。もし*Monadic*なjoinを適切な形に変換出来なければ、実行時に失敗する事になるだろう。
 <!-- *Monadic* joins are created with `flatMap`. They are theoretically more powerful than applicative joins because the right-hand side may depend on the left-hand side. However, this is not possible in standard SQL, so Slick has to compile them down to applicative joins, which is possible in many useful cases but not in all of them (and there are cases where it is possible in theory but Slick cannot perform the required transformation yet). If a monadic join cannot be properly translated, it will fail at runtime.  -->
 
 *cross-join*は`Query`の`flatMap`により作成される。1つ以上のジェネレータを用いる際には、for式が役立つ。
@@ -177,7 +177,7 @@ val monadicCrossJoin = for {
 //     from "COFFEES" x2, "SUPPLIERS" x3
 ```
 
-もし何かしらの絞込を行うのなら、それは*inner join*となる。
+もし何かしらのフィルタリングを行うのなら、それは*inner join*となる。
 <!-- If you add a filter expression, it becomes an *inner join*:  -->
 
 ```scala
@@ -226,7 +226,7 @@ val zipWithIndexJoin = for {
 Unions
 ------
 
-互換性のある2つのクエリは`++`（もしくは`unionAll`）や`union`で結合することが出来る。
+互換のある2つのクエリは`++`（もしくは`unionAll`）や`union`で結合することが出来る。
 <!-- Two queries can be concatenated with the `++` (or `unionAll`) and `union` operators if they have compatible types:  -->
 
 ```scala
@@ -311,13 +311,13 @@ val q2 = q.map { case (supID, css) =>
 //     group by x2."SUP_ID"
 ```
 
-中間クエリである`q`はネストされた`Query`の値を持っている。クエリを実行した際に、ネストしたコレクションが返却される。それゆえ、`q2`においては、集約関数を用いてネストを解消している。
+中間クエリである`q`はネストされた`Query`の値を持っている。クエリを実行した際に、ネストしたコレクションが返却される。それゆえ`q2`においては、集約関数を用いてネストを解消している。
 <!-- The intermediate query `q` contains nested values of type `Query`. These would turn into nested collections when executing the query, which is not supported at the moment. Therefore it is necessary to flatten the nested queries immediately by aggregating their values (or individual columns) as done in `q2`.  -->
 
 Querying
 --------
 
-Queryは`result`メソッドを呼ぶことで[Action](http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.dbio.DBIOAction)へ変換される。Actionはストリーム、個々の分割された方法、もしくは他のアクションを混在したものとして直接[実行される](http://slick.typesafe.com/doc/3.0.0/dbio.html#executing-actions)。
+クエリによる選択は`result`メソッドを呼ぶことで[Action](http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.dbio.DBIOAction)へ変換される。Actionはストリームか個々に分割された方法、もしくは他のアクションを混在したものとして直接[実行される](http://slick.typesafe.com/doc/3.0.0/dbio.html#executing-actions)。
 <!-- A Query can be converted into an Action \<slick.dbio.DBIOAction\> by calling its `result` method. The Action can then be executed \<executing-actions\> directly in a streaming or fully materialized way, or composed further with other Actions:  -->
 
 ```scala
@@ -327,7 +327,7 @@ val result: Future[Seq[Double]] = db.run(action)
 val sql = action.statements.head
 ```
 
-もし結果を1つのみ受け取りたいのなら、`head`か`headOption`を用いれば良い。
+もし結果を1つだけ受け取りたいのなら、`head`か`headOption`を用いれば良い。
 <!-- If you only want a single result value, you can call `head` or `headOption` on the `result` Action.  -->
 
 Deleting
@@ -368,7 +368,7 @@ val sql = coffees.insertStatement
 //   INSERT INTO "COFFEES" ("COF_NAME","SUP_ID","PRICE","SALES","TOTAL") VALUES (?,?,?,?,?)
 ```
 
-`AutoInc`がついたカラムが挿入された際には、データベースが適切な値を生成した値が挿入される。大抵の場合、自動で生成された主キーの値などを取得したいと考えるだろう。デフォルトでは`+=`は影響を与えた行の数を返却する（普通は成功時に1が返る）。`++=`は`Option`に包まれた結果数を返す。`None`になるのはデータベースシステムが影響を与えた数を返さない時である。これらの返り値は`returning`メソッドを用いることで、好きな値が返るように変更出来る。この場合、`+=`に対して単一の値やタプルを返すように設定すると、`++=`にはその値の`Seq`が返却されることになる。以下の様な記述で、`AutoInc`で生成された主キーを返すことが出来る。
+`AutoInc`がついたカラムが挿入された際には、そのカラムに対する挿入値は無視され、データベースが生成した適切な値が挿入される。大抵の場合、自動で生成された主キーの値などを返り値として取得したいと考えるだろう。デフォルトでは`+=`は影響を与えた行の数を返却する（普通は成功時に1が返る）。`++=`は`Option`に包まれた結果数を返す。`None`になるのはデータベースシステムが影響を与えた数を返さない時である。これらの返り値は`returning`メソッドを用いることで、好きな値が返るように変更出来る。この場合、`+=`に対して単一の値やタプルを返すように設定すると、`++=`にはその値の`Seq`が返却されることになる。以下の様な記述で、`AutoInc`で生成された主キーを返すことが出来る。
 <!-- When you include an `AutoInc` column in an insert operation, it is silently ignored, so that the database can generate the proper value. In this case you usually want to get back the auto-generated primary key column. By default, `+=` gives you a count of the number of affected rows (which will usually be 1) and `++=` gives you an accumulated count in an `Option` (which can be `None` if the database system does not provide counts for all rows). This can be changed with the `returning` method where you specify the columns to be returned (as a single value or tuple from `+=` and a `Seq` of such values from `++=`):  -->
 
 ```scala
@@ -424,7 +424,7 @@ val sql = q.updateStatement
 //   update "COFFEES" set "PRICE" = ? where "COFFEES"."COF_NAME" = 'Espresso'
 ```
 
-現時点では、データベースにある更新用の変換表現等を利用したりすることは出来ない。
+現時点では、データベースに用意された更新用の変換関数等を利用したりすることは出来ない。
 <!-- There is currently no way to use scalar expressions or transformations of the existing data in the database for updates.  -->
 
 Compiled Queries
@@ -448,7 +448,7 @@ val namesAction2 = userNameByIDRangeCompiled(1, 3).result
 これは個々のカラムやカラムの[records](http://slick.typesafe.com/doc/3.0.0/userdefined.html#record-types)をパラメータに取る全てのメソッドに対し上手く機能し、`Query`オブジェクトなどを返却する。[Compiled](http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.lifted.Compiled)のAPIドキュメントを見て、そのサブクラスなど、コンパイルされたクエリの詳細について学んで欲しい。
 <!-- This works for all functions that take parameters consisting only of individual columns or or records \<record-types\> of columns and return a `Query` object or a scalar query. See the API documentation for slick.lifted.Compiled and its subclasses for details on composing compiled queries.  -->
 
-`ConstColumn[Long]`をパラメータ似とる`take`や`drop`を使う場合には気をつけて欲しい。クエリによって計算された他の値に取って代わられる`Rep[Long]`と異なり、`ConstColumn`はリテラル値かコンパイルされたクエリのパラメータのみを要求する。これは、クエリがSlickによって実行される前までに実際の値を知っておかなくてはならないため、必要になる。
+`ConstColumn[Long]`をパラメータに取る`take`や`drop`を使う場合には気をつけて欲しい。クエリによって計算された他の値に取って代わられる`Rep[Long]`と異なり、`ConstColumn`はリテラル値かコンパイルされたクエリのパラメータのみを要求する。これは、Slickによって実行される前までに、クエリが実際の値を知っておかなくてはならないためである。
 <!-- Be aware that `take` and `drop` take `ConstColumn[Long]` parameters. Unlike `Rep[Long]]`, which could be substituted by another value computed by a query, a ConstColumn can only be literal value or a parameter of a compiled query. This is necessary because the actual value has to be known by the time the query is prepared for execution by Slick.  -->
 
 ```scala
@@ -458,7 +458,7 @@ val usersAction1 = userPaged(2, 1).result
 val usersAction2 = userPaged(1, 3).result
 ```
 
-データの選択、挿入、更新、削除において、コンパイルされたクエリを用いる事ができる。Slick1.0への後方互換用に、[Parameters](http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.lifted.Parameters)オブジェクトに`flatMap`を呼ぶ事で、コンパイルされたクエリを作成する事も可能である。大抵の場合、これはコンパイルされたクエリを1つのfor式で書くのに役立つだろう。
+データの選択、挿入、更新、削除において、コンパイルされたクエリを用いる事ができる。Slick 1.0への後方互換用に、[Parameters](http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.lifted.Parameters)オブジェクトに`flatMap`を呼ぶ事で、コンパイルされたクエリを作成する事も可能である。大抵の場合、これはコンパイルされたクエリを1つのfor式で書くのに役立つだろう。
 <!-- You can use a compiled query for querying, inserting, updating and deleting data. For backwards-compatibility with Slick 1.0 you can still create a compiled query by calling `flatMap` on a slick.lifted.Parameters object. In many cases this enables you to write a single *for comprehension* for a compiled query:  -->
 
 ```scala
