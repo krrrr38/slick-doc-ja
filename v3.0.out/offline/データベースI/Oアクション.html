@@ -1,0 +1,142 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html manifest="pamflet.manifest">
+      <head>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
+        <title>slick-doc-ja 3.0 — データベースI/Oアクション</title>
+        
+        <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/blueprint/grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/> 
+        <!--[if lt IE 8]>
+          <link rel="stylesheet" href={ relativeBase + "css/blueprint/ie.css" } type="text/css" media="screen, projection"/>
+        <![endif]-->
+        <link rel="stylesheet" href="css/pamflet.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamflet-print.css" type="text/css" media="print"/>
+        <link rel="stylesheet" href="css/pamflet-grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamfletheight_2em_2em.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.collapse.js"></script>
+        <script type="text/javascript" src="js/pamflet.js"></script>
+        <script type="text/javascript">
+          Pamflet.page.language = 'en';
+        </script>
+        <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+        <link rel="stylesheet" href="css/layout.css" type="text/css" media="screen, projection"/>
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-37666832-7']);
+            _gaq.push(['_trackPageview']);
+            (function() {
+              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+            </script>
+        <script type="text/javascript">
+              Pamflet.twitter = '#slick';
+            </script>
+      </head>
+      <body class="color_scheme-redmond">
+        <a class="page prev nav" href="%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%E8%A8%AD%E5%AE%9A.html">
+            <span class="space">&nbsp;</span>
+            <span class="flip arrow">❧</span>
+          </a><a class="page next nav" href="%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E.html">
+            <span class="space">&nbsp;</span>
+            <span class="arrow">❧</span>
+          </a>
+        <div class="container contentswrapper">
+          <div class="span-16 prepend-1 append-1 contents">
+            <p>Slick 3.0.0 documentation - 05 Database I/O Actions
+</p><p><a href="http://slick.typesafe.com/doc/3.0.0/dbio.html">Permalink to Database I/O Actions — Slick 3.0.0 documentation</a>
+</p><h1 id="%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9I%2FO%E3%82%A2%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3">データベースI/Oアクション<a href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9I%2FO%E3%82%A2%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><p>クエリの結果を取得したり（<code>myQuery.result</code>）、テーブルを作成したり（<code>myTable.schema.create</code>）、データを挿入する（<code>myTable += item</code>）といったデータベースに対して実行する全ての事柄は、<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.dbio.DBIOAction">DBIOAction</a>のインスタンスになる。
+<!-- Anything that you can execute on a database, whether it is a getting the result of a query (`myQuery.result`), creating a table (`myTable.schema.create`), inserting data (`myTable += item`) or something else, is an instance of slick.dbio.DBIOAction, parameterized by the result type it will produce when you execute it. -->
+</p><p><em>Database I/O Actions</em> はいくつかの異なるコンビネータにより結合されるが（詳細は<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.dbio.DBIOAction">DBIOAction class</a>と<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.dbio.DBIO$">DBIO object</a>で）、それらはいつも直列に実行され、（少なくとも概念上は）1つのデータベースセッションにおいて実行される。
+<!-- *Database I/O Actions* can be combined with several different combinators (see the DBIOAction class \<slick.dbio.DBIOAction\> and DBIO object \<slick.dbio.DBIO$\> for details), but they will always be executed strictly sequentially and (at least conceptually) in a single database session. -->
+</p><p>大抵の場合、<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.dbio.package@DBIO[+R]:DBIO[R]">DBIO</a>の型エイリアスを通常時のデータベースI/Oアクションとして、<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.dbio.package@StreamingDBIO[+R,+T]:StreamingDBIO[R,T]">StreamingDBIO</a>の型エイリアスををストリーミング可能なデータベースI/Oアクションとして利用したいと思うだろう。これらは、<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.dbio.DBIOAction">DBIOAction</a>によってサポートされた副次的な <em>effect types</em> を省略させる(<code>They omit the optional *effect types* supported by slick.dbio.DBIOAction.</code>)。
+<!-- In most cases you will want to use the type aliases DBIO \<slick.dbio.package@DBIO[+R]:DBIO[R]\> and StreamingDBIO \<slick.dbio.package@StreamingDBIO[+R,+T]:StreamingDBIO[R,T]\> for non-streaming and streaming Database I/O Actions. They omit the optional *effect types* supported by slick.dbio.DBIOAction.  -->
+</p><h2 id="Executing+Database+I%2FO+Actions">Executing Database I/O Actions<a href="#Executing+Database+I%2FO+Actions" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p><code>DBIOActions</code>を実行すると、データベースから得られた具象化された結果やストリーミングデータを得る事が出来る。
+<!-- `DBIOAction`s can be executed either with the goal of producing a fully materialized result or streaming data back from the database. -->
+</p><h3 id="Materialized">Materialized<a href="#Materialized" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><p>データベースに対し<code>DBIOAction</code>を実行し、具象化された結果を得るには<code>run</code>を用いる。これは例えば、単一のクエリ結果を引く場合（<code>myTable.length.result</code>）、コレクションを結果として得るクエリを引く場合（<code>myTable.to[Set].result</code>）などに利用される。どの<code>DBIOAction</code>もこのような実行処理をサポートしている。
+<!-- You can use `run` to execute a `DBIOAction` on a Database and produce a materialized result. This can be, for example, a scalar query result (`myTable.length.result`), a collection-valued query result (`myTable.to[Set].result`), or any other action. Every `DBIOAction` supports this mode of execution. -->
+</p><p><code>run</code>が呼ばれた時点で、アクションの実行が開始される。そして具象化された結果は非同期に処理が実行され終了するものとして、<code>Future</code>にくるまって返却される。
+<!-- Execution of the action starts when `run` is called, and the materialized result is returned as a `Future` which is completed asynchronously as soon as the result is available: -->
+</p><pre><code class="prettyprint lang-scala">val q = for (c &lt;- coffees) yield c.name
+val a = q.result
+val f: Future[Seq[String]] = db.run(a)
+f.onSuccess { case s =&gt; println(s&quot;Result: $s&quot;) }
+</code></pre><h3 id="Streaming">Streaming<a href="#Streaming" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><p>コレクションが得られるクエリには、ストリーミングの結果を返却する機能が備わっている。この場合、実際のコレクションの型は無視され、要素が直接<a href="http://www.reactive-streams.org/">Reactive Streams</a>の<code>Publisher</code>を通して返却されることになる。これは<a href="http://akka.io/docs/">Akka Streams</a>により処理・計算されたものとなる。
+<!-- Collection-valued queries also support streaming results. In this case, the actual collection type is ignored and elements are streamed directly from the result set through a Reactive Streams\_ `Publisher`, which can be processed and consumed by Akka Streams\_. -->
+</p><p><code>DBIOAction</code>の実行処理は、<code>Subscriber</code>をストリームに繋げるまで実行されない。<code>Subscriber</code>は1つだけ <em>購読</em> させる事が可能であり、それ以上の <em>購読</em> を行おうとするとそれらは失敗してしまう。<code>DBIOAction</code>のストリーミング部分において、ストリームの各要素は利用出来る状態になるとすぐに実行可能であると合図を送る。例えばトランザクションの中でストリーミング処理を行った場合にも、全ての要素は正常に届けられ、トランザクションがコミットされなかった場合にもきちんとストリームも失敗するようにできている。
+<!-- Execution of the `DBIOAction` does not start until a `Subscriber` is attached to the stream. Only a single `Subscriber` is supported, and any further attempts to subscribe again will fail. Stream elements are signaled as soon as they become available in the streaming part of the `DBIOAction`. The end of the stream is signaled only after the entire action has completed. For example, when streaming inside a transaction and all elements have been delivered successfully, the stream can still fail afterwards if the transaction cannot be committed. -->
+</p><pre><code class="prettyprint lang-scala">val q = for (c &lt;- coffees) yield c.name
+val a = q.result
+val p: DatabasePublisher[String] = db.stream(a)
+...
+// .foreach is a convenience method on DatabasePublisher.
+// Use Akka Streams for more elaborate stream processing.
+p.foreach { s =&gt; println(s&quot;Element: $s&quot;) }
+</code></pre><p>JDBCの結果集合をストリーミングする際、もし<code>Subscriber</code>が多くのデータを受け取る準備が出来ていないのなら、次の結果ページはバックグラウンドにバッファリングされる。一方で、全ての結果要素は同期的に渡されるし、結果集合は同期処理が終了する前に先に進んでしまったりはしない。これにより、結果集合の状態に依存する<code>Blob</code>のようなJDBCの低レベルな値に対しても同期的なコールバックが利用可能となる。<code>mapResult</code>のような便利なメソッドがこの目的のために提供されている。
+<!-- When streaming a JDBC result set, the next result page will be buffered in the background if the Subscriber is not ready to receive more data, but all elements are signaled synchronously and the result set is not advanced before synchronous processing is finished. This allows synchronous callbacks to low-level JDBC values like `Blob` which depend on the state of the result set. The convenience method `mapResult` is provided for this purpose: -->
+</p><pre><code class="prettyprint lang-scala">val q = for (c &lt;- coffees) yield c.image
+val a = q.result
+val p1: DatabasePublisher[Blob] = db.stream(a)
+val p2: DatabasePublisher[Array[Byte]] = p1.mapResult { b =&gt;
+  b.getBytes(0, b.length().toInt)
+}
+</code></pre><h3 id="Transactions+and+Pinned+Sessions">Transactions and Pinned Sessions<a href="#Transactions+and+Pinned+Sessions" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><p>いくつかの小さいアクションで構成された<code>DBIOAction</code>を実行する際には、Slickはコネクションプールから得られたセッションを要求し、その後セッションを開放する。データベース外の計算から結果を得るのを待ち合わせる間（例えば、<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.dbio.DBIOAction@flatMap[R2,S2&lt;:NoStream,E2&lt;:Effect]((R)%E2%87%92DBIOAction[R2,S2,E2])(ExecutionContext):DBIOAction[R2,S2,EwithE2]">flatMap</a>）、不必要なセッションは保持されない。データベースに計算させることなく、2つのデータベースのアクションを結合する<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.dbio.DBIOAction">DBIOAction combinators</a>（<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.dbio.DBIOAction@andThen[R2,S2&lt;:NoStream,E2&lt;:Effect](DBIOAction[R2,S2,E2]):DBIOAction[R2,S2,EwithE2]">andThen</a>や<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.dbio.DBIOAction@zip[R2,E2&lt;:Effect](DBIOAction[R2,NoStream,E2]):DBIOAction[(R,R2),NoStream,EwithE2]">zip</a>）は、1つのセッション内で融合されたアクションを実行する副作用を伴いつつ、より効率的にこれらのアクションを融合する。1つのセッションでの利用を強制するには、<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.dbio.DBIOAction@withPinnedSession:DBIOAction[R,S,E]">withPinnedSession</a>を利用すれば良い。これを用いる事で、データベース外での計算を待ち合わせる際に、既存のセッションを開き続けたままにしておくことが出来る。
+<!-- When executing a `DBIOAction` which is composed of several smaller actions, Slick acquires sessions from the connection pool and releases them again as needed so that a session is not kept in use unnecessarily while waiting for the result from a non-database computation (e.g. the function passed to flatMap \<slick.dbio.DBIOAction@flatMap[R2,S2\<:NoStream,E2\<:Effect]((R)⇒DBIOAction[R2,S2,E2])(ExecutionContext):DBIOAction[R2,S2,EwithE2]\> that determines the next Action to run). All DBIOAction combinators \<slick.dbio.DBIOAction\> which combine two database actions without any non-database computations in between (e.g. andThen \<slick.dbio.DBIOAction@andThen[R2,S2\<:NoStream,E2\<:Effect](DBIOAction[R2,S2,E2]):DBIOAction[R2,S2,EwithE2]\> or zip \<slick.dbio.DBIOAction@zip[R2,E2\<:Effect](DBIOAction[R2,NoStream,E2]):DBIOAction[(R,R2),NoStream,EwithE2]\>) can fuse these actions for more efficient execution, with the side-effect that the fused action runs inside a single session. You can use withPinnedSession \<slick.dbio.DBIOAction@withPinnedSession:DBIOAction[R,S,E]\> to force the use of a single session, keeping the existing session open even when waiting for non-database computations. -->
+</p><p>トランザクションの利用を強制する<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.driver.JdbcActionComponent$JdbcActionExtensionMethods@transactionally:DBIOAction[R,S,EwithTransactional]">transactionally</a>と呼ばれるコンビネータもある。これは、実行される<code>DBIOAction</code>の処理全体が自動的に成功か失敗のいずれかに収まる。
+<!-- There is a similar combinator called transactionally \<slick.driver.JdbcActionComponent$JdbcActionExtensionMethods@transactionally:DBIOAction[R,S,EwithTransactional]\> to force the use of a transaction. This guarantees that the entire `DBIOAction` that is executed will either succeed or fail atomically. -->
+</p><blockquote><p><strong>Warning</strong>
+</p><p>失敗というのは<code>transactionally</code>でラップされた個々の<code>DBIOAction</code>のアトミック性を保証するものでは無いため、この時点でエラー回復を図るコンビネータを適用すべきではない。作成されたデータベース側のトランザクションは、<code>transactionally</code>アクションの外側でコミットやロールバックを行う。
+</p></blockquote><pre><code class="prettyprint lang-scala">val a = (for {
+  ns &lt;- coffees.filter(_.name.startsWith(&quot;ESPRESSO&quot;)).map(_.name).result
+  _ &lt;- DBIO.seq(ns.map(n =&gt; coffees.filter(_.name === n).delete): _*)
+} yield ()).transactionally
+val f: Future[Unit] = db.run(a)
+</code></pre><h2 id="JDBC+Interoperability">JDBC Interoperability<a href="#JDBC+Interoperability" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>Slickで利用出来ない機能を使うためにJDBCのレベルを落とすには、<code>SimpleDBIO</code>アクションを用いれば良い。<code>SimpleDBIO</code>アクションは、データベースのスレッド上で実行され、JDBCの<code>Connection</code>への接続を得るものである。
+<!-- In order to drop down to the JDBC level for functionality that is not available in Slick, you can use a `SimpleDBIO` action which is run on a database thread and gets access to the JDBC `Connection`:  -->
+</p><pre><code class="prettyprint lang-scala">val getAutoCommit = SimpleDBIO[Boolean](_.connection.getAutoCommit)
+</code></pre><div class="bottom nav span-16">
+                        <em>Next Page</em>
+                        <span class="arrow">❧</span>
+                        <a href="%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E.html"> スキーマ </a>                        
+                        
+                      </div><div class="tocwrapper show">
+      <a class="tochead nav" style="display: none" href="#toc">❦</a>
+      <a name="toc"></a>
+      <h4 class="toctitle">Contents</h4>
+      <div class="tocbody">
+      <div><a href="slick-doc-ja+3.0.html">slick-doc-ja 3.0</a></div><ol class="toc"> <li><div><a href="%E5%B0%8E%E5%85%A5.html">導入</a></div></li><li><div><a href="%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E3%81%95%E3%82%8C%E3%81%9F%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9.html">サポートされたデータベース</a></div></li><li><div><a href="%E3%81%AF%E3%81%98%E3%82%81%E3%82%88%E3%81%86.html">はじめよう</a></div></li><li><div><a href="%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%E8%A8%AD%E5%AE%9A.html">データベース設定</a></div></li><li><div class="current">データベースI/Oアクション</div></li><li><div><a href="%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E.html">スキーマ</a></div></li><li><div><a href="%E3%82%AF%E3%82%A8%E3%83%AA.html">クエリ</a></div></li><li><div><a href="%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E%E3%82%B3%E3%83%BC%E3%83%89%E3%81%AE%E7%94%9F%E6%88%90.html">スキーマコードの生成</a></div></li><li><div><a href="%E3%83%A6%E3%83%BC%E3%82%B6%E5%AE%9A%E7%BE%A9%E6%A9%9F%E8%83%BD.html">ユーザ定義機能</a></div></li><li><div><a href="Plain+SQL%E3%82%AF%E3%82%A8%E3%83%AA.html">Plain SQLクエリ</a></div></li><li><div><a href="ORM%E3%81%8B%E3%82%89Slick%E3%82%92%E5%88%A9%E7%94%A8%E3%81%99%E3%82%8B%E4%BA%BA%E3%81%B8.html">ORMからSlickを利用する人へ</a></div></li><li><div><a href="SQL%E3%81%8B%E3%82%89Slick%E3%82%92%E5%88%A9%E7%94%A8%E3%81%99%E3%82%8B%E4%BA%BA%E3%81%B8.html">SQLからSlickを利用する人へ</a></div></li><li><div><a href="%E3%82%A2%E3%83%83%E3%83%97%E3%82%B0%E3%83%AC%E3%83%BC%E3%83%89%E3%82%AC%E3%82%A4%E3%83%89.html">アップグレードガイド</a></div></li><li><div><a href="Slick+Extensions%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6.html">Slick Extensionsについて</a></div></li><li><div><a href="Direct+Embedding%EF%BC%88%E9%9D%9E%E6%8E%A8%E5%A5%A8%EF%BC%89.html">Direct Embedding（非推奨）</a></div></li><li><div><a href="Slick+TestKit%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6.html">Slick TestKitについて</a></div></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
+          </div>
+        </div>
+        <div class="header">
+          <div class="container">
+        <div class="span-16 prepend-1 append-1">
+          <div class="span-16 top nav">
+            <div class="span-16 title">
+              <span>slick-doc-ja 3.0</span> — データベースI/Oアクション
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        <a href="http://github.com/krrrr38/slick-doc-ja" class="fork nav"><img src="img/fork.png" alt="Fork me on GitHub"/></a>
+        <div class="highlight-outer">
+              <div class="highlight-menu">
+                <ul>
+                  <li><button id="highlight-button-twitter"><img src="img/twitter-bird-dark-bgs.png"/></button></li>
+                </ul>
+              </div>
+            </div>
+      </body>
+    </html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html manifest="pamflet.manifest">
+      <head>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
+        <title>slick-doc-ja 3.0 — スキーマコードの生成</title>
+        
+        <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/blueprint/grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/> 
+        <!--[if lt IE 8]>
+          <link rel="stylesheet" href={ relativeBase + "css/blueprint/ie.css" } type="text/css" media="screen, projection"/>
+        <![endif]-->
+        <link rel="stylesheet" href="css/pamflet.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamflet-print.css" type="text/css" media="print"/>
+        <link rel="stylesheet" href="css/pamflet-grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamfletheight_2em_2em.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.collapse.js"></script>
+        <script type="text/javascript" src="js/pamflet.js"></script>
+        <script type="text/javascript">
+          Pamflet.page.language = 'en';
+        </script>
+        <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+        <link rel="stylesheet" href="css/layout.css" type="text/css" media="screen, projection"/>
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-37666832-7']);
+            _gaq.push(['_trackPageview']);
+            (function() {
+              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+            </script>
+        <script type="text/javascript">
+              Pamflet.twitter = '#slick';
+            </script>
+      </head>
+      <body class="color_scheme-redmond">
+        <a class="page prev nav" href="%E3%82%AF%E3%82%A8%E3%83%AA.html">
+            <span class="space">&nbsp;</span>
+            <span class="flip arrow">❧</span>
+          </a><a class="page next nav" href="%E3%83%A6%E3%83%BC%E3%82%B6%E5%AE%9A%E7%BE%A9%E6%A9%9F%E8%83%BD.html">
+            <span class="space">&nbsp;</span>
+            <span class="arrow">❧</span>
+          </a>
+        <div class="container contentswrapper">
+          <div class="span-16 prepend-1 append-1 contents">
+            <p>Slick 3.0.0 documentation - 08 Schema Code Generation
+</p><p><a href="http://slick.typesafe.com/doc/3.0.0/code-generation.html">Permalink to Schema Code Generation — Slick 3.0.0 documentation</a>
+</p><h1 id="%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E%E3%82%B3%E3%83%BC%E3%83%89%E3%81%AE%E7%94%9F%E6%88%90">スキーマコードの生成<a href="#%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E%E3%82%B3%E3%83%BC%E3%83%89%E3%81%AE%E7%94%9F%E6%88%90" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><p>データベーススキーマが既に存在している場合、Slickのコードジェネレータは非常に便利なツールとなる。これはジェネレータ単独で利用する事もできるし、sbtのbuildと組み合わせて必要な全てのSlickのコードを生成する事が出来る。
+<!-- The Slick code generator is a convenient tool for working with an existing or evolving database schema. It can be run stand-alone or integrated into you sbt build for creating all code Slick needs to work.  -->
+</p><h2 id="Overview">Overview<a href="#Overview" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>デフォルトでは、コードジェネレータは全てのテーブルに対する<code>Table</code>クラスと、対応する<code>TableQuery</code>の値を生成する。列に対応するものは、各カラムを引数に取るケースクラスとして生成される。22より多くのカラムを持つテーブルについては、コードジェネレータは自動的にSlickの実験的な機能である<code>HList</code>を用いた実装に変更する。これはScalaのタプルサイズ問題を解決する1つの方法である。（Scalaのバージョンが2.10.3以下である場合、コンパイル時間に対する問題を解決するために<code>HCons</code>が<code>::</code>の代わりに用いられるが、これはScala2.10.4以上では解決されている話だ）
+<!-- By default, the code generator generates `Table` classes, corresponding `TableQuery` values, which can be used in a collection-like manner, as well as case classes for holding complete rows of values. For tables with more than 22 columns the generator automatically switches to Slick's experimental `HList` implementation for overcoming Scala's tuple size limit. (In Scala \<= 2.10.3 use `HCons` instead of `::` as a type contructor due to performance issues during compilation, which are fixed in 2.10.4 and later.)  -->
+</p><p>ジェネレータについては、<a href="http://slick.typesafe.com/docs/#20131203_patterns_for_slick_database_applications_at_scala_exchange_2013">talk at Scala eXchange 2013</a>にも説明があるから、是非見て欲しい。
+<!-- Parts of the generator are also explained in our [talk at Scala eXchange 2013](http://slick.typesafe.com/docs/#20131203_patterns_for_slick_database_applications_at_scala_exchange_2013).  -->
+</p><h2 id="Standalone+use">Standalone use<a href="#Standalone+use" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>SlickのコードジェネレータはそのライブラリがSlick本体とは独立して公開されている。sbtプロジェクトにおいては、以下のような記述をビルド定義（<code>build.sbt</code>や<code>project/Build.scala</code>など）に加える事で利用可能となる。
+<!-- To include Slick's code generator use the published library. For sbt projects add following to your build definition -`build.sbt` or `project/Build.scala`:  -->
+</p><pre><code class="prettyprint lang-scala">libraryDependencies += &quot;com.typesafe.slick&quot; %% &quot;slick-codegen&quot; % &quot;3.0.0&quot;
+</code></pre><p>Mavenプロジェクトには、以下のような<code>&lt;dependency&gt;</code>を加えて欲しい。
+<!-- For Maven projects add the following to your `<dependencies>`: -->
+</p><pre><code class="prettyprint lang-xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.typesafe.slick&lt;/groupId&gt;
+  &lt;artifactId&gt;slick-codegen_2.10&lt;/artifactId&gt;
+  &lt;version&gt;3.0.0&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre><p>Slickのコードジェネレータはコマンドラインから、もしくはJavaやScalaからAPIを利用して使う事が出来る。単純な例だと、以下のように実行すれば良い。
+<!-- Slick's code generator comes with a default runner that can be used from the command line or from Java/Scala. You can simply execute  -->
+</p><pre><code class="prettyprint lang-scala">slick.codegen.SourceCodeGenerator.main(
+  Array(slickDriver, jdbcDriver, url, outputFolder, pkg)
+)
+</code></pre><p>もしくは、こんな感じに。
+<!-- or -->
+</p><pre><code class="prettyprint lang-scala">slick.codegen.SourceCodeGenerator.main(
+  Array(slickDriver, jdbcDriver, url, outputFolder, pkg, user, password)
+)
+</code></pre><p>引数は、以下のようなものを取る。
+<!-- and provide the following values -->
+</p><ul><li><strong>slickDriver</strong> Slick driver class, e.g. <em>“slick.driver.H2Driver“</em>
+</li><li><strong>jdbcDriver</strong> jdbc driver class, e.g. <em>“org.h2.Driver“</em>
+</li><li><strong>url</strong> jdbc url, e.g. <em>“jdbc:postgresql://localhost/test“</em>
+</li><li><strong>outputFolder</strong> 生成されたコードを出力するためのフォルダ
+</li><li><strong>pkg</strong> 生成されたコードが置かれるべきScalaのパッケージ名
+</li><li><strong>user</strong> データベースに接続するユーザ名
+</li><li><strong>password</strong> データベースにユーザが接続する際に利用するパスワード
+</li></ul><!-- -   **slickDriver** Fully qualified name of Slick driver class, e.g. *"slick.driver.H2Driver"* -->
+<!-- -   **jdbcDriver** Fully qualified name of jdbc driver class, e.g. *"org.h2.Driver"* -->
+<!-- -   **url** jdbc url, e.g. *"jdbc:postgresql://localhost/test"* -->
+<!-- -   **outputFolder** Place where the package folder structure should be put -->
+<!-- -   **pkg** Scala package the generated code should be places in -->
+<!-- -   **user** database connection user name -->
+<!-- -   **password** database connection password -->
+<h2 id="Integrated+into+sbt">Integrated into sbt<a href="#Integrated+into+sbt" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>コードジェネレータは<a href="http://www.scala-sbt.org/">sbt</a>で手で実行したり、コンパイル前に毎度実行したりも出来る。<a href="https://github.com/slick/slick-codegen-example">slick-codegen-example</a>に例があるから参考にして欲しい。
+<!-- The code generator can be run before every compilation or manually in sbt\_. An example project showing both can be [found here](https://github.com/slick/slick-codegen-example).  -->
+</p><p>（訳注: <a href="https://github.com/tototoshi/sbt-slick-codegen">tototoshi/sbt-slick-codegen</a>も参考までに）
+</p><h2 id="Generated+Code">Generated Code<a href="#Generated+Code" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>デフォルトでは、生成されたコードは指定されたフォルダ以下に<code>Tables.scala</code>という名前のファイルで保存される。このファイルは、良い感じにインポート出来るコードを持つ<code>object Tables</code>を含んでいる。Slickドライバが適切なものになっているかも確認出来る。このファイルには<code>trait Tables</code>も含まれていて、Cakeパターンを用いたい場合にはこちらを利用すると良い。
+<!-- By default, the code generator places a file `Tables.scala` in the given folder in a subfolder corresponding to the package. The file contains an `object Tables` from which the code can be imported for use right away. Make sure you use the same Slick driver. The file also contains a `trait Tables` which can be used in the cake pattern.  -->
+</p><blockquote><p><strong>Warning</strong>
+</p><p>生成されたコードを用いる際には、異なるデータベースドライバを誤って混ぜてしまわないように注意して欲しい。デフォルトの<code>object Tables</code>はコード生成の際にドライバを用いる。異なるドライバを一緒に使ってしまうと、ランタイムエラーを引き起こす。生成された<code>trait Tables</code>は異なるドライバにより用いられるが、これは現在テストされておらず非公式な使い方となっている。あなたの環境では上手く動かないかもしれない。将来的にこれらについては公式でサポートする予定だ。
+</p></blockquote><!-- **warning** When using the generated code, be careful **not** to mix different database drivers accidentally. The default `object Tables` uses the driver used during code generation. Using it together with a different driver for queries will lead to runtime errors. The generated `trait Tables` can be used with a different driver, but be aware, that this is currently untested and not officially supported. It may or may not work in your case. We will officially support this at some point in the future.  -->
+<h2 id="Customization">Customization<a href="#Customization" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>ジェネレータはデータモデルに対しどんなコードも生成出来るよう、様々なメソッドをオーバライドして自由にカスタマイズすることが出来る。簡単なカスタマイズから非常に大きなカスタマイズまで、様々なカスタマイズに対応出来る。<a href="https://playframework.com/">Play</a>に対応するフレームワークバインディングを行うだとか、そのような例がある。
+<!-- The generator can be flexibly customized by overriding methods to programmatically generate any code based on the data model. This can be used for minor customizations as well as heavy, model driven code generation, e.g. for framework bindings in Play\_, other data-related, repetitive sections of applications, etc.  -->
+</p><p><a href="https://github.com/slick/slick-codegen-customization-example">This example</a>では、どのようにしてコードジェネレータをカスタマイズするのか、sbtのmulti-projectに対しどのようにセットアップするのか、メインとなるソースに対して、コンパイル前に毎度コードジェネレータをどのようにして実行させるのかを見ることが出来る。
+<!-- [This example](https://github.com/slick/slick-codegen-customization-example) shows a customized code-generator and how to setup up a multi-project sbt build, which compiles and runs it before compiling the main sources.  -->
+</p><p>コードジェネレータは、異なるフラグメントに対して最適化された小さなサブジェネレータの階層を構造化して実装されている。サブジェネレータの実装は、個々のファクトリメソッドをオーバーライドすることで、カスタマイズしたものに取り替える事ができる。<a href="http://slick.typesafe.com/doc/3.0.0/codegen-api/index.html#slick.codegen.SourceCodeGenerator">SourceCodeGenerator</a>は各々のテーブルのためのサブジェネレータを生成するファクトリメソッドを含んでいる。サブジェネレータはTableクラス自体、エンティティとなるケースクラス、カラム、キー、インデックスなど、様々なものを生成するサブジェネレータを含んでいる。カスタマイズされたサブジェネレータも簡単に同様に扱う事ができる。
+<!-- The implementation of the code generator is structured into a small hierarchy of sub-generators responsible for different fragments of the complete output. The implementation of each sub-generator can be swapped out for a customized one by overriding the corresponding factory method. SourceCodeGenerator \<slick.codegen.SourceCodeGenerator\> contains a factory method Table, which it uses to generate a sub-generator for each table. The sub-generator Table in turn contains sub-generators for Table classes, entity case classes, columns, key, indices, etc. Custom sub-generators can easily be added as well.  -->
+</p><p>様々なサブジェネレータにおいて、Slickのデータモデルに関連する部分はコード生成を実行させる際にアクセスされる。
+<!-- Within the sub-generators the relevant part of the Slick data model can be accessed to drive the code generation.  -->
+</p><p>カスタマイズ可能なオーバーライド出来るメソッド一覧については、<a href="http://slick.typesafe.com/doc/3.0.0/codegen-api/index.html#slick.codegen.SourceCodeGenerator">api documentation</a>を見て欲しい。
+<!-- Please see the api documentation \<slick.codegen.SourceCodeGenerator\> for info on all of the methods that can be overridden for customization.  -->
+</p><p>以下にジェネレータをカスタマイズするサンプルを載せる。
+<!-- Here is an example for customizing the generator: -->
+</p><pre><code class="prettyprint lang-scala">import slick.codegen.SourceCodeGenerator
+// データモデルを取得する
+val modelAction = H2Driver.createModel(Some(H2Driver.defaultTables)) // テーブルのフィルタリングはここで行う
+val modelFuture = db.run(modelAction)
+// コードジェネレータをカスタマイズする
+val codegenFuture = modelFuture.map(model =&gt; new SourceCodeGenerator(model) {
+  // マッピングするテーブルとクラス名をオーバーライド
+  override def entityName =
+    dbTableName =&gt; dbTableName.dropRight(1).toLowerCase.toCamelCase
+  override def tableName =
+    dbTableName =&gt; dbTableName.toLowerCase.toCamelCase
+  // いくつか追加のimportを加える
+  override def code = &quot;import foo.{MyCustomType,MyCustomTypeMapper}&quot; + &quot;\n&quot; + super.code
+  // テーブルジェネレータをカスタマイズ
+  override def Table = new Table(_){
+    // エンティティクラスの生成を抑制する
+    override def EntityType = new EntityType{
+      override def classEnabled = false
+    }
+    // カラムジェネレータをカスタマイズ
+    override def Column = new Column(_){
+      // 特定のカラムに対して、Scalaの型を変更するようカスタマイズ
+      // e.g. to a custom enum or anything else
+      override def rawType =
+        if(model.name == &quot;SOME_SPECIAL_COLUMN_NAME&quot;) &quot;MyCustomType&quot; else super.rawType
+    }
+  }
+})
+codegenFuture.onSuccess { case codegen =&gt;
+  codegen.writeToFile(
+    &quot;slick.driver.H2Driver&quot;,&quot;some/folder/&quot;,&quot;some.packag&quot;,&quot;Tables&quot;,&quot;Tables.scala&quot;
+  )
+}
+</code></pre><div class="bottom nav span-16">
+                        <em>Next Page</em>
+                        <span class="arrow">❧</span>
+                        <a href="%E3%83%A6%E3%83%BC%E3%82%B6%E5%AE%9A%E7%BE%A9%E6%A9%9F%E8%83%BD.html"> ユーザ定義機能 </a>                        
+                        
+                      </div><div class="tocwrapper show">
+      <a class="tochead nav" style="display: none" href="#toc">❦</a>
+      <a name="toc"></a>
+      <h4 class="toctitle">Contents</h4>
+      <div class="tocbody">
+      <div><a href="slick-doc-ja+3.0.html">slick-doc-ja 3.0</a></div><ol class="toc"> <li><div><a href="%E5%B0%8E%E5%85%A5.html">導入</a></div></li><li><div><a href="%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E3%81%95%E3%82%8C%E3%81%9F%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9.html">サポートされたデータベース</a></div></li><li><div><a href="%E3%81%AF%E3%81%98%E3%82%81%E3%82%88%E3%81%86.html">はじめよう</a></div></li><li><div><a href="%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%E8%A8%AD%E5%AE%9A.html">データベース設定</a></div></li><li><div><a href="%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9I%2FO%E3%82%A2%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3.html">データベースI/Oアクション</a></div></li><li><div><a href="%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E.html">スキーマ</a></div></li><li><div><a href="%E3%82%AF%E3%82%A8%E3%83%AA.html">クエリ</a></div></li><li><div class="current">スキーマコードの生成</div></li><li><div><a href="%E3%83%A6%E3%83%BC%E3%82%B6%E5%AE%9A%E7%BE%A9%E6%A9%9F%E8%83%BD.html">ユーザ定義機能</a></div></li><li><div><a href="Plain+SQL%E3%82%AF%E3%82%A8%E3%83%AA.html">Plain SQLクエリ</a></div></li><li><div><a href="ORM%E3%81%8B%E3%82%89Slick%E3%82%92%E5%88%A9%E7%94%A8%E3%81%99%E3%82%8B%E4%BA%BA%E3%81%B8.html">ORMからSlickを利用する人へ</a></div></li><li><div><a href="SQL%E3%81%8B%E3%82%89Slick%E3%82%92%E5%88%A9%E7%94%A8%E3%81%99%E3%82%8B%E4%BA%BA%E3%81%B8.html">SQLからSlickを利用する人へ</a></div></li><li><div><a href="%E3%82%A2%E3%83%83%E3%83%97%E3%82%B0%E3%83%AC%E3%83%BC%E3%83%89%E3%82%AC%E3%82%A4%E3%83%89.html">アップグレードガイド</a></div></li><li><div><a href="Slick+Extensions%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6.html">Slick Extensionsについて</a></div></li><li><div><a href="Direct+Embedding%EF%BC%88%E9%9D%9E%E6%8E%A8%E5%A5%A8%EF%BC%89.html">Direct Embedding（非推奨）</a></div></li><li><div><a href="Slick+TestKit%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6.html">Slick TestKitについて</a></div></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
+          </div>
+        </div>
+        <div class="header">
+          <div class="container">
+        <div class="span-16 prepend-1 append-1">
+          <div class="span-16 top nav">
+            <div class="span-16 title">
+              <span>slick-doc-ja 3.0</span> — スキーマコードの生成
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        <a href="http://github.com/krrrr38/slick-doc-ja" class="fork nav"><img src="img/fork.png" alt="Fork me on GitHub"/></a>
+        <div class="highlight-outer">
+              <div class="highlight-menu">
+                <ul>
+                  <li><button id="highlight-button-twitter"><img src="img/twitter-bird-dark-bgs.png"/></button></li>
+                </ul>
+              </div>
+            </div>
+      </body>
+    </html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html manifest="pamflet.manifest">
+      <head>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
+        <title>slick-doc-ja 3.0 — ユーザ定義機能</title>
+        
+        <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/blueprint/grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/> 
+        <!--[if lt IE 8]>
+          <link rel="stylesheet" href={ relativeBase + "css/blueprint/ie.css" } type="text/css" media="screen, projection"/>
+        <![endif]-->
+        <link rel="stylesheet" href="css/pamflet.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamflet-print.css" type="text/css" media="print"/>
+        <link rel="stylesheet" href="css/pamflet-grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamfletheight_2em_2em.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.collapse.js"></script>
+        <script type="text/javascript" src="js/pamflet.js"></script>
+        <script type="text/javascript">
+          Pamflet.page.language = 'en';
+        </script>
+        <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+        <link rel="stylesheet" href="css/layout.css" type="text/css" media="screen, projection"/>
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-37666832-7']);
+            _gaq.push(['_trackPageview']);
+            (function() {
+              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+            </script>
+        <script type="text/javascript">
+              Pamflet.twitter = '#slick';
+            </script>
+      </head>
+      <body class="color_scheme-redmond">
+        <a class="page prev nav" href="%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E%E3%82%B3%E3%83%BC%E3%83%89%E3%81%AE%E7%94%9F%E6%88%90.html">
+            <span class="space">&nbsp;</span>
+            <span class="flip arrow">❧</span>
+          </a><a class="page next nav" href="Plain+SQL%E3%82%AF%E3%82%A8%E3%83%AA.html">
+            <span class="space">&nbsp;</span>
+            <span class="arrow">❧</span>
+          </a>
+        <div class="container contentswrapper">
+          <div class="span-16 prepend-1 append-1 contents">
+            <p>Slick 3.0.0 documentation - 09 User-Defined Features
+</p><p><a href="http://slick.typesafe.com/doc/3.0.0/userdefined.html">Permalink to User-Defined Features — Slick 3.0.0 documentation</a>
+</p><h1 id="%E3%83%A6%E3%83%BC%E3%82%B6%E5%AE%9A%E7%BE%A9%E6%A9%9F%E8%83%BD">ユーザ定義機能<a href="#%E3%83%A6%E3%83%BC%E3%82%B6%E5%AE%9A%E7%BE%A9%E6%A9%9F%E8%83%BD" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><p>本章では、どのようにしてカスタマイズしたデータ型をSlickのScala APIを通して利用するのか、ということについて説明する。
+<!-- This chapter describes how to use custom data types and database functions with Slick's Scala API.  -->
+</p><h2 id="Scalar+Database+Functions">Scalar Database Functions<a href="#Scalar+Database+Functions" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>もしデータベースシステムがSlickで利用できないメソッドを関数としてサポートしているのならば、<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.lifted.SimpleFunction">SimpleFunction</a>を通してその関数を利用することが出来る。固定されたパラメータと返り値を用いる1つ・2つ・3つ組といった関数が様々なデータベースに存在している。
+<!-- If your database system supports a scalar function that is not available as a method in Slick you can define it as a slick.lifted.SimpleFunction. There are predefined methods for creating unary, binary and ternary functions with fixed parameter and return types. -->
+</p><pre><code class="prettyprint lang-scala">// H2データベースでは day_of_week() 関数により、timestampから曜日を取得することが出来る
+val dayOfWeek = SimpleFunction.unary[Date, Int](&quot;day_of_week&quot;)
+...
+// 曜日別にグループ化したクエリを用いたクエリは以下のようになる
+val q1 = for {
+  (dow, q) &lt;- salesPerDay.map(s =&gt; (dayOfWeek(s.day), s.count)).groupBy(_._1)
+} yield (dow, q.map(_._2).sum)
+</code></pre><p>もっと柔軟に型を変形したい場合（複数引数であったり、OptionとNon-Optionの型を使い分けたい）などには、<code>SimpleFunction.apply</code>を使って、適切な型チェックを行うラッパー関数を書く事が出来る。
+<!-- If you need more flexibility regarding the types (e.g. for varargs, polymorphic functions, or to support Option and non-Option types in a single function), you can use `SimpleFunction.apply` to get an untyped instance and write your own wrapper function with the proper type-checking:  -->
+</p><pre><code class="prettyprint lang-scala">def dayOfWeek2(c: Rep[Date]) =
+  SimpleFunction[Int](&quot;day_of_week&quot;).apply(Seq(c))
+</code></pre><p><a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.lifted.SimpleBinaryOperator">SimpleBinaryOperator</a>と<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.lifted.SimpleLiteral">SimpleLiteral</a>も同じように扱うことが出来る。もっと柔軟な操作を行いたい場合には、<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.lifted.SimpleExpression">SimpleExpression</a>を用いると良い。
+<!-- slick.lifted.SimpleBinaryOperator and slick.lifted.SimpleLiteral work in a similar way. For even more flexibility (e.g. function-like expressions with unusual syntax), you can use slick.lifted.SimpleExpression.  -->
+</p><pre><code class="prettyprint lang-scala">val current_date = SimpleLiteral[java.sql.Date](&quot;CURRENT_DATE&quot;)
+salesPerDay.map(_ =&gt; current_date)
+</code></pre><h2 id="Other+Database+Functions+And+Stored+Procedures">Other Database Functions And Stored Procedures<a href="#Other+Database+Functions+And+Stored+Procedures" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>全てのテーブルを返すようなデータベースの関数を利用したり、ストアドプロシージャを用いたいといった場合には、<a href="http://slick.typesafe.com/doc/3.0.0/sql.html">Plain SQLクエリ</a>を用いて欲しい。
+<!-- For database functions that return complete tables or stored procedures please use sql. Stored procedures that return multiple result sets are currently not supported.  -->
+</p><h2 id="Using+Custom+Scalar+Types+in+Queries">Using Custom Scalar Types in Queries<a href="#Using+Custom+Scalar+Types+in+Queries" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>もしカラムに対しカスタマイズした型を適用したいのなら、<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.driver.JdbcProfile@ColumnType[T]:JdbcDriver.ColumnType[T]">ColumnType</a>を実装して欲しい。アプリケーション特有の型を、データベースにおいて既にサポートされた型へマッピングする事はよくある事例だろう。これを実現するには、<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.driver.JdbcProfile@MappedColumnType:JdbcDriver.MappedJdbcType.type">MappedColumnType</a>を用いて、これに対するボイラープレートを実装するだけで済む。これはドライバをimportする中に含まれており、<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.driver.JdbcDriver$">JdbcDriver</a>のシングルトンオブジェクトから別途importしなくても良い。
+<!-- If you need a custom column type you can implement ColumnType \<slick.driver.JdbcProfile@ColumnType[T]:JdbcDriver.ColumnType[T]\>. The most common scenario is mapping an application-specific type to an already supported type in the database. This can be done much simpler by using MappedColumnType \<slick.driver.JdbcProfile@MappedColumnType:JdbcDriver.MappedJdbcType.type\> which takes care of all the boilerplate. It comes with the usual import from the driver. Do not import it from the JdbcDriver \<slick.driver.JdbcDriver$\> singleton object.  -->
+</p><pre><code class="prettyprint lang-scala">// booleanの代数的表現
+sealed trait Bool
+case object True extends Bool
+case object False extends Bool
+...
+// BoolをIntの1と0にマッピングするためのColumnType
+implicit val boolColumnType = MappedColumnType.base[Bool, Int](
+  { b =&gt; if(b == True) 1 else 0 },    // map Bool to Int
+  { i =&gt; if(i == 1) True else False } // map Int to Bool
+)
+...
+// この状態で、Boolをビルトインされた型としてテーブルやクエリで利用出来る。
+</code></pre><p><a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.driver.JdbcProfile@MappedJdbcType">MappedJdbcType</a>を使うと、もっと柔軟なマッピングが行える。
+<!-- You can also subclass MappedJdbcType \<slick.driver.JdbcProfile@MappedJdbcType\> for a bit more flexibility.  -->
+</p><p>もし既にサポートされた型のラッパークラス（ケースクラスやバリュークラスになりえるもの）があるのなら、マクロで生成される暗黙的な<code>ColumnType</code>を自由に取得出来る<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.lifted.MappedTo">MappedTo</a>を継承したものを利用する。そのようなラッパークラスは一般的に、型安全でテーブル特有な主キーの型に用いられる。
+<!-- If you have a wrapper class (which can optionally be a case class and/or value class) for an underlying value of some supported type, you can make it extend slick.lifted.MappedTo to get a macro-generated implicit `ColumnType` for free. Such wrapper classes are commonly used for type-safe table-specific primary key types:  -->
+</p><pre><code class="prettyprint lang-scala">// カスタマイズされたテーブルのID型
+case class MyID(value: Long) extends MappedTo[Long]
+...
+// MyIDをテーブルのID型としてそのまま用いる -- 特別なボイラープレートは必要ない
+class MyTable(tag: Tag) extends Table[(MyID, String)](tag, &quot;MY_TABLE&quot;) {
+  def id = column[MyID](&quot;ID&quot;)
+  def data = column[String](&quot;DATA&quot;)
+  def * = (id, data)
+}
+</code></pre><h2 id="Using+Custom+Record+Types+in+Queries">Using Custom Record Types in Queries<a href="#Using+Custom+Record+Types+in+Queries" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>レコード型は、個々に宣言された型のコンポーネントをいくつか含んだデータ構造として表される。SlickはScalaのタプルをサポートしている以外にも、22個より大きい数のカラム数に対応するためにSlick独自に<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.collection.heterogeneous.HList">HList</a>というものを用意している。
+<!-- Record types are data structures containing a statically known number of components with individually declared types. Out of the box, Slick supports Scala tuples (up to arity 22) and Slick's own slick.collection.heterogeneous.HList implementation. Record types can be nested and mixed arbitrarily.  -->
+</p><p>カスタマイズされたレコード型（ケースクラス、カスタマイズされたHLists、タプルに似た型など…）を用いるために、Slickに対しどのようにしてクエリと結果型をマッピングするのかというのを伝える必要がある。これに対しては、<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.lifted.MappedScalaProductShape">MappedScalaProductShape</a>を継承した<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.lifted.Shape">Shape</a>を用いると良い。
+<!-- In order to use custom record types (case classes, custom HLists, tuple-like types, etc.) in queries you need to tell Slick how to map them between queries and results. You can do that using a slick.lifted.Shape extending slick.lifted.MappedScalaProductShape.  -->
+</p><h3 id="Polymorphic+Types+%28e.g.+Custom+Tuple+Types+or+HLists%29">Polymorphic Types (e.g. Custom Tuple Types or HLists)<a href="#Polymorphic+Types+%28e.g.+Custom+Tuple+Types+or+HLists%29" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><p>ポリモーフィックなレコード型は、は要素となる型を抽象化する。つまりここでは、持ち上げられた要素の型と生の要素の型の双方で同じレコード型を用いることが出来るようになる。カスタマイズしたポリモーフィックなレコード型を利用するには、適切な暗黙的<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.lifted.Shape">Shape</a>を用意してあげたら良い。
+<!-- The distinguishing feature of a *polymorphic* record type is that it abstracts over its element types, so you can use the same record type for both, lifted and plain element types. You can add support for custom polymorphic record types using an appropriate implicit slick.lifted.Shape.  -->
+</p><p><code>Pair</code>というクラスを使う例は以下のようになる。
+<!-- Here is an example for a type `Pair`:  -->
+</p><pre><code class="prettyprint lang-scala">// カスタマイズされたレコード型
+case class Pair[A, B](a: A, b: B)
+...
+// PairのためのShape実装
+final class PairShape[Level &lt;: ShapeLevel, M &lt;: Pair[_,_], U &lt;: Pair[_,_] : ClassTag, P &lt;: Pair[_,_]](
+  val shapes: Seq[Shape[_, _, _, _]])
+extends MappedScalaProductShape[Level, Pair[_,_], M, U, P] {
+  def buildValue(elems: IndexedSeq[Any]) = Pair(elems(0), elems(1))
+  def copy(shapes: Seq[Shape[_ &lt;: ShapeLevel, _, _, _]]) = new PairShape(shapes)
+}
+...
+implicit def pairShape[Level &lt;: ShapeLevel, M1, M2, U1, U2, P1, P2](
+  implicit s1: Shape[_ &lt;: Level, M1, U1, P1], s2: Shape[_ &lt;: Level, M2, U2, P2]
+) = new PairShape[Level, Pair[M1, M2], Pair[U1, U2], Pair[P1, P2]](Seq(s1, s2))
+</code></pre><p>この例における暗黙的なメソッドである<code>pairShape</code>は、2つの要素型を持つ<code>Pair</code>のためのShapeを提供している（個々の要素型のためのShapeは、いつでも利用可能となる）。
+<!-- The implicit method `pairShape` in this example provides a Shape for a `Pair` of two element types whenever Shapes for the individual element types are available.  -->
+</p><p>これらの定義を用いれば、Slickを利用するどの場所においても<code>Pair</code>をレコード型として利用出来る。
+<!-- With these definitions in place, we can use the `Pair` record type in every location in Slick where a tuple or `HList` would be acceptable:  -->
+</p><pre><code class="prettyprint lang-scala">// テーブル定義にPairを利用する
+class A(tag: Tag) extends Table[Pair[Int, String]](tag, &quot;shape_a&quot;) {
+  def id = column[Int](&quot;id&quot;, O.PrimaryKey)
+  def s = column[String](&quot;s&quot;)
+  def * = Pair(id, s)
+}
+val as = TableQuery[A]
+...
+// カスタマイズされた型のデータを挿入する
+val insertAction = DBIO.seq(
+  as += Pair(1, &quot;a&quot;),
+  as += Pair(2, &quot;c&quot;),
+  as += Pair(3, &quot;b&quot;)
+)
+...
+// クエリからPairを返却してもらう
+val q2 = as
+  .map { case a =&gt; Pair(a.id, (a.s ++ a.s)) }
+  .filter { case Pair(id, _) =&gt; id =!= 1 }
+  .sortBy { case Pair(_, ss) =&gt; ss }
+  .map { case Pair(id, ss) =&gt; Pair(id, Pair(42 , ss)) }
+// returns: Vector(Pair(3,Pair(42,&quot;bb&quot;)), Pair(2,Pair(42,&quot;cc&quot;)))
+</code></pre><h3 id="Monomorphic+Case+Classes">Monomorphic Case Classes<a href="#Monomorphic+Case+Classes" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><p>カスタマイズされたケースクラスが単一的なレコード型としてしばしば用いられる（要素型が固定されたレコード型など）。Slickにおいてこのようなケースクラスを用いるためには、レコードの生の値を取り扱うケースクラスを定義するのに加えて、持ち上げられたレコードの値を取り扱うケースクラスを定義する必要がある。
+<!-- Custom *case classes* are frequently used as monomorphic record types (i.e. record types where the element types are fixed). In order to use them in Slick, you need to define the case class for a record of plain values (as usual) plus an additional case class for a matching record of lifted values.  -->
+</p><p>カスタマイズしたケースクラスの<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.lifted.Shape">Shape</a>を提供するためには、<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.lifted.CaseClassShape">CaseClassShape</a>を用いると良い。
+<!-- In order to provide a slick.lifted.Shape for a custom case class, you can use slick.lifted.CaseClassShape:  -->
+</p><pre><code class="prettyprint lang-scala">// 2つのケースクラスを用意
+case class LiftedB(a: Rep[Int], b: Rep[String])
+case class B(a: Int, b: String)
+...
+// 定義したケースクラスに対するマッピング
+implicit object BShape extends CaseClassShape(LiftedB.tupled, B.tupled)
+...
+class BRow(tag: Tag) extends Table[B](tag, &quot;shape_b&quot;) {
+  def id = column[Int](&quot;id&quot;, O.PrimaryKey)
+  def s = column[String](&quot;s&quot;)
+  def * = LiftedB(id, s)
+}
+val bs = TableQuery[BRow]
+...
+val insertActions = DBIO.seq(
+  bs += B(1, &quot;a&quot;),
+  bs.map(b =&gt; (b.id, b.s)) += ((2, &quot;c&quot;)),
+  bs += B(3, &quot;b&quot;)
+)
+...
+val q3 = bs
+  .map { case b =&gt; LiftedB(b.id, (b.s ++ b.s)) }
+  .filter { case LiftedB(id, _) =&gt; id =!= 1 }
+  .sortBy { case LiftedB(_, ss) =&gt; ss }
+...
+// returns: Vector(B(3,&quot;bb&quot;), B(2,&quot;cc&quot;))
+</code></pre><p>このメカニズムは、<em>&lt;&gt;</em> オペレータを用いたクライアントサイドマッピングの代わりとして用いられている。これにはすこしばかりボイラープレートが必要になるが、生のレコードと持ち上げられたレコードの双方において同じフィールド名を持たせてくれる。
+<!-- Note that this mechanism can be used as an alternative to client-side mappings with the \<\> operator. It requires a bit more boilerplate but allows you to use the same field names in both, plain and lifted records.  -->
+</p><h3 id="Combining+Mapped+Types">Combining Mapped Types<a href="#Combining+Mapped+Types" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><p>以下の例では、マッピングされたケースクラスと、他でマッピングされたケースクラスでマッピングされた<code>Pair</code>の2つを組み合わせている。
+<!-- In the following example we are combining a mapped case class and the mapped `Pair` type in another mapped case class.  -->
+</p><pre><code class="prettyprint lang-scala">// 複数のマッピングされた型を組み合わせている
+case class LiftedC(p: Pair[Rep[Int],Rep[String]], b: LiftedB)
+case class C(p: Pair[Int,String], b: B)
+...
+implicit object CShape extends CaseClassShape(LiftedC.tupled, C.tupled)
+...
+class CRow(tag: Tag) extends Table[C](tag, &quot;shape_c&quot;) {
+  def id = column[Int](&quot;id&quot;)
+  def s = column[String](&quot;s&quot;)
+  def projection = LiftedC(
+    Pair(column(&quot;p1&quot;),column(&quot;p2&quot;)), // (cols defined inline, type inferred)
+    LiftedB(id,s)
+  )
+  def * = projection
+}
+val cs = TableQuery[CRow]
+...
+val insertActions2 = DBIO.seq(
+  cs += C(Pair(7,&quot;x&quot;), B(1,&quot;a&quot;)),
+  cs += C(Pair(8,&quot;y&quot;), B(2,&quot;c&quot;)),
+  cs += C(Pair(9,&quot;z&quot;), B(3,&quot;b&quot;))
+)
+...
+val q4 = cs
+  .map { case c =&gt; LiftedC(c.projection.p, LiftedB(c.id,(c.s ++ c.s))) }
+  .filter { case LiftedC(_, LiftedB(id,_)) =&gt; id =!= 1 }
+  .sortBy { case LiftedC(Pair(_,p2), LiftedB(_,ss)) =&gt; ss++p2 }
+...
+// returns: Vector(C(Pair(9,&quot;z&quot;),B(3,&quot;bb&quot;)), C(Pair(8,&quot;y&quot;),B(2,&quot;cc&quot;)))
+</code></pre><div class="bottom nav span-16">
+                        <em>Next Page</em>
+                        <span class="arrow">❧</span>
+                        <a href="Plain+SQL%E3%82%AF%E3%82%A8%E3%83%AA.html"> Plain SQLクエリ </a>                        
+                        
+                      </div><div class="tocwrapper show">
+      <a class="tochead nav" style="display: none" href="#toc">❦</a>
+      <a name="toc"></a>
+      <h4 class="toctitle">Contents</h4>
+      <div class="tocbody">
+      <div><a href="slick-doc-ja+3.0.html">slick-doc-ja 3.0</a></div><ol class="toc"> <li><div><a href="%E5%B0%8E%E5%85%A5.html">導入</a></div></li><li><div><a href="%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E3%81%95%E3%82%8C%E3%81%9F%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9.html">サポートされたデータベース</a></div></li><li><div><a href="%E3%81%AF%E3%81%98%E3%82%81%E3%82%88%E3%81%86.html">はじめよう</a></div></li><li><div><a href="%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%E8%A8%AD%E5%AE%9A.html">データベース設定</a></div></li><li><div><a href="%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9I%2FO%E3%82%A2%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3.html">データベースI/Oアクション</a></div></li><li><div><a href="%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E.html">スキーマ</a></div></li><li><div><a href="%E3%82%AF%E3%82%A8%E3%83%AA.html">クエリ</a></div></li><li><div><a href="%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E%E3%82%B3%E3%83%BC%E3%83%89%E3%81%AE%E7%94%9F%E6%88%90.html">スキーマコードの生成</a></div></li><li><div class="current">ユーザ定義機能</div></li><li><div><a href="Plain+SQL%E3%82%AF%E3%82%A8%E3%83%AA.html">Plain SQLクエリ</a></div></li><li><div><a href="ORM%E3%81%8B%E3%82%89Slick%E3%82%92%E5%88%A9%E7%94%A8%E3%81%99%E3%82%8B%E4%BA%BA%E3%81%B8.html">ORMからSlickを利用する人へ</a></div></li><li><div><a href="SQL%E3%81%8B%E3%82%89Slick%E3%82%92%E5%88%A9%E7%94%A8%E3%81%99%E3%82%8B%E4%BA%BA%E3%81%B8.html">SQLからSlickを利用する人へ</a></div></li><li><div><a href="%E3%82%A2%E3%83%83%E3%83%97%E3%82%B0%E3%83%AC%E3%83%BC%E3%83%89%E3%82%AC%E3%82%A4%E3%83%89.html">アップグレードガイド</a></div></li><li><div><a href="Slick+Extensions%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6.html">Slick Extensionsについて</a></div></li><li><div><a href="Direct+Embedding%EF%BC%88%E9%9D%9E%E6%8E%A8%E5%A5%A8%EF%BC%89.html">Direct Embedding（非推奨）</a></div></li><li><div><a href="Slick+TestKit%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6.html">Slick TestKitについて</a></div></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
+          </div>
+        </div>
+        <div class="header">
+          <div class="container">
+        <div class="span-16 prepend-1 append-1">
+          <div class="span-16 top nav">
+            <div class="span-16 title">
+              <span>slick-doc-ja 3.0</span> — ユーザ定義機能
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        <a href="http://github.com/krrrr38/slick-doc-ja" class="fork nav"><img src="img/fork.png" alt="Fork me on GitHub"/></a>
+        <div class="highlight-outer">
+              <div class="highlight-menu">
+                <ul>
+                  <li><button id="highlight-button-twitter"><img src="img/twitter-bird-dark-bgs.png"/></button></li>
+                </ul>
+              </div>
+            </div>
+      </body>
+    </html>

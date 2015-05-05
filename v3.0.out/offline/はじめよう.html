@@ -1,0 +1,269 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html manifest="pamflet.manifest">
+      <head>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
+        <title>slick-doc-ja 3.0 — はじめよう</title>
+        
+        <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/blueprint/grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/> 
+        <!--[if lt IE 8]>
+          <link rel="stylesheet" href={ relativeBase + "css/blueprint/ie.css" } type="text/css" media="screen, projection"/>
+        <![endif]-->
+        <link rel="stylesheet" href="css/pamflet.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamflet-print.css" type="text/css" media="print"/>
+        <link rel="stylesheet" href="css/pamflet-grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamfletheight_2em_2em.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.collapse.js"></script>
+        <script type="text/javascript" src="js/pamflet.js"></script>
+        <script type="text/javascript">
+          Pamflet.page.language = 'en';
+        </script>
+        <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+        <link rel="stylesheet" href="css/layout.css" type="text/css" media="screen, projection"/>
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-37666832-7']);
+            _gaq.push(['_trackPageview']);
+            (function() {
+              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+            </script>
+        <script type="text/javascript">
+              Pamflet.twitter = '#slick';
+            </script>
+      </head>
+      <body class="color_scheme-redmond">
+        <a class="page prev nav" href="%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E3%81%95%E3%82%8C%E3%81%9F%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9.html">
+            <span class="space">&nbsp;</span>
+            <span class="flip arrow">❧</span>
+          </a><a class="page next nav" href="%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%E8%A8%AD%E5%AE%9A.html">
+            <span class="space">&nbsp;</span>
+            <span class="arrow">❧</span>
+          </a>
+        <div class="container contentswrapper">
+          <div class="span-16 prepend-1 append-1 contents">
+            <p>Slick 3.0.0 documentation - 03 Getting Started
+</p><p><a href="http://slick.typesafe.com/doc/3.0.0/gettingstarted.html">Permalink to Getting Started — Slick 3.0.0 documentation</a>
+</p><h1 id="%E3%81%AF%E3%81%98%E3%82%81%E3%82%88%E3%81%86">はじめよう<a href="#%E3%81%AF%E3%81%98%E3%82%81%E3%82%88%E3%81%86" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><p>Slickを試す最も簡単方法は、<a href="http://typesafe.com/activator">Typesafe Activator</a>を使ってアプリケーションのテンプレートを作成することだ。以下のテンプレートはSlickのチームによって作られたものであり、Slickの新しいバージョンがリリースされる毎に更新されるだろう。
+</p><!-- The easiest way to get started is with a working application in Typesafe Activator\_. The following templates are created by the Slick team, with updated versions being made for new Slick releases: -->
+<ul><li>Slickの基本を学びたいのなら、<a href="https://typesafe.com/activator/template/hello-slick-3.0">Hello Slick template</a>から始めると良い。これはチュートリアルやこのページにあるコードを拡張したものを含んでいる。
+</li><li><a href="https://typesafe.com/activator/template/slick-plainsql-3.0">Slick Plain SQL Queries template</a>はSlickを用いてどのようにしてクエリを実行させるかを知る事ができる。
+</li><li><a href="http://typesafe.com/activator/template/slick-multidb-3.0">Slick Multi-DB Patterns template</a>は異なるデータベースシステムを用いたSlickのアプリケーションをどのようにして書くのか、また特別なデータベース関数に対し、Slickのクエリをどのようにして取り扱うのかを学ぶ事ができる。
+</li><li><a href="https://typesafe.com/activator/template/slick-testkit-example-3.0">Slick TestKit Example template</a>はあなたが独自に作成したSlickのドライバをテストするSlick TestKitの使い方を教えてくれる。
+<!-- -   To learn the basics of Slick, start with the Hello Slick template\_. It contains an extended version of the tutorial and code from this page. -->
+<!-- -   The Slick Plain SQL Queries template\_ shows you how to do SQL queries with Slick. -->
+<!-- -   The Slick Multi-DB Patterns template\_ shows you how to write Slick applications that can use different database systems and how to use custom database functions in Slick queries. -->
+<!-- -   The Slick TestKit Example template\_ shows you how to use Slick TestKit to test your own Slick drivers. -->
+</li></ul><p>これ以外にも、他のSlickのリリースバージョンにも対応した、コミュニティにより作られたSlickのテンプレートが数多く存在する。これらのテンプレートはTypesafeのウェブサイト上の、<a href="https://typesafe.com/activator/templates#filter:slick">all Slick templates</a>から見つける事ができる。
+<!-- There are more Slick templates created by the community, as well as versions of our own templates for other Slick releases. You can find [all Slick templates](https://typesafe.com/activator/templates#filter:slick) on the Typesafe web site. -->
+</p><h2 id="Adding+Slick+to+Your+Project">Adding Slick to Your Project<a href="#Adding+Slick+to+Your+Project" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>Slickを既存のプロジェクトで利用するには、Maven Centralにあるライブラリを用いれば良い。sbtプロジェクトの場合、以下の記述を<code>build.sbt</code>や<code>project/Build.scala</code>に追加すれば良い。
+<!-- To include Slick in an existing project use the library published on Maven Central. For sbt projects add the following to your build definition - `build.sbt` or `project/Build.scala`: -->
+</p><pre><code class="prettyprint lang-scala">libraryDependencies ++= Seq(
+  &quot;com.typesafe.slick&quot; %% &quot;slick&quot; % &quot;|release|&quot;, &quot;org.slf4j&quot; %
+  &quot;slf4j-nop&quot; % &quot;1.6.4&quot;
+)
+</code></pre><p>Mavenプロジェクトの場合<code>&lt;dependencies&gt;</code>へ以下のような記述を書き加える。Scalaのバージョンプレフィックス（<code>_2.10</code>、<code>_2.11</code>）を正しく付け加える必要がある。
+<!-- For Maven projects add the following to your `<dependencies>` (make sure to use the correct Scala version prefix, `_2.10` or `_2.11`, to match your project's Scala version): -->
+</p><pre><code class="prettyprint lang-xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.typesafe.slick&lt;/groupId&gt;
+  &lt;artifactId&gt;slick_2.10&lt;/artifactId&gt;
+  &lt;version&gt;3.0.0&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+  &lt;artifactId&gt;slf4j-nop&lt;/artifactId&gt;
+  &lt;version&gt;1.6.4&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre><p>Slickは<a href="http://www.slf4j.org/">SLF4J</a>をデバッグロギングのために利用しているため、SLF4Jの実装を持ったライブラリをあなたが選んで追加する必要がある。上の例では、ロギング出力を破棄するために、<code>slf4j-nop</code>を追加している。もし何かしらのログ出力が欲しいのならば、<a href="http://logback.qos.ch/">Logback</a>のようなロギングフレームワークを<code>slf4j-nop</code>の代わりに追加して欲しい。
+<!-- Slick uses SLF4J\_ for its own debug logging so you also need to add an SLF4J implementation. Here we are using `slf4j-nop` to disable logging. You have to replace this with a real logging framework like Logback\_ if you want to see log output. -->
+</p><p>リアクティブストリームAPIは自動的に追従的な依存で取得される。
+<!-- The Reactive Streams API is pulled in automatically as a transitive dependency. -->
+</p><p>もしコネクションプールを用いたいのなら、<a href="http://brettwooldridge.github.io/HikariCP/">HikariCP</a>の依存性を追加して欲しい。
+<!-- If you want to use Slick's connection pool support, you need to add HikariCP\_ as a dependency. -->
+</p><h2 id="Quick+Introduction">Quick Introduction<a href="#Quick+Introduction" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><blockquote><p><strong>Note</strong>
+</p><p>このチャプターの残り部分は、<a href="https://typesafe.com/activator/template/hello-slick-3.0">Hello Slick template</a>を基にしている。<a href="https://typesafe.com/activator">Activator</a>からコードを手元に用意して、編集・実行しながらチュートリアルを読むと良い。
+</p></blockquote><p>Slickを利用するには、あなたの利用するデータベースに対応したAPIのimport文を以下のように書き加える必要がある。
+<!-- To use Slick you first need to import the API for the database you will be using, like: -->
+</p><pre><code class="prettyprint lang-scala">// H2データベースに接続するためのH2Driver
+import slick.driver.H2Driver.api._
+import scala.concurrent.ExecutionContext.Implicits.global
+</code></pre><p>この例では<a href="http://h2database.com/">H2</a>データベースを利用しているため、Slickの<code>H2Driver</code>をimportしている。ドライバの<code>api</code>オブジェクトは<a href="http://slick.typesafe.com/doc/3.0.0/database.html">database handling</a>のようなSlickの一般的なAPIを含んでいる。
+<!-- Since we are using H2\_ as our database system, we need to import features from Slick's `H2Driver`. A driver's `api` object contains all commonly needed imports from the driver and other parts of Slick such as database handling \<database\>. -->
+</p><p>SlickのAPIは、分離されたスレッドプールに置いて、全て非同期でデータベース処理を実行する。<code>DBIOAction</code>構成内のあなたのコードや<code>Future</code>の値を実行して取得するには、globalな<code>ExecutionContext</code>をインポートする必要がある。Slickを<a href="https://playframework.com/">Play</a>や<a href="http://akka.io/">Akka</a>を用いた大きなアプリケーションの一部として用いる場合には、そのようなフレームワークが提供しているより良い<code>ExecutionContext</code>を利用すべきだ。
+<!-- Slick's API is fully asynchronous and runs database call in a separate thread pool. For running user code in composition of `DBIOAction` and `Future` values, we import the global `ExecutionContext`. When using Slick as part of a larger application (e.g. with Play\_ or Akka\_) the framework may provide a better alternative to this default `ExecutionContext`. -->
+</p><h3 id="Database+Configuration">Database Configuration<a href="#Database+Configuration" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><p>データベースに接続する方法を指定するために、アプリケーションの中で<code>Database</code>オブジェクトを作る必要がある。大抵の場合、<a href="https://github.com/typesafehub/config">Typesafe Config</a>を用いて記述した<code>application.conf</code>から、データベースコネクションの設定を行うだろう。<code>application.conf</code>は<a href="https://playframework.com/">Play</a>や<a href="http://akka.io/">Akka</a>でも設定を記述するために用いられている。
+<!-- In the body of the application we create a `Database` object which specifies how to connect to a database. In most cases you will want to configure database connections with Typesafe Config\_ in your `application.conf`, which is also used by Play\_ and Akka\_ for their configuration: -->
+</p><pre><code class="prettyprint lang-json">h2mem1 = {
+  url = &quot;jdbc:h2:mem:test1&quot;
+  driver = org.h2.Driver
+  connectionPool = disabled
+  keepAliveConnection = true
+}
+</code></pre><p>この例ではコネクションプールは用いないで、keep-alive接続をリクエストするように設定している（インメモリデータベースにコネクションプールは必要無いし、keep-aliveはデータベース利用中に接続を切らないようにするためである）。データベースオブジェクトは以下のように利用される。
+<!-- For the purpose of this example we disable the connection pool (there is no point in using one for an embedded in-memory database) and request a keep-alive connection (which ensures that the database does not get dropped while we are using it). The database can be easily instantiated from the configuration like this: -->
+</p><pre><code class="prettyprint lang-scala">val db = Database.forConfig(&quot;h2mem1&quot;)
+try {
+  // ...
+} finally db.close
+</code></pre><blockquote><p><strong> Note</strong>
+</p><p><code>Database</code>オブジェクトは通常スレッドプールとコネクションプールを管理する。必要がなくなった段階で、適切にシャットダウンすべきである（JVMプロセスが終了するしないに関わらず）。
+</p></blockquote><h3 id="Schema">Schema<a href="#Schema" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><p>Slickのクエリを記述する前に、テーブル毎に<code>Table</code>と<code>TableQuery</code>を用いてデータベーススキーマを書く必要がある。直接手で書いても良いし、<a href="http://slick.typesafe.com/doc/3.0.0/code-generation.html">スキーマコードの生成</a>を利用して既存のデータベーススキーマから自動生成しても良い。
+<!-- Before we can write Slick queries, we need to describe a database schema with `Table` row classes and `TableQuery` values for our tables. You can either use the code generator \<code-generation\> to automatically create them for your database schema or you can write them by hand: -->
+</p><pre><code class="prettyprint lang-scala">// SUPPLIERSテーブルの定義
+class Suppliers(tag: Tag) extends Table[(Int, String, String, String, String, String)](tag, &quot;SUPPLIERS&quot;) {
+  def id = column[Int](&quot;SUP_ID&quot;, O.PrimaryKey) // 主キー
+  def name = column[String](&quot;SUP_NAME&quot;)
+  def street = column[String](&quot;STREET&quot;)
+  def city = column[String](&quot;CITY&quot;)
+  def state = column[String](&quot;STATE&quot;)
+  def zip = column[String](&quot;ZIP&quot;)
+  // は全てのテーブルで * 射影をテーブルの型パラメータに合うように定義する
+  def * = (id, name, street, city, state, zip)
+}
+val suppliers = TableQuery[Suppliers]
+...
+// COFFEESテーブルの定義
+class Coffees(tag: Tag) extends Table[(String, Int, Double, Int, Int)](tag, &quot;COFFEES&quot;) {
+  def name = column[String](&quot;COF_NAME&quot;, O.PrimaryKey)
+  def supID = column[Int](&quot;SUP_ID&quot;)
+  def price = column[Double](&quot;PRICE&quot;)
+  def sales = column[Int](&quot;SALES&quot;)
+  def total = column[Int](&quot;TOTAL&quot;)
+  def * = (name, supID, price, sales, total)
+  // joinなどを発行する際に用いられる外部キー
+  def supplier = foreignKey(&quot;SUP_FK&quot;, supID, suppliers)(_.id)
+}
+val coffees = TableQuery[Coffees]
+</code></pre><p>全てのカラムは名前とScalaの型が必要になる。一般的に名前はSQL側では大文字とアンダースコアで、Scala側ではcamelCaseで記述される。SQLの型はScalaの型から自動的に導出される。テーブルオブジェクトにもScalaの名前とSQLの名前とその型が必要になる。テーブルの型引数は、<code>*</code>射影の型と合っている必要がある。このような単純な例では、全てのカラムをタプルで表現出来るが、より複雑なマッピングも可能である。
+<!-- All columns get a name (usually in camel case for Scala and upper case with underscores for SQL) and a Scala type (from which the SQL type can be derived automatically). The table object also needs a Scala name, SQL name and type. The type argument of the table must match the type of the special `*` projection. In simple cases this is a tuple of all columns but more complex mappings are possible. -->
+</p><p><code>coffees</code>テーブルの<code>foreignKey</code>の定義は、<code>supID</code>の値が<code>suppliers</code>テーブルの<code>id</code>として存在している事を表す制約を表現するものである。ここでは<code>n:1</code>関係を作成している。1つの<code>Coffees</code>の列に対して1つの<code>Suppliers</code>の列が対応しているが、複数の<code>Coffees</code>の列が同じ<code>Suppliers</code>の列を指し示す事もある。この制約はデータベースレベルで強制されるものになる。
+<!-- The `foreignKey` definition in the `coffees` table ensures that the `supID` field can only contain values for which a corresponding `id` exists in the `suppliers` table, thus creating an *n to one* relationship: A `Coffees` row points to exactly one `Suppliers` row but any number of coffees can point to the same supplier. This constraint is enforced at the database level. -->
+</p><h3 id="Populating+the+Database">Populating the Database<a href="#Populating+the+Database" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><p>インメモリのH2データベースエンジンへのコネクションは、空のデータベースを提供してくれる。クエリを実行する前に、データベーススキーマ（<code>coffees</code>と<code>suppliers</code>テーブルを含むもの）を作成して、テストデータを挿入してみよう。
+<!-- The connection to the embedded H2 database engine provides us with an empty database. Before we can execute queries, we need to create the database schema (consisting of the `coffees` and `suppliers` tables) and insert some test data: -->
+</p><pre><code class="prettyprint lang-scala">val setup = DBIO.seq(
+  // 主キーや外部キーを含むテーブルを作成
+  (suppliers.schema ++ coffees.schema).create,
+...
+  // supplierをいくつか挿入
+  suppliers += (101, &quot;Acme, Inc.&quot;,      &quot;99 Market Street&quot;, &quot;Groundsville&quot;, &quot;CA&quot;, &quot;95199&quot;),
+  suppliers += ( 49, &quot;Superior Coffee&quot;, &quot;1 Party Place&quot;,    &quot;Mendocino&quot;,    &quot;CA&quot;, &quot;95460&quot;),
+  suppliers += (150, &quot;The High Ground&quot;, &quot;100 Coffee Lane&quot;,  &quot;Meadows&quot;,      &quot;CA&quot;, &quot;93966&quot;),
+  // 以下のSQLと等価
+  // insert into SUPPLIERS(SUP_ID, SUP_NAME, STREET, CITY, STATE, ZIP) values (?,?,?,?,?,?)
+...
+  // coffeeをいくつか挿入（もしDBがサポートしてる場合にはバッチinsertが用いられる）
+  coffees ++= Seq(
+    (&quot;Colombian&quot;,         101, 7.99, 0, 0),
+    (&quot;French_Roast&quot;,       49, 8.99, 0, 0),
+    (&quot;Espresso&quot;,          150, 9.99, 0, 0),
+    (&quot;Colombian_Decaf&quot;,   101, 8.99, 0, 0),
+    (&quot;French_Roast_Decaf&quot;, 49, 9.99, 0, 0)
+  )
+  // 以下のSQLと等価
+  // insert into COFFEES(COF_NAME, SUP_ID, PRICE, SALES, TOTAL) values (?,?,?,?,?)
+)
+...
+val setupFuture = db.run(setup)
+</code></pre><p><code>TableQuery</code>の<code>ddl</code>メソッドは、テーブルを作成・削除するため<code>DDL</code>(data definition language)オブジェクトを生成する。複数の<code>DDL</code>を<code>++</code>により結合した場合には、たとえ循環依存が存在したとしても、正しい順番に作成と削除を実行する。
+<!-- The `TableQuery`'s `ddl` method creates `DDL` (data definition language) objects with the database-specific code for creating and dropping tables and other database entities. Multiple `DDL` values can be combined with `++` to allow all entities to be created and dropped in the correct order, even when they have circular dependencies on each other. -->
+</p><p>データの挿入には<code>+=</code>や<code>++=</code>が用いられる。これはScalaのミュータブルなコレクション操作APIとよく似ている。
+<!-- Inserting the tuples of data is done with the `+=` and `++=` methods, similar to how you add data to mutable Scala collections. -->
+</p><p><code>create</code>、<code>+=</code>、<code>++=</code>といったメソッドは、データベースへの処理の後に一定時間後に結果を生成する<code>Action</code>を返却する。複数の<code>Action</code>をシーケンスに結合し、他の<code>Action</code>を生成するためのコンビネータが、いくつか存在する。最もシンプルな方法は、<code>Action.seq</code>であり、これは返り値を破棄しながら複数の<code>Action</code>を順に結合するものである。例として、<code>Action</code>が<code>Unit</code>を返却する場合などに用いる。準備された<code>Action</code>は<code>db.run</code>により実行され、<code>Future[Unit]</code>が生成される。
+<!-- The `create`, `+=` and `++=` methods return an `Action` which can be executed on a database at a later time to produce a result. There are several different combinators for combining multiple Actions into sequences, yielding another Action. Here we use the simplest one, `Action.seq`, which can concatenate any number of Actions, discarding the return values (i.e. the resulting Action produces a result of type `Unit`). We then execute the setup Action asynchronously with `db.run`, yielding a `Future[Unit]`. -->
+</p><blockquote><p><strong>Note</strong>
+</p><p>データベースのコネクションとトランザクションはSlickにより自動的に管理される。デフォルトでは、<em>auto-commit</em>モードの際にはコネクションは都度開放される。このモードでは、外部キーの影響により、<code>suppliers</code>テーブルのデータを<code>coffees</code>のデータより先に挿入しなくてはならない。明示的なトランザクションブラケットで内包された処理を実行することもできる（<code>db.run(setup.transactionally)</code>）。そのような記述を行う際には、トランザクションがコミットされる際にのみ制約が課せられるため、記述時の順序などを気にする必要はない。
+</p></blockquote><h3 id="Querying">Querying<a href="#Querying" class="header-link"><span class="header-link-content">&nbsp;</span></a></h3><p>テーブルからデータをイテレートさせる最もシンプルな方法を見てみよう。
+<!-- The simplest kind of query iterates over all the data in a table: -->
+</p><pre><code class="prettyprint lang-scala">// 全てのcoffeeを読み込んで、コンソールに出力する
+println(&quot;Coffees:&quot;)
+db.run(coffees.result).map(_.foreach {
+  case (name, supID, price, sales, total) =&gt;
+    println(&quot;  &quot; + name + &quot;\t&quot; + supID + &quot;\t&quot; + price + &quot;\t&quot; + sales + &quot;\t&quot; + total)
+})
+// 以下のSQLと等価
+// select COF_NAME, SUP_ID, PRICE, SALES, TOTAL from COFFEES
+</code></pre><p>上の例は<code>SELECT * FROM COFFEES</code>というSQLと等価である（ただしこれは<code>*</code>がテーブルに定義された<code>*</code>射影と等しいためである）。ループの中で得られる型は、まぁ驚くこともなく、<code>Coffees</code>の型引数と同じものになる。
+<!-- This corresponds to a `SELECT * FROM COFFEES` in SQL (except that the `*` is the table's `*` projection we defined earlier and not whatever the database sees as `*`). The type of the values we get in the loop is, unsurprisingly, the type parameter of `Coffees`. -->
+</p><p>基本的なクエリに対し、射影を追加してみよう。ここでは、Scalaの<code>map</code>メソッドか、<code>for</code>式が用いて記述される。
+<!-- Let's add a *projection* to this basic query. This is written in Scala with the `map` method or a *for comprehension*: -->
+</p><pre><code class="prettyprint lang-scala">// Why not let the database do the string conversion and concatenation?
+val q1 = for(c &lt;- coffees)
+  yield LiteralColumn(&quot;  &quot;) ++ c.name ++ &quot;\t&quot; ++ c.supID.asColumnOf[String] ++
+    &quot;\t&quot; ++ c.price.asColumnOf[String] ++ &quot;\t&quot; ++ c.sales.asColumnOf[String] ++
+    &quot;\t&quot; ++ c.total.asColumnOf[String]
+// 最初の文字列は、自動的に`LiteralColumn`へ持ち上げられる
+...
+// これは以下のSQLと等価になる
+// select '  ' || COF_NAME || '\t' || SUP_ID || '\t' || PRICE || '\t' SALES || '\t' TOTAL from COFFEES
+...
+db.stream(q1.result).foreach(println)
+</code></pre><p>出力は同じで、全てのカラムがタブで区切られて結合されたものになる。異なるのは、データベースエンジン内で行われた処理のみで、結果は全く変わらないまま得られる。注意して欲しいのは、ここでは文字列結合にScalaの<code>+</code>オペレータは使わずに、<code>++</code>を用いている。また、他の型から文字列への自動的な変換は存在しない。ここでは明示的に<code>asColumnOf</code>を用いて変換を行っている。
+<!-- The output will be the same: For each row of the table, all columns get converted to strings and concatenated into one tab-separated string. The difference is that all of this now happens inside the database engine, and only the resulting concatenated string is shipped to the client. Note that we avoid Scala's `+` operator (which is already heavily overloaded) in favor of `++` (commonly used for sequence concatenation). Also, there is no automatic conversion of other argument types to strings. This has to be done explicitly with the type conversion method `asColumnOf`. -->
+</p><p><a href="http://www.reactive-streams.org/">Reactive Streams</a>でも、データベースから値をストリームとして取り出し、全ての結果を得る前に順に出力させるという処理を記述出来る。
+<!-- This time we also use Reactive Streams\_ to get a streaming result from the database and print the elements as they come in instead of materializing the whole result set upfront. -->
+</p><p>テーブルの結合と結果のフィルタリング処理は、Scalaのコレクション操作と同様の記述で行える。
+<!-- Joining and filtering tables is done the same way as when working with Scala collections: -->
+</p><pre><code class="prettyprint lang-scala">// 9.0未満のpriceとなるcoffeeから、coffeeの名前とsupplierの名前を、joinを用いて取得する
+val q2 = for {
+  c &lt;- coffees if c.price &lt; 9.0
+  s &lt;- suppliers if s.id === c.supID
+} yield (c.name, s.name)
+// 以下のSQLと等価
+// select c.COF_NAME, s.SUP_NAME from COFFEES c, SUPPLIERS s where c.PRICE &lt; 9.0 and s.SUP_ID = c.SUP_ID
+</code></pre><blockquote><p><strong>Warning</strong>
+</p><p>2つの値の比較には、<code>==</code>の代わりに<code>===</code>を、<code>!=</code>の代わりに<code>=!=</code>を用いて欲しい。なぜならこれは既に<code>Any</code>を基に実装されたオペレータであり、拡張することが出来ないためである。<code>&lt;</code>、<code>&lt;=</code>、<code>&gt;=</code>、<code>&gt;</code>のような比較オペレータはそのままのものを用いる事が出来る。
+</p></blockquote><p><code>suppliers if s.id === c.supID</code>という表現は、<code>Coffees.supplier</code>という外部キーを用いて書き換える事ができる。joinの条件を繰り返し書く代わりに、外部キーを直接記述すれば良いのである。
+<!-- The generator expression `suppliers if s.id === c.supID` follows the relationship established by the foreign key `Coffees.supplier`. Instead of repeating the join condition here we can use the foreign key directly: -->
+</p><pre><code class="prettyprint lang-scala">val q3 = for {
+  c &lt;- coffees if c.price &lt; 9.0
+  s &lt;- c.supplier
+} yield (c.name, s.name)
+// 以下のSQLと等価
+// select c.COF_NAME, s.SUP_NAME from COFFEES c, SUPPLIERS s where c.PRICE &lt; 9.0 and s.SUP_ID = c.SUP_ID
+</code></pre><div class="bottom nav span-16">
+                        <em>Next Page</em>
+                        <span class="arrow">❧</span>
+                        <a href="%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%E8%A8%AD%E5%AE%9A.html"> データベース設定 </a>                        
+                        
+                      </div><div class="tocwrapper show">
+      <a class="tochead nav" style="display: none" href="#toc">❦</a>
+      <a name="toc"></a>
+      <h4 class="toctitle">Contents</h4>
+      <div class="tocbody">
+      <div><a href="slick-doc-ja+3.0.html">slick-doc-ja 3.0</a></div><ol class="toc"> <li><div><a href="%E5%B0%8E%E5%85%A5.html">導入</a></div></li><li><div><a href="%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E3%81%95%E3%82%8C%E3%81%9F%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9.html">サポートされたデータベース</a></div></li><li><div class="current">はじめよう</div></li><li><div><a href="%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%E8%A8%AD%E5%AE%9A.html">データベース設定</a></div></li><li><div><a href="%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9I%2FO%E3%82%A2%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3.html">データベースI/Oアクション</a></div></li><li><div><a href="%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E.html">スキーマ</a></div></li><li><div><a href="%E3%82%AF%E3%82%A8%E3%83%AA.html">クエリ</a></div></li><li><div><a href="%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E%E3%82%B3%E3%83%BC%E3%83%89%E3%81%AE%E7%94%9F%E6%88%90.html">スキーマコードの生成</a></div></li><li><div><a href="%E3%83%A6%E3%83%BC%E3%82%B6%E5%AE%9A%E7%BE%A9%E6%A9%9F%E8%83%BD.html">ユーザ定義機能</a></div></li><li><div><a href="Plain+SQL%E3%82%AF%E3%82%A8%E3%83%AA.html">Plain SQLクエリ</a></div></li><li><div><a href="ORM%E3%81%8B%E3%82%89Slick%E3%82%92%E5%88%A9%E7%94%A8%E3%81%99%E3%82%8B%E4%BA%BA%E3%81%B8.html">ORMからSlickを利用する人へ</a></div></li><li><div><a href="SQL%E3%81%8B%E3%82%89Slick%E3%82%92%E5%88%A9%E7%94%A8%E3%81%99%E3%82%8B%E4%BA%BA%E3%81%B8.html">SQLからSlickを利用する人へ</a></div></li><li><div><a href="%E3%82%A2%E3%83%83%E3%83%97%E3%82%B0%E3%83%AC%E3%83%BC%E3%83%89%E3%82%AC%E3%82%A4%E3%83%89.html">アップグレードガイド</a></div></li><li><div><a href="Slick+Extensions%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6.html">Slick Extensionsについて</a></div></li><li><div><a href="Direct+Embedding%EF%BC%88%E9%9D%9E%E6%8E%A8%E5%A5%A8%EF%BC%89.html">Direct Embedding（非推奨）</a></div></li><li><div><a href="Slick+TestKit%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6.html">Slick TestKitについて</a></div></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
+          </div>
+        </div>
+        <div class="header">
+          <div class="container">
+        <div class="span-16 prepend-1 append-1">
+          <div class="span-16 top nav">
+            <div class="span-16 title">
+              <span>slick-doc-ja 3.0</span> — はじめよう
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        <a href="http://github.com/krrrr38/slick-doc-ja" class="fork nav"><img src="img/fork.png" alt="Fork me on GitHub"/></a>
+        <div class="highlight-outer">
+              <div class="highlight-menu">
+                <ul>
+                  <li><button id="highlight-button-twitter"><img src="img/twitter-bird-dark-bgs.png"/></button></li>
+                </ul>
+              </div>
+            </div>
+      </body>
+    </html>

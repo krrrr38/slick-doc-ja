@@ -1,0 +1,107 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html manifest="pamflet.manifest">
+      <head>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
+        <title>slick-doc-ja 3.0 — サポートされたデータベース</title>
+        
+        <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/blueprint/grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/> 
+        <!--[if lt IE 8]>
+          <link rel="stylesheet" href={ relativeBase + "css/blueprint/ie.css" } type="text/css" media="screen, projection"/>
+        <![endif]-->
+        <link rel="stylesheet" href="css/pamflet.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamflet-print.css" type="text/css" media="print"/>
+        <link rel="stylesheet" href="css/pamflet-grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamfletheight_2em_2em.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.collapse.js"></script>
+        <script type="text/javascript" src="js/pamflet.js"></script>
+        <script type="text/javascript">
+          Pamflet.page.language = 'en';
+        </script>
+        
+        <link rel="stylesheet" href="css/layout.css" type="text/css" media="screen, projection"/>
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-37666832-7']);
+            _gaq.push(['_trackPageview']);
+            (function() {
+              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+            </script>
+        <script type="text/javascript">
+              Pamflet.twitter = '#slick';
+            </script>
+      </head>
+      <body class="color_scheme-redmond">
+        <a class="page prev nav" href="%E5%B0%8E%E5%85%A5.html">
+            <span class="space">&nbsp;</span>
+            <span class="flip arrow">❧</span>
+          </a><a class="page next nav" href="%E3%81%AF%E3%81%98%E3%82%81%E3%82%88%E3%81%86.html">
+            <span class="space">&nbsp;</span>
+            <span class="arrow">❧</span>
+          </a>
+        <div class="container contentswrapper">
+          <div class="span-16 prepend-1 append-1 contents">
+            <p>Slick 3.0.0 documentation - 02 Supported Databases
+</p><p><a href="http://slick.typesafe.com/doc/3.0.0/supported-databases.html">Permalink to Suppoerted Databases — Slick 3.0.0 documentation</a>
+</p><h1 id="%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E3%81%95%E3%82%8C%E3%81%9F%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9">サポートされたデータベース<a href="#%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E3%81%95%E3%82%8C%E3%81%9F%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><ul><li>DB2 (via <a href="http://slick.typesafe.com/doc/3.0.0/extensions.html">slick-extensions</a>)
+</li><li>Derby/JavaDB
+</li><li>H2
+</li><li>HSQLDB/HyperSQL
+</li><li>Microsoft Access
+</li><li>Microsoft SQL Server (via <a href="http://slick.typesafe.com/doc/3.0.0/extensions.html">slick-extensions</a>
+</li><li>MySQL
+</li><li>Oracle (via <a href="http://slick.typesafe.com/doc/3.0.0/extensions.html">slick-extensions</a>
+</li><li>PostgreSQL
+</li><li>SQLite
+</li></ul><p>様々なSQLデータベースへSlickなら簡単にアクセスする事が出来る。独自のSQLベースのバックエンドを持つデータベースも、プラグインを作成する事でSlickを利用することが出来る。そのようなプラグインの作成は大きな貢献となる。NoSQLのような他のバックエンドを持つようなデータベースに関しては現在開発中であるため、まだ利用する事はできない。
+</p><!-- Other SQL databases can be accessed right away with a reduced feature set. Writing a fully featured plugin for your own SQL-based backend can be achieved with a reasonable amount of work. Support for other backends (like NoSQL) is under development but not yet available. -->
+<p>特別な機能については、ドライバによってサポートされているかが異なる。“Yes“は完全にサポートされているもの、その他は部分的にサポートされていたり、十分なサポートがされていないものである。個々のドライバのAPIドキュメントについては、リンク先から確認して欲しい。
+</p><!-- The following capabilities are supported by the drivers. "Yes" means that a capability is fully supported. In other cases it may be partially supported or not at all. See the individual driver's API documentation for details. -->
+<p><strong>訳注</strong>
+表が大きいため、<a href="http://slick.typesafe.com/doc/3.0.0/supported-databases.html">こちらのページ</a>を直接参照して下さい。
+</p><div class="bottom nav span-16">
+                        <em>Next Page</em>
+                        <span class="arrow">❧</span>
+                        <a href="%E3%81%AF%E3%81%98%E3%82%81%E3%82%88%E3%81%86.html"> はじめよう </a>                        
+                        
+                      </div><div class="tocwrapper show">
+      <a class="tochead nav" style="display: none" href="#toc">❦</a>
+      <a name="toc"></a>
+      <h4 class="toctitle">Contents</h4>
+      <div class="tocbody">
+      <div><a href="slick-doc-ja+3.0.html">slick-doc-ja 3.0</a></div><ol class="toc"> <li><div><a href="%E5%B0%8E%E5%85%A5.html">導入</a></div></li><li><div class="current">サポートされたデータベース</div></li><li><div><a href="%E3%81%AF%E3%81%98%E3%82%81%E3%82%88%E3%81%86.html">はじめよう</a></div></li><li><div><a href="%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%E8%A8%AD%E5%AE%9A.html">データベース設定</a></div></li><li><div><a href="%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9I%2FO%E3%82%A2%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3.html">データベースI/Oアクション</a></div></li><li><div><a href="%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E.html">スキーマ</a></div></li><li><div><a href="%E3%82%AF%E3%82%A8%E3%83%AA.html">クエリ</a></div></li><li><div><a href="%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E%E3%82%B3%E3%83%BC%E3%83%89%E3%81%AE%E7%94%9F%E6%88%90.html">スキーマコードの生成</a></div></li><li><div><a href="%E3%83%A6%E3%83%BC%E3%82%B6%E5%AE%9A%E7%BE%A9%E6%A9%9F%E8%83%BD.html">ユーザ定義機能</a></div></li><li><div><a href="Plain+SQL%E3%82%AF%E3%82%A8%E3%83%AA.html">Plain SQLクエリ</a></div></li><li><div><a href="ORM%E3%81%8B%E3%82%89Slick%E3%82%92%E5%88%A9%E7%94%A8%E3%81%99%E3%82%8B%E4%BA%BA%E3%81%B8.html">ORMからSlickを利用する人へ</a></div></li><li><div><a href="SQL%E3%81%8B%E3%82%89Slick%E3%82%92%E5%88%A9%E7%94%A8%E3%81%99%E3%82%8B%E4%BA%BA%E3%81%B8.html">SQLからSlickを利用する人へ</a></div></li><li><div><a href="%E3%82%A2%E3%83%83%E3%83%97%E3%82%B0%E3%83%AC%E3%83%BC%E3%83%89%E3%82%AC%E3%82%A4%E3%83%89.html">アップグレードガイド</a></div></li><li><div><a href="Slick+Extensions%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6.html">Slick Extensionsについて</a></div></li><li><div><a href="Direct+Embedding%EF%BC%88%E9%9D%9E%E6%8E%A8%E5%A5%A8%EF%BC%89.html">Direct Embedding（非推奨）</a></div></li><li><div><a href="Slick+TestKit%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6.html">Slick TestKitについて</a></div></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
+          </div>
+        </div>
+        <div class="header">
+          <div class="container">
+        <div class="span-16 prepend-1 append-1">
+          <div class="span-16 top nav">
+            <div class="span-16 title">
+              <span>slick-doc-ja 3.0</span> — サポートされたデータベース
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        <a href="http://github.com/krrrr38/slick-doc-ja" class="fork nav"><img src="img/fork.png" alt="Fork me on GitHub"/></a>
+        <div class="highlight-outer">
+              <div class="highlight-menu">
+                <ul>
+                  <li><button id="highlight-button-twitter"><img src="img/twitter-bird-dark-bgs.png"/></button></li>
+                </ul>
+              </div>
+            </div>
+      </body>
+    </html>

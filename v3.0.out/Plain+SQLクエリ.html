@@ -1,0 +1,194 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html>
+      <head>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
+        <title>slick-doc-ja 3.0 — Plain SQLクエリ</title>
+        
+        <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/blueprint/grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/> 
+        <!--[if lt IE 8]>
+          <link rel="stylesheet" href={ relativeBase + "css/blueprint/ie.css" } type="text/css" media="screen, projection"/>
+        <![endif]-->
+        <link rel="stylesheet" href="css/pamflet.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamflet-print.css" type="text/css" media="print"/>
+        <link rel="stylesheet" href="css/pamflet-grid.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <link rel="stylesheet" href="css/color_scheme-redmond.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-github.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/color_scheme-monokai.css" type="text/css" media="screen, projection"/>
+        <link rel="stylesheet" href="css/pamfletheight_2em_2em.css" type="text/css" media="screen and (min-device-width: 800px), projection"/>
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.collapse.js"></script>
+        <script type="text/javascript" src="js/pamflet.js"></script>
+        <script type="text/javascript">
+          Pamflet.page.language = 'en';
+        </script>
+        <script type="text/javascript" src="js/prettify/prettify.js"></script><script type="text/javascript" src="js/prettify/lang-scala.js"></script><script type="text/javascript" src="js/prettify/lang-sql.js"></script><link type="text/css" rel="stylesheet" href="css/prettify.css"/><script type="text/javascript"><!--
+        window.onload=function() { prettyPrint(); };
+      --></script>
+        <link rel="stylesheet" href="css/layout.css" type="text/css" media="screen, projection"/>
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-37666832-7']);
+            _gaq.push(['_trackPageview']);
+            (function() {
+              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+            </script>
+        <script type="text/javascript">
+              Pamflet.twitter = '#slick';
+            </script>
+      </head>
+      <body class="color_scheme-redmond">
+        <a class="page prev nav" href="%E3%83%A6%E3%83%BC%E3%82%B6%E5%AE%9A%E7%BE%A9%E6%A9%9F%E8%83%BD.html">
+            <span class="space">&nbsp;</span>
+            <span class="flip arrow">❧</span>
+          </a><a class="page next nav" href="ORM%E3%81%8B%E3%82%89Slick%E3%82%92%E5%88%A9%E7%94%A8%E3%81%99%E3%82%8B%E4%BA%BA%E3%81%B8.html">
+            <span class="space">&nbsp;</span>
+            <span class="arrow">❧</span>
+          </a>
+        <div class="container contentswrapper">
+          <div class="span-16 prepend-1 append-1 contents">
+            <p>Slick 3.0.0 documentation - 10 Plain SQL Queries
+</p><p><a href="http://slick.typesafe.com/doc/3.0.0/sql.html">Permalink to Plain SQL Queries — Slick 3.0.0 documentation</a>
+</p><h1 id="Plain+SQL%E3%82%AF%E3%82%A8%E3%83%AA">Plain SQLクエリ<a href="#Plain+SQL%E3%82%AF%E3%82%A8%E3%83%AA" class="header-link"><span class="header-link-content">&nbsp;</span></a></h1><p>もしかすると、高レベルに抽象化されてサポートされたオペレーションに対し、SQLコードをそのまま書きたいといった要求があるかもしれない。そのような場合には、低レベルな<a href="http://en.wikipedia.org/wiki/Java_Database_Connectivity">JDBC</a>のAPIを用いるのではなく、Slickが提供するScalaベースの <em>Plain SQL</em> を利用して欲しい。
+<!-- Sometimes you may need to write your own SQL code for an operation which is not well supported at a higher level of abstraction. Instead of falling back to the low level of JDBC\_, you can use Slick's *Plain SQL* queries with a much nicer Scala-based API.  -->
+</p><blockquote><p><strong>Note</strong>
+</p><p>本章の残りでは、<a href="https://typesafe.com/activator/template/slick-plainsql-3.0">Slick Plain SQL Queries template</a>をベースに説明を行う。<a href="https://typesafe.com/activator">Activator</a>からテンプレートを落としてきて、直接編集したり実行しながら読んでみて欲しい。
+<!-- **note** The rest of this chapter is based on the Slick Plain SQL Queries template\_. The prefered way of reading this introduction is in Activator\_, where you can edit and run the code directly while reading the tutorial.  -->
+</p></blockquote><h2 id="Scaffolding">Scaffolding<a href="#Scaffolding" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>データベースのコネクションは、<a href="http://slick.typesafe.com/doc/3.0.0/gettingstarted.html#gettingstarted-dbconnection">いつもと同じように</a>開かれる。全ての <em>Plain SQL</em> <a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.dbio.DBIOAction">DBIOActions</a>内で実行される。これは複数のアクションを組み合わせたものする事も可能である。
+<!-- The database connection is opened in the usual way \<gettingstarted-dbconnection\>. All *Plain SQL* queries result in DBIOActions \<slick.dbio.DBIOAction\> that can be composed and run like any other action.  -->
+</p><h2 id="String+Interpolation">String Interpolation<a href="#String+Interpolation" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>Slickの <em>Plain SQL</em> は<code>sql</code>、<code>sqlu</code>、<code>tsql</code>という文字列の補間（string interpolation）を通して組み立てることが出来る。これらはSlickドライバから<code>api._</code>をインポートする事で利用可能となる。
+<!-- *Plain SQL* queries in Slick are built via string interpolation using the `sql`, `sqlu` and `tsql` interpolators. They are available through the standard `api._` import from a Slick driver:  -->
+</p><pre><code class="prettyprint lang-scala">import slick.driver.H2Driver.api._
+</code></pre><p>最も簡単な使用法としては、以下のようなメソッドの中で利用しているように、<code>sqlu</code>の中にSQLコードをそのまま書いてしまうことだ。
+<!-- You can see the simplest use case in the following methods where the `sqlu` interpolator is used with a literal SQL string:  -->
+</p><pre><code class="prettyprint lang-scala">def createCoffees: DBIO[Int] =
+  sqlu&quot;&quot;&quot;create table coffees(
+    name varchar not null,
+    sup_id int not null,
+    price double not null,
+    sales int not null,
+    total int not null,
+    foreign key(sup_id) references suppliers(id))&quot;&quot;&quot;
+...
+def createSuppliers: DBIO[Int] =
+  sqlu&quot;&quot;&quot;create table suppliers(
+    id int not null primary key,
+    name varchar not null,
+    street varchar not null,
+    city varchar not null,
+    state varchar not null,
+    zip varchar not null)&quot;&quot;&quot;
+...
+def insertSuppliers: DBIO[Unit] = DBIO.seq(
+  // Insert some suppliers
+  sqlu&quot;insert into suppliers values(101, 'Acme, Inc.', '99 Market Street', 'Groundsville', 'CA', '95199')&quot;,
+  sqlu&quot;insert into suppliers values(49, 'Superior Coffee', '1 Party Place', 'Mendocino', 'CA', '95460')&quot;,
+  sqlu&quot;insert into suppliers values(150, 'The High Ground', '100 Coffee Lane', 'Meadows', 'CA', '93966')&quot;
+)
+</code></pre><p><code>sqlu</code>補間子は、結果の代わりに列の数を返すDMLステートメントとして用いられる。それゆえ、<code>sqlu</code>を用いた場合は返り値の型が<code>DBIO[Int]</code>となる。
+<!-- The `sqlu` interpolator is used for DML statements which produce a row count instead of a result set. Therefore they are of type `DBIO[Int]`.  -->
+</p><p>クエリに注入される変数や表現は、クエリ文字列の中でバインド変数などで表される。クエリ文字列に直接変数を入れることはしない。このような対応は、SQLインジェクションをなくすためにある。以下の例を見て欲しい。
+<!-- Any variable or expression injected into a query gets turned into a bind variable in the resulting query string. It is not inserted directly into a query string, so there is no danger of SQL injection attacks. You can see this used in here:  -->
+</p><pre><code class="prettyprint lang-scala">def insert(c: Coffee): DBIO[Int] =
+  sqlu&quot;insert into coffees values (${c.name}, ${c.supID}, ${c.price}, ${c.sales}, ${c.total})&quot;
+</code></pre><p>このメソッドにより生成されるSQLステートメントは、常に同じものになる。
+<!-- The SQL statement produced by this method is always the same: -->
+</p><pre><code class="prettyprint lang-sql">insert into coffees values (?, ?, ?, ?, ?)
+</code></pre><p>この種のコードに役立つ便利な<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.dbio.DBIO$@sequence[R,M[+_]&lt;:TraversableOnce[_],E&lt;:Effect](M[DBIOAction[R,NoStream,E]])(CanBuildFrom[M[DBIOAction[R,NoStream,E]],R,M[R]]):DBIOAction[M[R],NoStream,E])">DBIO.sequence</a>コンビネータは以下のように利用できる。
+<!-- Note the use of the DBIO.sequence \<slick.dbio.DBIO$@sequence[R,M[+\_]\<:TraversableOnce[\_],E\<:Effect](M[DBIOAction[R,NoStream,E]])(CanBuildFrom[M[DBIOAction[R,NoStream,E]],R,M[R]]):DBIOAction[M[R],NoStream,E]\> combinator which is useful for this kind of code:  -->
+</p><pre><code class="prettyprint lang-scala">val inserts: Seq[DBIO[Int]] = Seq(
+  Coffee(&quot;Colombian&quot;, 101, 7.99, 0, 0),
+  Coffee(&quot;French_Roast&quot;, 49, 8.99, 0, 0),
+  Coffee(&quot;Espresso&quot;, 150, 9.99, 0, 0),
+  Coffee(&quot;Colombian_Decaf&quot;, 101, 8.99, 0, 0),
+  Coffee(&quot;French_Roast_Decaf&quot;, 49, 9.99, 0, 0)
+).map(insert)
+...
+val combined: DBIO[Seq[Int]] = DBIO.sequence(inserts)
+combined.map(_.sum)
+</code></pre><p>与えられた順序でデータベースのI/Oアクションを直列に実行するシンプルな<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.dbio.DBIO$@seq[E&lt;:Effect](DBIOAction[_,NoStream,E]*):DBIOAction[Unit,NoStream,E]">DBIO.seq</a>とは異なり、<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.dbio.DBIO$@sequence[R,M[+_]&lt;:TraversableOnce[_],E&lt;:Effect](M[DBIOAction[R,NoStream,E]])(CanBuildFrom[M[DBIOAction[R,NoStream,E]],R,M[R]]):DBIOAction[M[R],NoStream,E])">DBIO.sequence</a>は個々のアクションの結果を保護するために、<code>Seq[DBIO[T]]</code>を<code>DBIO[Seq[T]]</code>へ変換する。これは挿入時に影響のあった列の数を数え上げる際などに用いられている。
+<!-- Unlike the simpler DBIO.seq \<slick.dbio.DBIO$@seq[E\<:Effect](DBIOAction[\_,NoStream,E]\*):DBIOAction[Unit,NoStream,E]\> combinator which runs a (varargs) sequence of database I/O actions in the given order and discards the return values, DBIO.sequence \<slick.dbio.DBIO$@sequence[R,M[+\_]\<:TraversableOnce[\_],E\<:Effect](M[DBIOAction[R,NoStream,E]])(CanBuildFrom[M[DBIOAction[R,NoStream,E]],R,M[R]]):DBIOAction[M[R],NoStream,E]\> turns a `Seq[DBIO[T]]` into a `DBIO[Seq[T]]`, thus preserving the results of all individual actions. It is used here to sum up the affected row counts of all inserts.  -->
+</p><h2 id="Result+Sets">Result Sets<a href="#Result+Sets" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>以下のコードでは、ステートメントにより得られた結果を返却する<code>sql</code>補間子を利用している。<code>sql</code>補間子自身は<code>DBIO</code>の値を生成したりはしない。これは、<code>.as</code>というメソッドを返り値となる型を組み合わせて呼び出す必要がある。
+<!-- The following code uses tbe `sql` interpolator which returns a result set produced by a statement. The interpolator by itself does not produce a `DBIO` value. It needs to be followed by a call to `.as` to define the row type:  -->
+</p><pre><code class="prettyprint lang-scala">sql&quot;&quot;&quot;select c.name, s.name
+      from coffees c, suppliers s
+      where c.price &lt; $price and s.id = c.sup_id&quot;&quot;&quot;.as[(String, String)]
+</code></pre><p>この結果の型は、<code>DBIO[Seq[(String, String)]]</code>となる。<code>as</code>を呼び出す際には、結果から要求する型の値を抽出する<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.jdbc.GetResult">GetResult</a>パラメータを暗黙的に必要としている。基本的なJDBCの型やOption、タプルなどに対する<code>GetResult</code>は予め定義されている。それ以外の型に対する<code>GetResult</code>は、各自で定義して欲しい。
+<!-- This results in a `DBIO[Seq[(String, String)]]`. The call to `as` takes an implicit slick.jdbc.GetResult parameter which extracts data of the requested type from a result set. There are predefined `GetResult` implicits for the standard JDBC types, for Options of those (to represent nullable columns) and for tuples of types which have a `GetResult`. For non-standard return types you have to define your own converters:  -->
+</p><pre><code class="prettyprint lang-scala">// 適当なケースクラス
+case class Supplier(id: Int, name: String, street: String, city: String, state: String, zip: String)
+case class Coffee(name: String, supID: Int, price: Double, sales: Int, total: Int)
+...
+// 結果を抽出するためにGetResult
+implicit val getSupplierResult = GetResult(r =&gt; Supplier(r.nextInt, r.nextString, r.nextString,
+  r.nextString, r.nextString, r.nextString))
+implicit val getCoffeeResult = GetResult(r =&gt; Coffee(r.&lt;&lt;, r.&lt;&lt;, r.&lt;&lt;, r.&lt;&lt;, r.&lt;&lt;))
+</code></pre><p><code>GetResult[T]</code>は<code>PositionedResult =&gt; T</code>という関数の単なるラッパーにすぎない。<code>Supplier</code>のための暗黙的な<code>GetResult</code>は、列から<code>Int</code>か<code>String</code>の値を読み出すために、明示的な<code>PositionedResult</code>を用いている。2個めの<code>Coffee</code>の例では、期待する型を自動的に導出しようと試みる<code>&lt;&lt;</code>というショートカットメソッドを利用している（コンストラクタの呼び出しに対して明らかに型が導出出来る場合にのみ利用可能）。
+<!-- `GetResult[T]` is simply a wrapper for a function `PositionedResult => T`. The implicit val for `Supplier` uses the explicit `PositionedResult` methods `getInt` and `getString` to read the next `Int` or `String` value in the current row. The second one uses the shortcut method `<<` which returns a value of whatever type is expected at this place. (Of course you can only use it when the type is actually known like in this constructor call.  -->
+</p><h2 id="Splicing+Literal+Values">Splicing Literal Values<a href="#Splicing+Literal+Values" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>パラメータはSQLステートメントに対してバインド変数を用いて挿入されるわけだが、動的に生成されたSQLコードを呼び出す際などでは、もしかすると直接ステートメントの中にリテラルを書く必要が生じるかもしれない。このような場合には以下の例のように、全ての補間子の中で<code>$</code>の代わりに<code>#$</code>を用いて変数をバインドしてあげれば良い。
+<!-- While most parameters should be inserted into SQL statements as bind variables, sometimes you need to splice literal values directly into the statement, for example to abstract over table names or to run dynamically generated SQL code. You can use `#$` instead of `$` in all interpolators for this purpose, as shown in the following piece of code:  -->
+</p><pre><code class="prettyprint lang-scala">val table = &quot;coffees&quot;
+sql&quot;select * from #$table where name = $name&quot;.as[Coffee].headOption
+</code></pre><h2 id="Type-Checked+SQL+Statements">Type-Checked SQL Statements<a href="#Type-Checked+SQL+Statements" class="header-link"><span class="header-link-content">&nbsp;</span></a></h2><p>今まで見てきた補間子は、SQLステートメントを実行時に構築する。これはステートメントを構築する安全で簡単な方法となっている一方、単なる埋め込み文字列にしかならない。もしステートメントにシンタックスエラーがあったり、データベースとScalaのコードに何かしら型の違いがあったする場合にも、コンパイル時に検出が出来なく、非常に残念である。そのような場合には、<code>sql</code>補間子の代わりに<code>tsql</code>補間子を使う事を検討してみて欲しい。
+<!-- The interpolators you have seen so far only construct a SQL statement at runtime. This provides a safe and easy way of building statements but they are still just embedded strings. If you have a syntax error in a statement or the types don't match up between the database and your Scala code, this cannot be detected at compile-time. You can use the `tsql` interpolator instead of `sql` to get just that:  -->
+</p><pre><code class="prettyprint lang-scala">def getSuppliers(id: Int): DBIO[Seq[(Int, String, String, String, String, String)]] =
+  tsql&quot;select * from suppliers where id &gt; $id&quot;
+</code></pre><p><code>tsql</code>は<code>.as</code>を呼び出す必要無しに、直接<code>DBIOAction</code>を生成する。
+<!-- Note that `tsql` directly produces a `DBIOAction` of the correct type without requiring a call to `.as`.  -->
+</p><p><code>tsql</code>を利用する際は、SQLコンパイラをデータベースにアクセスさせるために、コンパイル時に解決できる設定を提供してあげる必要がある。これは<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.backend.StaticDatabaseConfig">StaticDatabaseConfig</a>アノテーションを利用して明示する。
+<!-- In order to give the compiler access to the database, you have to provide a configuration that can be resolved at compile-time. This is done with the slick.backend.StaticDatabaseConfig annotation:  -->
+</p><pre><code class="prettyprint lang-scala">@StaticDatabaseConfig(&quot;file:src/main/resources/application.conf#tsql&quot;)
+</code></pre><p>上の例だと、<code>application.conf</code>というファイルにおける、<code>&quot;tsql&quot;</code>というパスを指し示しており、ここには<code>Database</code>の設定だけではなく、<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.backend.StaticDatabaseConfig">StaticDatabaseConfig</a>オブジェクトのための適切な設定を記述しなくてはならない。
+<!-- In this case it points to the path "tsql" in a local `application.conf` file, which must contain an appropriate configiration for a slick.backend.StaticDatabaseConfig object, not just a `Database`.  -->
+</p><blockquote><p><strong>Note</strong>
+</p><p>パスを省いたり、URLのフラグメントのみを指定したりすると、クラスパスにある中から<code>application.conf</code>を見つけようとする。また、<code>resource:</code>というURLスキーマを利用しても良いが、いずれにしても実行時のクラスパスと異なり、コンパイラ時のクラスパスからそれらは見えるようにする必要がある。ビルドツールによっては設定が出来ないかもしれないため、基本的には<code>file:</code>のURLスキーマで相対パスを指定するのが良い。
+</p></blockquote><!-- **note** You can get `application.conf` resolved via the classpath (as usual) by omitting the path and only specifying a fragment in the URL, or you can use a `resource:` URL scheme for referencing an arbitrary classpath resouce, but in both cases, they have to be on the *compiler's* own classpath, not just the source path or the runtime classpath. Depending on the build tool this may not be possible, so it's usually better to use a relative `file:` URL.  -->
+<p>実行時に、設定のされた<a href="http://slick.typesafe.com/doc/3.0.0/api/index.html#slick.backend.DatabaseConfig">DatabaseConfig</a>を取得させても構わない。
+<!-- You can also retrieve the statically configured slick.backend.DatabaseConfig at runtime:  -->
+</p><pre><code class="prettyprint lang-scala">val dc = DatabaseConfig.forAnnotation[JdbcProfile]
+import dc.driver.api._
+val db = dc.db
+</code></pre><p>ここでは、基本的な<code>api._</code>というインポートと<code>Database</code>を利用している。同じ設定を用いさせることは特に強制しておらず、Slickドライバと<code>Database</code>を他の方法で実行時に渡しても良いし、コンパイル時のチェックのみに<code>StaticDatabaseConfig</code>を利用するといった方法も1つの選択肢として考えられる。
+<!-- This gives you the Slick driver for the standard `api._` import and the `Database`. Note that it is not mandatory to use the same configuration. You can get a Slick driver and `Database` at runtime in any other way you like and only use the `StaticDatabaseConfig` for compile-time checking.  -->
+</p><div class="bottom nav span-16">
+                        <em>Next Page</em>
+                        <span class="arrow">❧</span>
+                        <a href="ORM%E3%81%8B%E3%82%89Slick%E3%82%92%E5%88%A9%E7%94%A8%E3%81%99%E3%82%8B%E4%BA%BA%E3%81%B8.html"> ORMからSlickを利用する人へ </a>                        
+                        
+                      </div><div class="tocwrapper show">
+      <a class="tochead nav" style="display: none" href="#toc">❦</a>
+      <a name="toc"></a>
+      <h4 class="toctitle">Contents</h4>
+      <div class="tocbody">
+      <div><a href="slick-doc-ja+3.0.html">slick-doc-ja 3.0</a></div><ol class="toc"> <li><div><a href="%E5%B0%8E%E5%85%A5.html">導入</a></div></li><li><div><a href="%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E3%81%95%E3%82%8C%E3%81%9F%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9.html">サポートされたデータベース</a></div></li><li><div><a href="%E3%81%AF%E3%81%98%E3%82%81%E3%82%88%E3%81%86.html">はじめよう</a></div></li><li><div><a href="%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%E8%A8%AD%E5%AE%9A.html">データベース設定</a></div></li><li><div><a href="%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9I%2FO%E3%82%A2%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3.html">データベースI/Oアクション</a></div></li><li><div><a href="%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E.html">スキーマ</a></div></li><li><div><a href="%E3%82%AF%E3%82%A8%E3%83%AA.html">クエリ</a></div></li><li><div><a href="%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E%E3%82%B3%E3%83%BC%E3%83%89%E3%81%AE%E7%94%9F%E6%88%90.html">スキーマコードの生成</a></div></li><li><div><a href="%E3%83%A6%E3%83%BC%E3%82%B6%E5%AE%9A%E7%BE%A9%E6%A9%9F%E8%83%BD.html">ユーザ定義機能</a></div></li><li><div class="current">Plain SQLクエリ</div></li><li><div><a href="ORM%E3%81%8B%E3%82%89Slick%E3%82%92%E5%88%A9%E7%94%A8%E3%81%99%E3%82%8B%E4%BA%BA%E3%81%B8.html">ORMからSlickを利用する人へ</a></div></li><li><div><a href="SQL%E3%81%8B%E3%82%89Slick%E3%82%92%E5%88%A9%E7%94%A8%E3%81%99%E3%82%8B%E4%BA%BA%E3%81%B8.html">SQLからSlickを利用する人へ</a></div></li><li><div><a href="%E3%82%A2%E3%83%83%E3%83%97%E3%82%B0%E3%83%AC%E3%83%BC%E3%83%89%E3%82%AC%E3%82%A4%E3%83%89.html">アップグレードガイド</a></div></li><li><div><a href="Slick+Extensions%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6.html">Slick Extensionsについて</a></div></li><li><div><a href="Direct+Embedding%EF%BC%88%E9%9D%9E%E6%8E%A8%E5%A5%A8%EF%BC%89.html">Direct Embedding（非推奨）</a></div></li><li><div><a href="Slick+TestKit%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6.html">Slick TestKitについて</a></div></li><li class="generated"><div><a href="Contents+in+Depth.html">Contents in Depth</a></div></li><li class="generated"><div><a href="Combined+Pages.html">Combined Pages</a></div></li> </ol></div></div>
+          </div>
+        </div>
+        <div class="header">
+          <div class="container">
+        <div class="span-16 prepend-1 append-1">
+          <div class="span-16 top nav">
+            <div class="span-16 title">
+              <span>slick-doc-ja 3.0</span> — Plain SQLクエリ
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        <a href="http://github.com/krrrr38/slick-doc-ja" class="fork nav"><img src="img/fork.png" alt="Fork me on GitHub"/></a>
+        <div class="highlight-outer">
+              <div class="highlight-menu">
+                <ul>
+                  <li><button id="highlight-button-twitter"><img src="img/twitter-bird-dark-bgs.png"/></button></li>
+                </ul>
+              </div>
+            </div>
+      </body>
+    </html>
